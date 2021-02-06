@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">CoinMarketApp</string>
+    <string name="coin_name">Name</string>
+    <string name="coin_symbol">Symbol</string>
+    <string name="coin_quote">USD</string>
+    <string name="coin_24h_change">24h</string>
+    <string name="menu_search">Search</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_show_ticked">Show ticked</string>
+</resources>
