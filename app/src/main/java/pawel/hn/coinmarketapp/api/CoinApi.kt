@@ -1,7 +1,5 @@
 package pawel.hn.coinmarketapp.api
 
-import com.google.gson.annotations.JsonAdapter
-
 
 data class CoinApi(
         val data: List<Data>,

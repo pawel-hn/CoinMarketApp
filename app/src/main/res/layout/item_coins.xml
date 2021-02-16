@@ -13,13 +13,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="4dp">
 
         <androidx.appcompat.widget.AppCompatCheckBox
             android:id="@+id/checkbox_fav"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="false"
+            android:layout_marginEnd="4dp"
+            android:background="@color/checkboxBackground"
+            android:button="@drawable/checkbox_star"
             android:minWidth="0dp"
             android:minHeight="0dp" />
 
@@ -35,7 +40,7 @@
             android:id="@+id/text_view_symbol"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.75"
+            android:layout_weight="0.7"
             tools:text="BTC" />
 
         <TextView

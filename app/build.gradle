@@ -63,4 +63,8 @@ dependencies {
     kapt "androidx.room:room-compiler:$kotlinVersion"
     implementation "androidx.room:room-ktx:$kotlinVersion"
 
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.3.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.1"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+
 }

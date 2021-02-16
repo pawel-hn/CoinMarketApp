@@ -1,16 +1,19 @@
 package pawel.hn.coinmarketapp.ui
 
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import pawel.hn.coinmarketapp.TAG
+import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import java.text.DecimalFormat
 
-class CoinsAdapter(private val list: List<Coin>) : RecyclerView.Adapter<CoinsAdapter.CoinsViewHolder>() {
+class CoinsAdapter(val listener: CoinsOnClick) :
+    ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsViewHolder {
@@ -19,16 +22,23 @@ class CoinsAdapter(private val list: List<Coin>) : RecyclerView.Adapter<CoinsAda
     }
 
     override fun onBindViewHolder(holder: CoinsViewHolder, position: Int) {
-        val coin = list[position]
+        val coin = getItem(position)
         holder.bind(coin)
     }
 
-    override fun getItemCount(): Int {
-        Log.d("PHN", "getItemcount ${list.size}")
-        return list.size
+    interface CoinsOnClick {
+        fun onCheckBoxClicked(coin: Coin, isChecked: Boolean)
+        fun onCoinClicked(coin: Coin)
     }
 
-    class CoinsViewHolder(private val binding: ItemCoinsBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class CoinsViewHolder(private val binding: ItemCoinsBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                listener.onCoinClicked(getItem(adapterPosition))
+            }
+        }
 
         fun bind(coin: Coin) {
             val percentage = coin.change24h.toString()
@@ -37,22 +47,45 @@ class CoinsAdapter(private val list: List<Coin>) : RecyclerView.Adapter<CoinsAda
             } else {
                 percentage
             }
-            val formatter = DecimalFormat("#,###.00")
+            val formatter = DecimalFormat("#,###.000")
 
             binding.apply {
                 textViewName.text = coin.name
                 textViewSymbol.text = coin.symbol
                 textViewUsd.text = formatter.format(coin.price).toString()
+                checkboxFav.isChecked = coin.favourite
 
-                if(coin.symbol == "XTZ") {
-                    Log.d(TAG, "tezos:" + coin.change24h)
+                checkboxFav.setOnClickListener {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        listener.onCheckBoxClicked(getItem(adapterPosition), checkboxFav.isChecked)
+                    }
                 }
-                if (coin.change24h < 0.000000000) {
+
+                if (coin.change24h < 0.00) {
                     textView24hChange.setTextColor(Color.RED)
+                } else {
+                    textView24hChange
+                        .setTextColor(
+                            ContextCompat.getColor(
+                                binding.root.context, R.color.design_default_color_primary_variant
+                            )
+                        )
                 }
                 textView24hChange.text = percentageForView + " %"
 
             }
         }
     }
+
+    class CoinDiffCallback : DiffUtil.ItemCallback<Coin>() {
+        override fun areItemsTheSame(oldItem: Coin, newItem: Coin): Boolean {
+            return oldItem.coinId == newItem.coinId
+        }
+
+        override fun areContentsTheSame(oldItem: Coin, newItem: Coin): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+
 }

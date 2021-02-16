@@ -2,59 +2,81 @@ package pawel.hn.coinmarketapp.ui
 
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
+import pawel.hn.coinmarketapp.CoinsApplication
 import pawel.hn.coinmarketapp.R
+import pawel.hn.coinmarketapp.TAG
+import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
+import pawel.hn.coinmarketapp.onQueryTextChanged
 
-class CoinsFragment : Fragment(R.layout.fragment_coins) {
+class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnClick {
 
-    private val viewModel: CoinsViewModel by lazy {
-        ViewModelProvider(this).get(CoinsViewModel::class.java)
+    private val viewModel: CoinsViewModel by viewModels {
+        CoinsViewModel.CoinsViewModelFactory(
+            (this.requireActivity().application as CoinsApplication).repository
+        )
     }
-    private lateinit var binding: FragmentCoinsBinding
+
+
     lateinit var searchView: SearchView
 
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View {
+        val adapter = CoinsAdapter(this@CoinsFragment)
+        val binding = FragmentCoinsBinding.inflate(inflater, container, false)
+        binding.coinsRecyclerView.adapter = adapter
 
-        binding = FragmentCoinsBinding.bind(view)
 
-        viewModel.coinsList.observe(viewLifecycleOwner) {
-            binding.coinsRecyclerView.adapter = CoinsAdapter(it)
+        viewModel.coinList.observe(viewLifecycleOwner) {
+            adapter.submitList(it)
         }
 
 
+
         setHasOptionsMenu(true)
+
+        return binding.root
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_coins, menu)
-
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
-
+        searchView.onQueryTextChanged {
+            viewModel.searchQuery.value = it
+        }
+        searchView.clearFocus()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_refresh -> {
-                viewModel.response()
+                Log.d("PHN", "menu clicked")
+                viewModel.getCoinsFromDataBase(START, LIMIT, CONVERT)
             }
             R.id.menu_favourite -> {
                 item.isChecked = !item.isChecked
+                viewModel.showChecked(item.isChecked)
             }
-
+            R.id.menu_uncheck -> {
+                viewModel.unCheckAll()
+            }
         }
-
-
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCheckBoxClicked(coin: Coin, isChecked: Boolean) {
+        viewModel.coinCheckedBoxClicked(coin, isChecked)
+    }
+
+    override fun onCoinClicked(coin: Coin) {
+        Log.d(TAG, "$coin")
     }
 }
