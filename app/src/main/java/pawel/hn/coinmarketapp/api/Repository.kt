@@ -11,24 +11,26 @@ import pawel.hn.coinmarketapp.toCoinsWithCheckBox
 
 class Repository(private val coinDao: CoinDao) {
 
-    private var coinList: LiveData<List<Coin>> = coinDao.getAllCoins("")
 
+     val coinList = coinDao.getAllCoins("")
+     val coinListChecked = coinDao.getCheckedCoins("")
 
     suspend fun refreshData(start: Int, limit: Int, convert: String) {
-        Log.d(TAG, "refreshData called")
+        Log.d(TAG, "refreshData called coinlist")
 
         try {
             val response = CoinsApi.retrofitService.getLatestQuotes(start, limit, convert)
             val list = response.data.map {
                 it.toCoinsWithCheckBox()
             }
-            if (coinList.value == null) {
 
+            if (coinList.value.isNullOrEmpty()) {
+                Log.d(TAG, "base not init")
                 withContext(Dispatchers.IO) {
                     coinDao.insertAll(list)
-                    coinList = coinDao.getAllCoins("")
-                    }
+                }
             } else {
+                Log.d(TAG, "base init")
                 for (i in 0..list.lastIndex) {
                     val listTemp = coinList.value!!.filter {
                         it.coinId == list[i].coinId
@@ -36,7 +38,6 @@ class Repository(private val coinDao: CoinDao) {
                     coinDao.update(list[i].copy(favourite = listTemp[0].favourite))
                 }
             }
-
         } catch (e: Exception) {
             e.printStackTrace()
             Log.d(TAG, "Exception: " + e.message)
@@ -50,10 +51,12 @@ class Repository(private val coinDao: CoinDao) {
 
     fun coinsList(isChecked: Boolean, searchQuery: String): LiveData<List<Coin>> {
         Log.d(TAG, " repository coinsList called")
-        return if (isChecked) {
-            coinDao.getCheckedCoins(searchQuery)
-        } else {
-            coinDao.getAllCoins(searchQuery)
+        synchronized(this) {
+            return if (isChecked) {
+                coinDao.getCheckedCoins(searchQuery)
+            } else {
+                coinDao.getAllCoins(searchQuery)
+            }
         }
     }
 

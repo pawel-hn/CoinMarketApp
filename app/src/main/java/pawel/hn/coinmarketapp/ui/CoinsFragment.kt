@@ -37,8 +37,6 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             adapter.submitList(it)
         }
 
-
-
         setHasOptionsMenu(true)
 
         return binding.root

@@ -20,21 +20,29 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
     val coinList = MediatorLiveData<List<Coin>>()
 
     private val coinListChecked = Transformations.switchMap(showChecked) {
-        repository.coinsList(it, searchQuery.value!!)
+        if (it) {
+            repository.coinListChecked
+        } else {
+            repository.coinList
+        }
     }
-    private val coinListSearchQuery = Transformations.switchMap(searchQuery){
+    private val coinListSearchQuery = Transformations.switchMap(searchQuery) {
         repository.coinsList(showChecked.value!!, it)
     }
 
+
     init {
         getCoinsFromDataBase(START, LIMIT, CONVERT)
+        mediatorSource()
+    }
+
+    private fun mediatorSource() {
         coinList.addSource(coinListChecked) {
             coinList.value = it
         }
         coinList.addSource(coinListSearchQuery) {
             coinList.value = it
         }
-
     }
 
     fun getCoinsFromDataBase(start: Int, limit: Int, convert: String) {
@@ -54,12 +62,11 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
     fun showChecked(isChecked: Boolean) {
         Log.d(TAG, "$isChecked")
         showChecked.value = isChecked
-        //_coinList.value = repository.coinsList(isChecked).value
     }
 
     fun unCheckAll() {
         viewModelScope.launch {
-            coinListChecked.value?.forEach {
+            coinList.value?.forEach {
                 repository.update(it, false)
             }
         }

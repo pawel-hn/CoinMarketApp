@@ -11,7 +11,7 @@ abstract class CoinDatabase : RoomDatabase() {
 
     companion object {
         @Volatile
-        private lateinit var INSTANCE: CoinDatabase
+         lateinit var INSTANCE: CoinDatabase
 
         fun getDataBase(context: Context): CoinDatabase {
             synchronized(this) {
@@ -23,6 +23,8 @@ abstract class CoinDatabase : RoomDatabase() {
             }
             return INSTANCE
         }
+
+        fun dataBaseIsInitialized(): Boolean = ::INSTANCE.isInitialized
     }
 
 
