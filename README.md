@@ -1,6 +1,6 @@
 # CoinMarketApp
 
-Simple app which shows current USD price of 100 cryptos with highest market cap.
+Simple app which shows current USD price and 24h change of 100 cryptos with highest market cap.
 
 Based on API from coinmarketcap.com
 
