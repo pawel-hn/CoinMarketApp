@@ -4,8 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CoinsFragment"
+    tools:context=".ui.coins.CoinsFragment"
     android:layout_margin="4dp">
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        tools:visibility="visible"/>
 
 
     <LinearLayout

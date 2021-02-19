@@ -19,7 +19,8 @@
     <item
         android:id="@+id/menu_favourite"
         android:title="@string/menu_show_ticked"
-        app:showAsAction="never"
+        app:showAsAction="always"
+        android:icon="@drawable/checkbox_star"
         android:checkable="true"/>
 
     <item

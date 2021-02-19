@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui
+package pawel.hn.coinmarketapp.ui.coins
 
 import android.os.Bundle
 import android.util.Log
@@ -36,9 +36,21 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
         viewModel.coinList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }
+        viewModel.eventProgressBar.observe(viewLifecycleOwner){
+            if (it) {
+                binding.apply {
+                    coinsRecyclerView.visibility = View.GONE
+                    progressBar.visibility = View.VISIBLE
+                }
+            } else {
+                binding.apply {
+                    coinsRecyclerView.visibility = View.VISIBLE
+                    progressBar.visibility = View.GONE
+                }
+            }
+        }
 
         setHasOptionsMenu(true)
-
         return binding.root
     }
 

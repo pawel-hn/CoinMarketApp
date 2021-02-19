@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 
+
 @Entity(tableName = "coins_table")
 data class Coin(
     @PrimaryKey val coinId: Int,

@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui
+package pawel.hn.coinmarketapp.ui.coins
 
 import android.graphics.Color
 import android.view.LayoutInflater

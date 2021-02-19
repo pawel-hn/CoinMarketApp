@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui
+package pawel.hn.coinmarketapp.ui.coins
 
 import android.util.Log
 import androidx.lifecycle.*
@@ -18,6 +18,7 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
     private val showChecked = MutableLiveData<Boolean>(false)
     val searchQuery = MutableLiveData("")
     val coinList = MediatorLiveData<List<Coin>>()
+    val eventProgressBar = MutableLiveData(false)
 
     private val coinListChecked = Transformations.switchMap(showChecked) {
         if (it) {
@@ -48,7 +49,9 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
     fun getCoinsFromDataBase(start: Int, limit: Int, convert: String) {
         Log.d(TAG, "getCoinsFromDataBase called")
         viewModelScope.launch {
+            eventProgressBar.value = true
             repository.refreshData(start, limit, convert)
+            eventProgressBar.value = false
         }
     }
 
@@ -74,13 +77,12 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
 
 
     class CoinsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
+
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(CoinsViewModel::class.java)) {
                 return CoinsViewModel(repository) as T
             }
-            throw IllegalArgumentException("Unknown ViewModel class")
+            throw IllegalArgumentException("Unknown ViewModel class (coins)")
         }
     }
-
-
 }

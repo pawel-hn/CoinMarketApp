@@ -8,4 +8,13 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_show_ticked">Show favourites</string>
     <string name="menu_uncheck_all">Uncheck all</string>
+    <string name="text_view_wallet_title">Add coins to check your total balance</string>
+    <string name="wallet_button_add_coins">Add</string>
+    <string name="total">TOTAL</string>
+    <string name="volume">Volume</string>
+    <string name="wallet">Wallet</string>
+    <string name="coins">Coins</string>
+    <string name="dialog_title">Choose coin and enter volume</string>
+    <string name="zero_balance">0.00 USD</string>
+    <string name="total_balance">Total balance:</string>
 </resources>
