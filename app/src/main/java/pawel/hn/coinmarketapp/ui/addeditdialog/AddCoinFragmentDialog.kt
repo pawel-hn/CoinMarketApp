@@ -2,7 +2,6 @@ package pawel.hn.coinmarketapp.ui.addeditdialog
 
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,13 +12,12 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
 import pawel.hn.coinmarketapp.CoinsApplication
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
 
 
 class AddCoinFragmentDialog : DialogFragment() {
 
-    private lateinit var args: AddCoinFragmentDialogArgs
+
     private lateinit var binding: FragmentDialogAddEditBinding
     private var coinName: String = ""
     private var coinVolume: String = ""
@@ -28,12 +26,6 @@ class AddCoinFragmentDialog : DialogFragment() {
         AddCoinViewModel.AddCoinViwModelFactory(
             (this.requireActivity().application as CoinsApplication).repository
         )
-    }
-
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        args = AddCoinFragmentDialogArgs.fromBundle(requireArguments())
     }
 
     override fun onCreateView(

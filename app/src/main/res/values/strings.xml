@@ -18,7 +18,7 @@
     <string name="dialog_title">Choose coin and enter volume</string>
     <string name="zero_balance">0.00 USD</string>
     <string name="total_balance">Total balance:</string>
-    <string name="dialog_error">Chose name and enter volume</string>
+    <string name="dialog_error">Choose coin and enter volume</string>
     <string name="enter_volume">Enter volume:</string>
     <string name="insert_volume_here">Insert volume here</string>
     <string name="save">Save</string>

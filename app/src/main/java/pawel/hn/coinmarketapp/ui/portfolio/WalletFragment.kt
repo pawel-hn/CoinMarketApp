@@ -32,7 +32,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         binding.apply {
             btnAddCoin.setOnClickListener {
                 val action = WalletFragmentDirections
-                    .actionWalletFragmentToAddCoinFragmentDialog(null, viewModel.coinsNamesList())
+                    .actionWalletFragmentToAddCoinFragmentDialog()
                 findNavController().navigate(action)
             }
             recyclerViewWallet.adapter = adapter
@@ -57,6 +57,8 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             binding.textViewBalance.text = viewModel.calculateTotal()
             adapter.submitList(it)
         }
+
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
