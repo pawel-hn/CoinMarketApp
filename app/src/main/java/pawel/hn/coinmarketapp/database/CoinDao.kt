@@ -28,6 +28,6 @@ interface CoinDao {
     fun getWallet(): LiveData<List<Wallet>>
 
     @Delete(entity = Wallet::class)
-    fun deleteFromWallet(coin: Wallet)
+    suspend fun deleteFromWallet(coin: Wallet)
 
 }

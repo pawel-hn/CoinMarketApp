@@ -1,14 +1,16 @@
 package pawel.hn.coinmarketapp.ui.portfolio
 
 import android.os.Bundle
-import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.CoinsApplication
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
 
 
@@ -25,19 +27,41 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentWalletBinding.bind(view)
+        val adapter = WalletAdapter()
 
-        binding.btnAddCoin.setOnClickListener {
-            val action = WalletFragmentDirections
-                .actionWalletFragmentToAddCoinFragmentDialog(null, viewModel.coinsNamesList())
-            findNavController().navigate(action)
+        binding.apply {
+            btnAddCoin.setOnClickListener {
+                val action = WalletFragmentDirections
+                    .actionWalletFragmentToAddCoinFragmentDialog(null, viewModel.coinsNamesList())
+                findNavController().navigate(action)
+            }
+            recyclerViewWallet.adapter = adapter
+
+            ItemTouchHelper(object: ItemTouchHelper
+            .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(
+                    recyclerView: RecyclerView,
+                    viewHolder: RecyclerView.ViewHolder,
+                    target: RecyclerView.ViewHolder
+                ): Boolean {return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    val coin = adapter.currentList[viewHolder.adapterPosition]
+                    viewModel.onTaskSwiped(coin)
+                }
+            }).attachToRecyclerView(recyclerViewWallet)
+
         }
-
         viewModel.walletList.observe(viewLifecycleOwner ) {
-            Log.d(TAG,"walletList, ${it.size}")
             binding.textViewBalance.text = viewModel.calculateTotal()
-            val adapter = WalletAdapter(it)
-            binding.recyclerViewWallet.adapter = adapter
+            adapter.submitList(it)
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_wallet, menu)
     }
 
 }

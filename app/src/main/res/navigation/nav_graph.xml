@@ -8,12 +8,12 @@
     <fragment
         android:id="@+id/coinsFragment"
         android:name="pawel.hn.coinmarketapp.ui.coins.CoinsFragment"
-        android:label="fragment_coins"
+        android:label="@string/app_name"
         tools:layout="@layout/fragment_coins" />
     <fragment
         android:id="@+id/walletFragment"
         android:name="pawel.hn.coinmarketapp.ui.portfolio.WalletFragment"
-        android:label="fragment_wallet"
+        android:label="Wallet"
         tools:layout="@layout/fragment_wallet">
         <action
             android:id="@+id/action_walletFragment_to_addCoinFragmentDialog"

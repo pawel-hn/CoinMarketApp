@@ -33,6 +33,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1.4"
+            android:textAlignment="center"
             tools:text="1.345678"
             android:maxLength="8"/>
 

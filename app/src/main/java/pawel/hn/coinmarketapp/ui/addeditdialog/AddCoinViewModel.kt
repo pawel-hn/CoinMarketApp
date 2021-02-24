@@ -38,6 +38,7 @@ class AddCoinViewModel(private val repository: Repository) : ViewModel() {
     class AddCoinViwModelFactory(private val repository: Repository) : ViewModelProvider.Factory{
         override fun <T : ViewModel?> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AddCoinViewModel::class.java)) {
+                @Suppress("UNCHECKED_CAST")
                 return AddCoinViewModel(repository) as T
             }
             throw IllegalArgumentException("Unknown AddCoinViewModel class (portfolio)")

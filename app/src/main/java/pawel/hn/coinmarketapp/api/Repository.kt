@@ -61,9 +61,10 @@ class Repository(private val coinDao: CoinDao) {
         }
     }
 
-    suspend fun insertIntoWallet(wallet: Wallet) {
-        coinDao.insertIntoWallet(wallet)
-    }
+    suspend fun insertIntoWallet(coin: Wallet) = coinDao.insertIntoWallet(coin)
+
+
+    suspend fun deleteFromWallet(coin: Wallet) = coinDao.deleteFromWallet(coin)
 
 
 }

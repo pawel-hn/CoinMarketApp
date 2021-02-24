@@ -44,7 +44,7 @@ class AddCoinFragmentDialog : DialogFragment() {
 
         val adapter = ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_dropdown_item,
-            args.coinsNamesArray!!
+            viewModel.coinsNamesList()
         ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 
         binding.apply {
