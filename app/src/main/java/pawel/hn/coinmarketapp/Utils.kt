@@ -19,8 +19,6 @@ fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     change24h =  this.quote.USD.percent_change_24h
 )
 
-
-
 inline fun SearchView.onQueryTextChanged(crossinline listener:(String) -> Unit) {
     this.setOnQueryTextListener(object: SearchView.OnQueryTextListener{
         override fun onQueryTextSubmit(query: String?): Boolean = true

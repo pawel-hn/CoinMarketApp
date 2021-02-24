@@ -9,22 +9,20 @@ import androidx.navigation.ui.NavigationUI
 import pawel.hn.coinmarketapp.databinding.ActivityMainBinding
 
 
-
 class MainActivity : AppCompatActivity() {
-
 
     lateinit var drawerLayout: DrawerLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-       val binding = DataBindingUtil
+        val binding = DataBindingUtil
             .setContentView<ActivityMainBinding>(this, R.layout.activity_main)
 
         drawerLayout = binding.drawerLayout
         val navController = this.findNavController(R.id.nav_host_fragment_container)
 
-        NavigationUI.setupActionBarWithNavController(this,navController, drawerLayout)
+        NavigationUI.setupActionBarWithNavController(this, navController, drawerLayout)
         NavigationUI.setupWithNavController(binding.navView, navController)
     }
 
@@ -33,5 +31,3 @@ class MainActivity : AppCompatActivity() {
         return NavigationUI.navigateUp(navController, drawerLayout)
     }
 }
-
-//x

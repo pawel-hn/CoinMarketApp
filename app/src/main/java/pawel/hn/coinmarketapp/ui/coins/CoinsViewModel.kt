@@ -8,10 +8,6 @@ import pawel.hn.coinmarketapp.api.Repository
 import pawel.hn.coinmarketapp.database.Coin
 
 
-const val START = 1
-const val LIMIT = 100
-const val CONVERT = "USD"
-
 class CoinsViewModel(private val repository: Repository) : ViewModel() {
 
 
