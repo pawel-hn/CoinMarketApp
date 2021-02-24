@@ -17,11 +17,11 @@ class Repository(private val coinDao: CoinDao) {
     val coinListChecked = coinDao.getCheckedCoins("")
     val walletRepository = coinDao.getWallet()
 
-    suspend fun refreshData(start: Int, limit: Int, convert: String) {
+    suspend fun refreshData() {
         Log.d(TAG, "refreshData called coinlist")
 
         try {
-            val response = CoinsApi.retrofitService.getLatestQuotes(start, limit, convert)
+            val response = CoinsApi.retrofitService.getLatestQuotes(1, 100, "USD")
             val list = response.data.map {
                 it.toCoinsWithCheckBox()
             }
@@ -63,8 +63,10 @@ class Repository(private val coinDao: CoinDao) {
 
     suspend fun insertIntoWallet(coin: Wallet) = coinDao.insertIntoWallet(coin)
 
-
     suspend fun deleteFromWallet(coin: Wallet) = coinDao.deleteFromWallet(coin)
+
+    suspend fun updateWallet(coin: Wallet) = coinDao.updateWallet(coin.copy())
+
 
 
 }

@@ -3,8 +3,12 @@ package pawel.hn.coinmarketapp
 import androidx.appcompat.widget.SearchView
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
+import java.text.DecimalFormat
 
 const val TAG = "PHN"
+
+val formatter = DecimalFormat("#,###.000")
+val formatterTotal = DecimalFormat("#,###")
 
 fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     coinId = this.id,
@@ -14,6 +18,8 @@ fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     price =  this.quote.USD.price,
     change24h =  this.quote.USD.percent_change_24h
 )
+
+
 
 inline fun SearchView.onQueryTextChanged(crossinline listener:(String) -> Unit) {
     this.setOnQueryTextListener(object: SearchView.OnQueryTextListener{

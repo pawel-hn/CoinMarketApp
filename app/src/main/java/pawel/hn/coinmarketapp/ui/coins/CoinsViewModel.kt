@@ -15,7 +15,7 @@ const val CONVERT = "USD"
 class CoinsViewModel(private val repository: Repository) : ViewModel() {
 
 
-    private val showChecked = MutableLiveData<Boolean>(false)
+    private val showChecked = MutableLiveData(false)
     val searchQuery = MutableLiveData("")
     val coinList = MediatorLiveData<List<Coin>>()
     val eventProgressBar = MutableLiveData(false)
@@ -33,7 +33,7 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
 
 
     init {
-        getCoinsFromDataBase(START, LIMIT, CONVERT)
+        getCoinsFromDataBase()
         mediatorSource()
     }
 
@@ -46,11 +46,11 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
         }
     }
 
-    fun getCoinsFromDataBase(start: Int, limit: Int, convert: String) {
+    fun getCoinsFromDataBase() {
         Log.d(TAG, "getCoinsFromDataBase called")
         viewModelScope.launch {
             eventProgressBar.value = true
-            repository.refreshData(start, limit, convert)
+            repository.refreshData()
             eventProgressBar.value = false
         }
     }

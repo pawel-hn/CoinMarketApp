@@ -69,7 +69,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
         when (item.itemId) {
             R.id.menu_refresh -> {
                 Log.d("PHN", "menu clicked")
-                viewModel.getCoinsFromDataBase(START, LIMIT, CONVERT)
+                viewModel.getCoinsFromDataBase()
             }
             R.id.menu_favourite -> {
                 item.isChecked = !item.isChecked

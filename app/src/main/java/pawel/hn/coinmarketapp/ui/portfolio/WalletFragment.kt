@@ -6,6 +6,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -47,6 +48,18 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             binding.textViewBalance.text = viewModel.calculateTotal()
             adapter.submitList(it)
         }
+        viewModel.eventRefresh.observe(viewLifecycleOwner){event ->
+            binding.apply {
+                if (event){
+                    recyclerViewWallet.visibility = View.GONE
+                    progressBarWallet.visibility = View.VISIBLE
+                } else {
+                    recyclerViewWallet.visibility = View.VISIBLE
+                    progressBarWallet.visibility = View.GONE
+                }
+            }
+
+        }
         setHasOptionsMenu(true)
     }
 
@@ -55,7 +68,16 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         inflater.inflate(R.menu.menu_wallet, menu)
     }
 
-    val swipe = object: ItemTouchHelper
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_wallet_refresh -> {
+                viewModel.walletRefresh()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    private val swipe = object: ItemTouchHelper
     .SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(
             recyclerView: RecyclerView,

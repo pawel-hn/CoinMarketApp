@@ -1,18 +1,22 @@
 package pawel.hn.coinmarketapp.ui.portfolio
 
 
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.api.Repository
 import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.formatter
+import pawel.hn.coinmarketapp.formatterTotal
 import java.text.DecimalFormat
 
 class WalletViewModel(private val repository: Repository) : ViewModel() {
 
     private val coins = repository.coinsRepository
     val walletList = repository.walletRepository
+    val eventRefresh = MutableLiveData(false)
 
     fun calculateTotal(): String {
         val total = walletList.value!!.sumByDouble {
@@ -25,6 +29,26 @@ class WalletViewModel(private val repository: Repository) : ViewModel() {
     fun onTaskSwiped(coin: Wallet) {
         viewModelScope.launch {
             repository.deleteFromWallet(coin)
+        }
+    }
+
+    fun walletRefresh() {
+        viewModelScope.launch {
+            eventRefresh.value = true
+            repository.refreshData()
+            walletList.value?.forEach { coinWallet ->
+                val newPrice = repository.coinsRepository.value!!.filter {it.name == coinWallet.name }[0].price
+                val newTotal =
+                    coinWallet.volume.replace(",","").toDouble() * newPrice
+
+                val coin = Wallet(coinWallet.name,
+                    coinWallet.volume,
+                    formatter.format(newPrice),
+                    formatterTotal.format(newTotal))
+
+                repository.updateWallet(coin)
+            }
+            eventRefresh.value = false
         }
     }
 

@@ -8,6 +8,8 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.api.Repository
 import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.formatter
+import pawel.hn.coinmarketapp.formatterTotal
 import java.text.DecimalFormat
 
 class AddCoinViewModel(private val repository: Repository) : ViewModel() {
@@ -15,8 +17,7 @@ class AddCoinViewModel(private val repository: Repository) : ViewModel() {
     private val coins = repository.coinsRepository
 
     fun addToWallet(coinName: String, coinVolume: String) {
-        val formatterTotal = DecimalFormat("#,###")
-        val formatter = DecimalFormat("#,###.000")
+
         val price = coins.value?.find {it.name == coinName}?.price ?: 0
         val total = formatterTotal.format(price.toDouble() * coinVolume.toDouble())
         val priceFormat = formatter.format(price)
