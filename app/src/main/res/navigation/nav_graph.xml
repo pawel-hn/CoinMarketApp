@@ -15,27 +15,19 @@
         android:name="pawel.hn.coinmarketapp.ui.portfolio.WalletFragment"
         android:label="fragment_wallet"
         tools:layout="@layout/fragment_wallet">
-        <argument
-            android:name="coin"
-            android:defaultValue="@null"
-            app:argType="pawel.hn.coinmarketapp.database.Wallet"
-            app:nullable="true" />
         <action
             android:id="@+id/action_walletFragment_to_addCoinFragmentDialog"
             app:destination="@id/addCoinFragmentDialog" />
     </fragment>
     <dialog
         android:id="@+id/addCoinFragmentDialog"
-        android:name="pawel.hn.coinmarketapp.ui.portfolio.AddCoinFragmentDialog"
+        android:name="pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialog"
         android:label="AddCoinFragmentDialog" >
         <argument
             android:name="coinWallet"
             app:argType="pawel.hn.coinmarketapp.database.Wallet"
             app:nullable="true"
             android:defaultValue="@null" />
-        <action
-            android:id="@+id/action_addCoinFragmentDialog_to_walletFragment"
-            app:destination="@id/walletFragment" />
         <argument
             android:name="coinsNamesArray"
             app:argType="string[]"

@@ -24,7 +24,7 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
         if (it) {
             repository.coinListChecked
         } else {
-            repository.coinList
+            repository.coinsRepository
         }
     }
     private val coinListSearchQuery = Transformations.switchMap(searchQuery) {

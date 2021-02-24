@@ -7,13 +7,15 @@ import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
+import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.toCoinsWithCheckBox
 
 class Repository(private val coinDao: CoinDao) {
 
 
-     val coinList = coinDao.getAllCoins("")
-     val coinListChecked = coinDao.getCheckedCoins("")
+    val coinsRepository = coinDao.getAllCoins("")
+    val coinListChecked = coinDao.getCheckedCoins("")
+    val walletRepository = coinDao.getWallet()
 
     suspend fun refreshData(start: Int, limit: Int, convert: String) {
         Log.d(TAG, "refreshData called coinlist")
@@ -24,7 +26,7 @@ class Repository(private val coinDao: CoinDao) {
                 it.toCoinsWithCheckBox()
             }
 
-            if (coinList.value.isNullOrEmpty()) {
+            if (coinsRepository.value.isNullOrEmpty()) {
                 Log.d(TAG, "base not init")
                 withContext(Dispatchers.IO) {
                     coinDao.insertAll(list)
@@ -32,7 +34,7 @@ class Repository(private val coinDao: CoinDao) {
             } else {
                 Log.d(TAG, "base init")
                 for (i in 0..list.lastIndex) {
-                    val listTemp = coinList.value!!.filter {
+                    val listTemp = coinsRepository.value!!.filter {
                         it.coinId == list[i].coinId
                     }
                     coinDao.update(list[i].copy(favourite = listTemp[0].favourite))
@@ -48,7 +50,6 @@ class Repository(private val coinDao: CoinDao) {
         coinDao.update(coin.copy(favourite = isChecked))
     }
 
-
     fun coinsList(isChecked: Boolean, searchQuery: String): LiveData<List<Coin>> {
         Log.d(TAG, " repository coinsList called")
         synchronized(this) {
@@ -58,6 +59,10 @@ class Repository(private val coinDao: CoinDao) {
                 coinDao.getAllCoins(searchQuery)
             }
         }
+    }
+
+    suspend fun insertIntoWallet(wallet: Wallet) {
+        coinDao.insertIntoWallet(wallet)
     }
 
 

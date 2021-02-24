@@ -71,7 +71,7 @@ class CoinsAdapter(val listener: CoinsOnClick) :
                             )
                         )
                 }
-                textView24hChange.text = percentageForView + " %"
+                textView24hChange.text = "$percentageForView %"
 
             }
         }

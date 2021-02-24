@@ -22,7 +22,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     }
 
 
-    lateinit var searchView: SearchView
+   private lateinit var searchView: SearchView
 
 
     override fun onCreateView(
