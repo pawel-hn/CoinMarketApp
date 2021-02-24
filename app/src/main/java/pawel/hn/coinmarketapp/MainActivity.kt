@@ -9,7 +9,7 @@ import androidx.navigation.ui.NavigationUI
 import pawel.hn.coinmarketapp.databinding.ActivityMainBinding
 
 
-const val TAG = "PHN"
+
 class MainActivity : AppCompatActivity() {
 
 

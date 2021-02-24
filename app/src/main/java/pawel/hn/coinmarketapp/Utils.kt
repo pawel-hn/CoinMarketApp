@@ -4,6 +4,8 @@ import androidx.appcompat.widget.SearchView
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 
+const val TAG = "PHN"
+
 fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     coinId = this.id,
     name = this.name,

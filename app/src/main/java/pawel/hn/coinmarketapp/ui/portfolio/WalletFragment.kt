@@ -1,5 +1,8 @@
 package pawel.hn.coinmarketapp.ui.portfolio
 
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
@@ -21,13 +24,14 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             (this.requireActivity().application as CoinsApplication).repository
         )
     }
+    lateinit var adapter: WalletAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val binding = FragmentWalletBinding.bind(view)
-        val adapter = WalletAdapter()
+        adapter = WalletAdapter()
 
         binding.apply {
             btnAddCoin.setOnClickListener {
@@ -37,33 +41,57 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             }
             recyclerViewWallet.adapter = adapter
 
-            ItemTouchHelper(object: ItemTouchHelper
-            .SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-                override fun onMove(
-                    recyclerView: RecyclerView,
-                    viewHolder: RecyclerView.ViewHolder,
-                    target: RecyclerView.ViewHolder
-                ): Boolean {return false
-                }
-
-                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                    val coin = adapter.currentList[viewHolder.adapterPosition]
-                    viewModel.onTaskSwiped(coin)
-                }
-            }).attachToRecyclerView(recyclerViewWallet)
-
+            ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
         viewModel.walletList.observe(viewLifecycleOwner ) {
             binding.textViewBalance.text = viewModel.calculateTotal()
             adapter.submitList(it)
         }
-
         setHasOptionsMenu(true)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_wallet, menu)
+    }
+
+    val swipe = object: ItemTouchHelper
+    .SimpleCallback(0, ItemTouchHelper.LEFT) {
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {return false
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            val coin = adapter.currentList[viewHolder.adapterPosition]
+            viewModel.onTaskSwiped(coin)
+        }
+
+        override fun onChildDraw(
+            c: Canvas,
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            dX: Float,
+            dY: Float,
+            actionState: Int,
+            isCurrentlyActive: Boolean
+        ) {
+
+            val itemView = viewHolder.itemView
+            val drawable = ColorDrawable()
+            val colorRed = Color.parseColor("#F5160A")
+            drawable.color = colorRed
+            drawable.setBounds(
+                itemView.right + dX.toInt(),
+                itemView.top, itemView.right, itemView.bottom
+            )
+            drawable.draw(c)
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+        }
+
     }
 
 }

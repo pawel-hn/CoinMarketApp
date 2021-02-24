@@ -6,13 +6,13 @@ import androidx.room.*
 @Dao
 interface CoinDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Coin::class)
     suspend fun insertAll(list: List<Coin>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Coin::class)
     suspend fun insert(coin: Coin)
 
-    @Update
+    @Update(entity = Coin::class)
     suspend fun update(coin: Coin)
 
     @Query("SELECT * FROM coins_table WHERE name LIKE '%' || :searchQuery || '%'")
