@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.portfolio
+package pawel.hn.coinmarketapp.ui.wallet
 
 
 import androidx.lifecycle.MutableLiveData
@@ -10,7 +10,6 @@ import pawel.hn.coinmarketapp.api.Repository
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatter
 import pawel.hn.coinmarketapp.formatterTotal
-import java.text.DecimalFormat
 
 class WalletViewModel(private val repository: Repository) : ViewModel() {
 
@@ -20,10 +19,9 @@ class WalletViewModel(private val repository: Repository) : ViewModel() {
 
     fun calculateTotal(): String {
         val total = walletList.value!!.sumByDouble {
-            it.total.replace(",", "").toDouble()
+            it.total.replace(",","").toDouble()
         }
-        val formatter = DecimalFormat("###,###")
-        return "${formatter.format(total)} USD"
+        return "${formatterTotal.format(total)} USD"
     }
 
     fun onTaskSwiped(coin: Wallet) {

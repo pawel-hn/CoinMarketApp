@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.portfolio
+package pawel.hn.coinmarketapp.ui.wallet
 
 import android.util.Log
 import android.view.LayoutInflater

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
+import pawel.hn.coinmarketapp.formatter
 import java.text.DecimalFormat
 
 class CoinsAdapter(val listener: CoinsOnClick) :
@@ -47,7 +48,7 @@ class CoinsAdapter(val listener: CoinsOnClick) :
             } else {
                 percentage
             }
-            val formatter = DecimalFormat("#,###.000")
+
 
             binding.apply {
                 textViewName.text = coin.name

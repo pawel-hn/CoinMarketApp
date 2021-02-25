@@ -8,7 +8,7 @@ import java.text.DecimalFormat
 const val TAG = "PHN"
 
 val formatter = DecimalFormat("#,###.000")
-val formatterTotal = DecimalFormat("#,###")
+val formatterTotal = DecimalFormat("##,###")
 
 fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     coinId = this.id,

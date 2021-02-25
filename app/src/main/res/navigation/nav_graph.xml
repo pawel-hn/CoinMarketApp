@@ -12,7 +12,7 @@
         tools:layout="@layout/fragment_coins" />
     <fragment
         android:id="@+id/walletFragment"
-        android:name="pawel.hn.coinmarketapp.ui.portfolio.WalletFragment"
+        android:name="pawel.hn.coinmarketapp.ui.wallet.WalletFragment"
         android:label="Wallet"
         tools:layout="@layout/fragment_wallet">
         <action
