@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.coins.CoinsFragment"
-    android:layout_margin="4dp">
+    android:layout_margin="4dp"
+    android:theme="@style/Theme.CoinMarketApp">
 
     <ProgressBar
         android:id="@+id/progress_bar"
@@ -63,6 +64,6 @@
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         android:layout_below="@id/linear_lay"
         android:layout_margin="4dp"
-        tools:listitem="@layout/item_coins"/>
+        tools:listitem="@layout/item_coins" />
 
 </RelativeLayout>
