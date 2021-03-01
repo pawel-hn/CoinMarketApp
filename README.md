@@ -8,4 +8,4 @@ Android Architecture components, MVVM, Room, Retrofit.
 
 
 
-![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/coinapp1.PNG) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/coinapp2.PNG)
+![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/coinapp1.PNG)  ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/coinapp2.PNG) 
