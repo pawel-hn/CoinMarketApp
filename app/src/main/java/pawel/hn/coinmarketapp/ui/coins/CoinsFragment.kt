@@ -30,9 +30,10 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     ): View {
         val adapter = CoinsAdapter(this@CoinsFragment)
         val binding = FragmentCoinsBinding.inflate(inflater, container, false)
-        binding.coinsRecyclerView.adapter = adapter
-
-
+        binding.apply {
+            coinsRecyclerView.adapter = adapter
+            coinsRecyclerView.itemAnimator = null
+        }
         viewModel.coinList.observe(viewLifecycleOwner) {
             adapter.submitList(it)
         }

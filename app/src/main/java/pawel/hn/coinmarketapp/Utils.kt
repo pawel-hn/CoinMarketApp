@@ -1,14 +1,23 @@
 package pawel.hn.coinmarketapp
 
+
+
 import androidx.appcompat.widget.SearchView
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import java.text.DecimalFormat
 
+
 const val TAG = "PHN"
 
-val formatter = DecimalFormat("#,###.000")
+
+val formatter = DecimalFormat("#,#00.0#")
 val formatterTotal = DecimalFormat("##,###")
+
+
+
+
+
 
 fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
     coinId = this.id,
