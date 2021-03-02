@@ -6,11 +6,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
-import pawel.hn.coinmarketapp.api.Repository
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatter
 import pawel.hn.coinmarketapp.formatterTotal
-import java.text.DecimalFormat
 
 class AddCoinViewModel(private val repository: Repository) : ViewModel() {
 

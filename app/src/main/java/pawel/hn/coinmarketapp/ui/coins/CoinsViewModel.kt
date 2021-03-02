@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
-import pawel.hn.coinmarketapp.api.Repository
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Coin
 
 

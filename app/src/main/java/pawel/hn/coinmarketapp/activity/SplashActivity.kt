@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp
+package pawel.hn.coinmarketapp.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity

@@ -14,7 +14,7 @@
         android:theme="@style/Theme.CoinMarketApp"
         android:usesCleartextTraffic="true">
 
-        <activity android:name=".SplashActivity"
+        <activity android:name=".activity.SplashActivity"
             android:theme="@style/Theme.CoinMarketApp.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,7 +22,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".activity.MainActivity"
             android:theme="@style/Theme.CoinMarketApp"/>
     </application>
 

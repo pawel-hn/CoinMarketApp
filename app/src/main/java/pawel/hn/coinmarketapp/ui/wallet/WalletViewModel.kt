@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import pawel.hn.coinmarketapp.api.Repository
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatter
 import pawel.hn.coinmarketapp.formatterTotal

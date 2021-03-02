@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp
+package pawel.hn.coinmarketapp.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +7,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.ActivityMainBinding
 
 

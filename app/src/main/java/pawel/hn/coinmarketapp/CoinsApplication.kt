@@ -1,9 +1,11 @@
 package pawel.hn.coinmarketapp
 
 import android.app.Application
-import pawel.hn.coinmarketapp.api.Repository
+import dagger.hilt.android.HiltAndroidApp
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.CoinDatabase
 
+@HiltAndroidApp
 class CoinsApplication : Application() {
 
      private val database: CoinDatabase by lazy {

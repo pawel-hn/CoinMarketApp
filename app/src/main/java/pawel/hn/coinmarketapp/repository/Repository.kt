@@ -1,10 +1,11 @@
-package pawel.hn.coinmarketapp.api
+package pawel.hn.coinmarketapp.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.TAG
+import pawel.hn.coinmarketapp.api.CoinsApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Wallet
