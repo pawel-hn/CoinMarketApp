@@ -4,7 +4,7 @@ Simple app which shows current USD price for 100 cryptos with highest market cap
 
 Based on API from coinmarketcap.com
 
-Android Architecture components, MVVM, Room, Retrofit.
+Android Architecture components, MVVM, Hilt, Room, Retrofit.
 
 
 
