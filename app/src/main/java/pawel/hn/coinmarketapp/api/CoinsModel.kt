@@ -1,7 +1,7 @@
 package pawel.hn.coinmarketapp.api
 
 
-data class CoinApi(
+data class CoinsModel(
         val data: List<Data>,
         val status: Status
 ) {

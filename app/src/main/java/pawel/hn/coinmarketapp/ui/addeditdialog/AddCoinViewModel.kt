@@ -2,16 +2,18 @@ package pawel.hn.coinmarketapp.ui.addeditdialog
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
-import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatter
 import pawel.hn.coinmarketapp.formatterTotal
+import pawel.hn.coinmarketapp.repository.Repository
+import javax.inject.Inject
 
-class AddCoinViewModel(private val repository: Repository) : ViewModel() {
+@HiltViewModel
+class AddCoinViewModel @Inject constructor (private val repository: Repository) : ViewModel() {
 
     private val coins = repository.coinsRepository
 
@@ -32,16 +34,4 @@ class AddCoinViewModel(private val repository: Repository) : ViewModel() {
         list.sort()
         return list
     }
-
-    class AddCoinViwModelFactory(private val repository: Repository) : ViewModelProvider.Factory{
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(AddCoinViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return AddCoinViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown AddCoinViewModel class (portfolio)")
-        }
-    }
-
-
 }

@@ -13,18 +13,15 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import pawel.hn.coinmarketapp.CoinsApplication
+import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
 
-
+@AndroidEntryPoint
 class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
-    private val viewModel: WalletViewModel by viewModels {
-        WalletViewModel.WalletViewModelFactory(
-            (this.requireActivity().application as CoinsApplication).repository
-        )
-    }
+    private val viewModel: WalletViewModel by viewModels()
+
     lateinit var adapter: WalletAdapter
 
 

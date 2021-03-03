@@ -10,11 +10,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.viewModels
-import pawel.hn.coinmarketapp.CoinsApplication
+import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
 
 
+@AndroidEntryPoint
 class AddCoinFragmentDialog : DialogFragment() {
 
 
@@ -22,11 +23,7 @@ class AddCoinFragmentDialog : DialogFragment() {
     private var coinName: String = ""
     private var coinVolume: String = ""
 
-    private val viewModel: AddCoinViewModel by viewModels {
-        AddCoinViewModel.AddCoinViwModelFactory(
-            (this.requireActivity().application as CoinsApplication).repository
-        )
-    }
+    private val viewModel: AddCoinViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?

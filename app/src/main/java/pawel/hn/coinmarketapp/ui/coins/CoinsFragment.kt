@@ -6,6 +6,7 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.CoinsApplication
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.TAG
@@ -13,16 +14,13 @@ import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.onQueryTextChanged
 
+
+@AndroidEntryPoint
 class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnClick {
 
-    private val viewModel: CoinsViewModel by viewModels {
-        CoinsViewModel.CoinsViewModelFactory(
-            (this.requireActivity().application as CoinsApplication).repository
-        )
-    }
+    private val viewModel: CoinsViewModel by viewModels()
 
-
-   private lateinit var searchView: SearchView
+    private lateinit var searchView: SearchView
 
 
     override fun onCreateView(
@@ -35,9 +33,10 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             coinsRecyclerView.itemAnimator = null
         }
         viewModel.coinList.observe(viewLifecycleOwner) {
+            Log.d(TAG, "list ${it.size}")
             adapter.submitList(it)
         }
-        viewModel.eventProgressBar.observe(viewLifecycleOwner){
+        viewModel.eventProgressBar.observe(viewLifecycleOwner) {
             if (it) {
                 binding.apply {
                     coinsRecyclerView.visibility = View.GONE

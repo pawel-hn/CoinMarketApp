@@ -11,9 +11,9 @@ class CoinsApplication : Application() {
      private val database: CoinDatabase by lazy {
         CoinDatabase.getDataBase(this)
     }
-    val repository: Repository by lazy {
-        Repository(database.coinDao)
-    }
+//    val repository: Repository by lazy {
+//        Repository(database.coinDao)
+//    }
 
 
 

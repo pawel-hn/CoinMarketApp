@@ -3,17 +3,18 @@ package pawel.hn.coinmarketapp.ui.wallet
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatter
 import pawel.hn.coinmarketapp.formatterTotal
+import pawel.hn.coinmarketapp.repository.Repository
+import javax.inject.Inject
 
-class WalletViewModel(private val repository: Repository) : ViewModel() {
+@HiltViewModel
+class WalletViewModel @Inject constructor (private val repository: Repository) : ViewModel() {
 
-    private val coins = repository.coinsRepository
     val walletList = repository.walletRepository
     val eventRefresh = MutableLiveData(false)
 
@@ -47,17 +48,6 @@ class WalletViewModel(private val repository: Repository) : ViewModel() {
                 repository.updateWallet(coin)
             }
             eventRefresh.value = false
-        }
-    }
-
-    class WalletViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
-
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(WalletViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return WalletViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class (portfolio)")
         }
     }
 }

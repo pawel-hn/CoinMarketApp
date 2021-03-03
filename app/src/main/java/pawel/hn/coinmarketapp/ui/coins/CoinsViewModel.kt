@@ -2,14 +2,15 @@ package pawel.hn.coinmarketapp.ui.coins
 
 import android.util.Log
 import androidx.lifecycle.*
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Coin
+import javax.inject.Inject
 
-
-class CoinsViewModel(private val repository: Repository) : ViewModel() {
-
+@HiltViewModel
+class CoinsViewModel @Inject constructor (private val repository: Repository) : ViewModel() {
 
     private val showChecked = MutableLiveData(false)
     val searchQuery = MutableLiveData("")
@@ -68,18 +69,6 @@ class CoinsViewModel(private val repository: Repository) : ViewModel() {
             coinList.value?.forEach {
                 repository.update(it, false)
             }
-        }
-    }
-
-
-    class CoinsViewModelFactory(private val repository: Repository) : ViewModelProvider.Factory {
-
-        override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-            if (modelClass.isAssignableFrom(CoinsViewModel::class.java)) {
-                @Suppress("UNCHECKED_CAST")
-                return CoinsViewModel(repository) as T
-            }
-            throw IllegalArgumentException("Unknown ViewModel class (coins)")
         }
     }
 }

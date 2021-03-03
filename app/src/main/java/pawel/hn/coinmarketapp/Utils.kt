@@ -3,7 +3,7 @@ package pawel.hn.coinmarketapp
 
 
 import androidx.appcompat.widget.SearchView
-import pawel.hn.coinmarketapp.api.CoinApi
+import pawel.hn.coinmarketapp.api.CoinsModel
 import pawel.hn.coinmarketapp.database.Coin
 import java.text.DecimalFormat
 
@@ -19,7 +19,7 @@ val formatterTotal = DecimalFormat("##,###")
 
 
 
-fun CoinApi.Data.toCoinsWithCheckBox() = Coin(
+fun CoinsModel.Data.toCoinsWithCheckBox() = Coin(
     coinId = this.id,
     name = this.name,
     symbol =this.symbol,
