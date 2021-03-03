@@ -41,13 +41,13 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
             ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
-        viewModel.walletList.observe(viewLifecycleOwner ) {
+        viewModel.walletList.observe(viewLifecycleOwner) {
             binding.textViewBalance.text = viewModel.calculateTotal()
             adapter.submitList(it)
         }
-        viewModel.eventRefresh.observe(viewLifecycleOwner){event ->
+        viewModel.eventRefresh.observe(viewLifecycleOwner) { event ->
             binding.apply {
-                if (event){
+                if (event) {
                     recyclerViewWallet.visibility = View.GONE
                     progressBarWallet.visibility = View.VISIBLE
                 } else {
@@ -66,7 +66,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.menu_wallet_refresh -> {
                 viewModel.walletRefresh()
             }
@@ -74,13 +74,14 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         return super.onOptionsItemSelected(item)
     }
 
-    private val swipe = object: ItemTouchHelper
+    private val swipe = object : ItemTouchHelper
     .SimpleCallback(0, ItemTouchHelper.LEFT) {
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
             target: RecyclerView.ViewHolder
-        ): Boolean {return false
+        ): Boolean {
+            return false
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {

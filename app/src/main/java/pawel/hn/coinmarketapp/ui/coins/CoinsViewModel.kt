@@ -10,7 +10,7 @@ import pawel.hn.coinmarketapp.database.Coin
 import javax.inject.Inject
 
 @HiltViewModel
-class CoinsViewModel @Inject constructor (private val repository: Repository) : ViewModel() {
+class CoinsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     private val showChecked = MutableLiveData(false)
     val searchQuery = MutableLiveData("")
@@ -27,7 +27,6 @@ class CoinsViewModel @Inject constructor (private val repository: Repository) : 
     private val coinListSearchQuery = Transformations.switchMap(searchQuery) {
         repository.coinsList(showChecked.value!!, it)
     }
-
 
     init {
         getCoinsFromDataBase()

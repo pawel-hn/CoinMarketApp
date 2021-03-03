@@ -32,16 +32,15 @@ class Module {
 
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): CoinDatabase
-    = CoinDatabase.getDataBase(context)
+    fun provideDatabase(@ApplicationContext context: Context): CoinDatabase =
+        CoinDatabase.getDataBase(context)
 
     @Provides
     @Singleton
-    fun provideRepository(database: CoinDatabase, coinsApi: CoinsApi): Repository
-    = Repository(database.coinDao, coinsApi)
+    fun provideRepository(database: CoinDatabase, coinsApi: CoinsApi): Repository =
+        Repository(database.coinDao, coinsApi)
 
     @Provides
     fun provideCoinDao(database: CoinDatabase) = database.coinDao
-
 
 }
