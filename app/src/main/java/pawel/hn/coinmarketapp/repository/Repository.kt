@@ -2,11 +2,10 @@ package pawel.hn.coinmarketapp.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.TAG
-import pawel.hn.coinmarketapp.api.CoinsApi
+import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Wallet
@@ -16,7 +15,7 @@ import javax.inject.Inject
 
 class Repository @Inject constructor (
     private val coinDao: CoinDao,
-    private val coinsApi: CoinsApi) {
+    private val coinApi: CoinApi) {
 
     val coinsRepository = coinDao.getAllCoins("")
     val coinListChecked = coinDao.getCheckedCoins("")
@@ -26,7 +25,7 @@ class Repository @Inject constructor (
         Log.d(TAG, "refreshData called coinlist")
 
         try {
-            val response = coinsApi.getLatestQuotes(1, 100, "USD")
+            val response = coinApi.getLatestQuotes(1, 100, "USD")
             val list = response.data.map {
                 it.toCoinsWithCheckBox()
             }

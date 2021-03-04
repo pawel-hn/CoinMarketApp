@@ -3,6 +3,7 @@ package pawel.hn.coinmarketapp.ui.coins
 import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.repository.Repository

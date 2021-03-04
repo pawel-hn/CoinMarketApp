@@ -7,7 +7,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pawel.hn.coinmarketapp.api.BASE_URL
-import pawel.hn.coinmarketapp.api.CoinsApi
+import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.repository.Repository
 import retrofit2.Retrofit
@@ -28,7 +28,7 @@ class Module {
 
     @Provides
     @Singleton
-    fun provideCoinApi(retrofit: Retrofit): CoinsApi = retrofit.create(CoinsApi::class.java)
+    fun provideCoinApi(retrofit: Retrofit): CoinApi = retrofit.create(CoinApi::class.java)
 
     @Provides
     @Singleton
@@ -37,8 +37,8 @@ class Module {
 
     @Provides
     @Singleton
-    fun provideRepository(database: CoinDatabase, coinsApi: CoinsApi): Repository =
-        Repository(database.coinDao, coinsApi)
+    fun provideRepository(database: CoinDatabase, coinApi: CoinApi): Repository =
+        Repository(database.coinDao, coinApi)
 
     @Provides
     fun provideCoinDao(database: CoinDatabase) = database.coinDao
