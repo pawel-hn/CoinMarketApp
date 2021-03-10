@@ -41,7 +41,7 @@ class CoinDaoTest {
     fun tearDown() = database.close()
 
     @Test
-    fun insertCoin() = runBlockingTest {
+    fun insertCoin_returnsInsertedCoin() = runBlockingTest {
         val testCoin = Coin(1, "testCoin",
             "ct", false, 1.0, 0.02)
         coinDao.insert(testCoin)

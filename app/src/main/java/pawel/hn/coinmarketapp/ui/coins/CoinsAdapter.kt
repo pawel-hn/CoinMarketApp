@@ -11,7 +11,6 @@ import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.formatter
-import java.text.DecimalFormat
 
 class CoinsAdapter(private val listener: CoinsOnClick) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {

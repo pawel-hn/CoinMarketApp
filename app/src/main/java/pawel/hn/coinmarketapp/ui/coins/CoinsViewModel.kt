@@ -3,15 +3,15 @@ package pawel.hn.coinmarketapp.ui.coins
 import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.TAG
-import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.repository.RepositoryInterface
+import pawel.hn.coinmarketapp.showLog
 import javax.inject.Inject
 
 @HiltViewModel
-class CoinsViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class CoinsViewModel @Inject constructor( val repository: RepositoryInterface) : ViewModel() {
 
     private val showChecked = MutableLiveData(false)
     val searchQuery = MutableLiveData("")
@@ -26,11 +26,12 @@ class CoinsViewModel @Inject constructor(private val repository: Repository) : V
         }
     }
     private val coinListSearchQuery = Transformations.switchMap(searchQuery) {
-        repository.coinsList(showChecked.value!!, it)
+        repository.getCoinsList(showChecked.value!!, it)
     }
 
     init {
-        getCoinsFromDataBase()
+        showLog("coinsViewmodel init called")
+        refreshData()
         mediatorSource()
     }
 
@@ -43,7 +44,7 @@ class CoinsViewModel @Inject constructor(private val repository: Repository) : V
         }
     }
 
-    fun getCoinsFromDataBase() {
+    fun refreshData() {
         Log.d(TAG, "getCoinsFromDataBase called")
         viewModelScope.launch {
             eventProgressBar.value = true
@@ -52,10 +53,9 @@ class CoinsViewModel @Inject constructor(private val repository: Repository) : V
         }
     }
 
-
     fun coinCheckedBoxClicked(coin: Coin, isChecked: Boolean) {
         viewModelScope.launch {
-            repository.update(coin, isChecked)
+            repository.updateCoin(coin, isChecked)
         }
     }
 
@@ -67,7 +67,7 @@ class CoinsViewModel @Inject constructor(private val repository: Repository) : V
     fun unCheckAll() {
         viewModelScope.launch {
             coinList.value?.forEach {
-                repository.update(it, false)
+                repository.updateCoin(it, false)
             }
         }
     }

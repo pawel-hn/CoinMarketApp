@@ -1,18 +1,16 @@
 package pawel.hn.coinmarketapp.ui.coins
 
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
-import pawel.hn.coinmarketapp.CoinsApplication
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.onQueryTextChanged
+import pawel.hn.coinmarketapp.showLog
 
 
 @AndroidEntryPoint
@@ -33,7 +31,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             coinsRecyclerView.itemAnimator = null
         }
         viewModel.coinList.observe(viewLifecycleOwner) {
-            Log.d(TAG, "list ${it.size}")
+            showLog("coins observer")
             adapter.submitList(it)
         }
         viewModel.eventProgressBar.observe(viewLifecycleOwner) {
@@ -68,8 +66,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_refresh -> {
-                Log.d("PHN", "menu clicked")
-                viewModel.getCoinsFromDataBase()
+                viewModel.refreshData()
             }
             R.id.menu_favourite -> {
                 item.isChecked = !item.isChecked
@@ -87,6 +84,5 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     }
 
     override fun onCoinClicked(coin: Coin) {
-        Log.d(TAG, "$coin")
     }
 }

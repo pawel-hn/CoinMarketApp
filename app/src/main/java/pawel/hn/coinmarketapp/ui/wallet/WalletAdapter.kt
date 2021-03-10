@@ -14,7 +14,6 @@ class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalletViewHolder {
-        Log.d(TAG,"onCreateViewHolder, parent: $parent")
         val binding = ItemCoinWalletBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
         return WalletViewHolder(binding)
@@ -28,7 +27,6 @@ class WalletAdapter
         : RecyclerView.ViewHolder(binding.root){
 
             fun bind(coin: Wallet){
-                Log.d(TAG,"bind: $coin")
                 binding.apply {
                     textViewNamePortfolio.text = coin.name
                     textViewVolume.text = coin.volume
@@ -38,14 +36,13 @@ class WalletAdapter
             }
     }
 
-
     class WalletDiffCallBack : DiffUtil.ItemCallback<Wallet>() {
         override fun areItemsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
             return oldItem.name == newItem.name
         }
 
         override fun areContentsTheSame(oldItem: Wallet, newItem: Wallet): Boolean {
-           return oldItem.name == newItem.name
+           return oldItem == newItem
         }
     }
 }

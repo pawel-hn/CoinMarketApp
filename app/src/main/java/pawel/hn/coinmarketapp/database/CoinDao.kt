@@ -30,7 +30,7 @@ interface CoinDao {
     @Delete(entity = Wallet::class)
     suspend fun deleteFromWallet(coin: Wallet)
 
-    @Update(entity = Wallet::class)
+    @Update(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
     suspend fun updateWallet(coin: Wallet)
 
 

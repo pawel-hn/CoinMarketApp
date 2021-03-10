@@ -1,6 +1,5 @@
 package pawel.hn.coinmarketapp.ui.addeditdialog
 
-
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,6 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
-
 
 @AndroidEntryPoint
 class AddCoinFragmentDialog : DialogFragment() {

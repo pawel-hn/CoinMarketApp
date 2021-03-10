@@ -37,9 +37,11 @@ android {
         dataBinding true
         viewBinding true
     }
+
     testOptions {
         unitTests.returnDefaultValues = true
     }
+
 
     packagingOptions {
         exclude "**/attach_hotspot_windows.dll"
@@ -88,17 +90,23 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-android-compiler:$hilt_version"
 
-    // Testing
+    // Unit Testing
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation "com.google.truth:truth:1.1.2"
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation 'io.mockk:mockk:1.1.6'
+
+    //Instrumental Testing
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
-    testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation "com.google.truth:truth:1.1.2"
-    testImplementation "com.google.truth:truth:1.1.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
+    androidTestImplementation 'io.mockk:mockk:1.1.6'
 
 
 }

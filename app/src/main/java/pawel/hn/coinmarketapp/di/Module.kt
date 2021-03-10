@@ -8,8 +8,10 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pawel.hn.coinmarketapp.api.BASE_URL
 import pawel.hn.coinmarketapp.api.CoinApi
+import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.RepositoryInterface
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -17,7 +19,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-class Module {
+object Module {
 
 
     @Provides
@@ -37,10 +39,11 @@ class Module {
 
     @Provides
     @Singleton
-    fun provideRepository(database: CoinDatabase, coinApi: CoinApi): Repository =
-        Repository(database.coinDao, coinApi)
+    fun provideRepository(database: CoinDatabase, coinApi: CoinApi) =
+        Repository(database.coinDao, coinApi) as RepositoryInterface
 
     @Provides
-    fun provideCoinDao(database: CoinDatabase) = database.coinDao
+    @Singleton
+    fun provideCoinDao(database: CoinDatabase): CoinDao = database.coinDao
 
 }

@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
+import pawel.hn.coinmarketapp.showLog
 
 @AndroidEntryPoint
 class WalletFragment : Fragment(R.layout.fragment_wallet) {
@@ -23,7 +24,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     private val viewModel: WalletViewModel by viewModels()
 
     lateinit var adapter: WalletAdapter
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -38,13 +38,21 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
                 findNavController().navigate(action)
             }
             recyclerViewWallet.adapter = adapter
+            recyclerViewWallet.itemAnimator = null
 
             ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
         viewModel.walletList.observe(viewLifecycleOwner) {
+            showLog("wallet walletList observer called")
             binding.textViewBalance.text = viewModel.calculateTotal()
             adapter.submitList(it)
         }
+
+        viewModel.coinList.observe(viewLifecycleOwner) {
+            showLog("wallet coinList observer called")
+            viewModel.walletRefresh(it)
+        }
+
         viewModel.eventRefresh.observe(viewLifecycleOwner) { event ->
             binding.apply {
                 if (event) {
@@ -68,7 +76,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_wallet_refresh -> {
-                viewModel.walletRefresh()
+                viewModel.refreshData()
             }
         }
         return super.onOptionsItemSelected(item)

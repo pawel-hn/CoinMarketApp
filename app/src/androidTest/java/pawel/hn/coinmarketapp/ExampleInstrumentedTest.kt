@@ -48,7 +48,7 @@ class CoinDatabaseTest {
 
     @Test
     @Throws(Exception::class)
-    suspend fun insertAndGetNight() {
+    suspend fun insertAndGetCoinFromWallet() {
         val coin = Wallet("test","1","2","2")
         coinDao.insertIntoWallet(coin)
         val coinWallet = coinDao.getWallet()
