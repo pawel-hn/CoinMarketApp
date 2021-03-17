@@ -2,14 +2,15 @@ package pawel.hn.coinmarketapp.repository
 
 import android.util.Log
 import androidx.lifecycle.LiveData
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import pawel.hn.coinmarketapp.*
+import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.formatter
+import pawel.hn.coinmarketapp.numberUtil
+import pawel.hn.coinmarketapp.showLog
+import pawel.hn.coinmarketapp.apiResponseConvertToCoin
+
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -19,10 +20,10 @@ class Repository @Inject constructor(
 
     override val coinsRepository = coinDao.getAllCoins("")
     override val coinListChecked = coinDao.getCheckedCoins("")
-    val walletRepository = coinDao.getWallet()
+    override val walletRepository = coinDao.getWallet()
+    override var responseError = true
 
     override suspend fun refreshData() {
-        Log.d(TAG, "repository refreshData called")
         val list = mutableListOf<Coin>()
 
         try {
@@ -30,12 +31,13 @@ class Repository @Inject constructor(
 
             if (response.isSuccessful) {
                 response.body()?.let { coinResponse ->
+                    responseError = false
                     coinResponse.data.forEach {
-                        list.add(it.toCoinsWithCheckBox())
+                        list.add(it.apiResponseConvertToCoin())
                     }
 
                     if (coinsRepository.value.isNullOrEmpty()) {
-                            coinDao.insertAll(list)
+                        coinDao.insertAll(list)
                     } else {
                         val listTemp = coinsRepository.value!!
                         for (i in 0..list.lastIndex) {
@@ -49,10 +51,12 @@ class Repository @Inject constructor(
                     }
                 }
             } else {
+                responseError = true
                 showLog(response.message())
             }
 
         } catch (e: Exception) {
+            responseError = true
             e.printStackTrace()
             showLog("Exception " + e.message)
         }
@@ -74,11 +78,10 @@ class Repository @Inject constructor(
     }
 
     override suspend fun addToWallet(coinName: String, coinVolume: String) {
-        val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0
-        val total = formatterTotal.format(price.toDouble() * coinVolume.toDouble())
-        val priceFormat = formatter.format(price)
+        val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0.0
+        val total = price * coinVolume.toDouble()
         val coin =
-            Wallet(coinName, formatterVolume.format(coinVolume.toDouble()), priceFormat, total)
+            Wallet(coinName, numberUtil.format(coinVolume.toDouble()), price, total)
         Log.d(TAG, coin.toString())
         coinDao.insertIntoWallet(coin)
     }
@@ -90,8 +93,8 @@ class Repository @Inject constructor(
             coin.volume.replace(",", "").toDouble() * newPrice
         coinDao.updateWallet(
             coin.copy(
-                price = formatter.format(newPrice),
-                total = formatterTotal.format(newTotal)
+                price = newPrice,
+                total = newTotal
             )
         )
     }

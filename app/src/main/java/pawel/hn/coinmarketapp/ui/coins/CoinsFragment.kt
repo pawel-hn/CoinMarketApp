@@ -10,16 +10,13 @@ import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.onQueryTextChanged
-import pawel.hn.coinmarketapp.showLog
 
 
 @AndroidEntryPoint
 class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnClick {
 
     private val viewModel: CoinsViewModel by viewModels()
-
     private lateinit var searchView: SearchView
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,19 +28,33 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             coinsRecyclerView.itemAnimator = null
         }
         viewModel.coinList.observe(viewLifecycleOwner) {
-            showLog("coins observer")
-            adapter.submitList(it)
+               adapter.submitList(it)
         }
-        viewModel.eventProgressBar.observe(viewLifecycleOwner) {
-            if (it) {
+
+        viewModel.eventProgressBar.observe(viewLifecycleOwner) { eventProgressBar ->
+            if (eventProgressBar) {
                 binding.apply {
                     coinsRecyclerView.visibility = View.GONE
+                    layoutError.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                 }
             } else {
                 binding.apply {
                     coinsRecyclerView.visibility = View.VISIBLE
                     progressBar.visibility = View.GONE
+                }
+            }
+        }
+        viewModel.eventErrorResponse.observe(viewLifecycleOwner) { errorOccurred ->
+            if (errorOccurred) {
+                binding.apply {
+                    coinsRecyclerView.visibility = View.GONE
+                    layoutError.visibility = View.VISIBLE
+                }
+            } else {
+                binding.apply {
+                    coinsRecyclerView.visibility = View.VISIBLE
+                    layoutError.visibility = View.GONE
                 }
             }
         }

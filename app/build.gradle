@@ -97,7 +97,7 @@ dependencies {
     testImplementation "com.google.truth:truth:1.1.2"
     testImplementation 'androidx.test.ext:junit:1.1.2'
     testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation 'io.mockk:mockk:1.1.6'
+    
 
     //Instrumental Testing
     androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
@@ -106,7 +106,7 @@ dependencies {
     androidTestImplementation "com.google.truth:truth:1.1.2"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.arch.core:core-testing:2.1.0"
-    androidTestImplementation 'io.mockk:mockk:1.1.6'
+
 
 
 }

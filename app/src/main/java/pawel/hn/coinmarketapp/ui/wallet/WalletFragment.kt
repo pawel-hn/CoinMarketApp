@@ -44,7 +44,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         }
         viewModel.walletList.observe(viewLifecycleOwner) {
             showLog("wallet walletList observer called")
-            binding.textViewBalance.text = viewModel.calculateTotal()
+            binding.textViewBalance.text = viewModel.calculateTotal(it)
             adapter.submitList(it)
         }
 

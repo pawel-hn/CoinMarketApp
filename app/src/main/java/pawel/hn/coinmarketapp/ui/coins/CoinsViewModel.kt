@@ -1,22 +1,28 @@
 package pawel.hn.coinmarketapp.ui.coins
 
-import android.util.Log
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.RepositoryInterface
-import pawel.hn.coinmarketapp.showLog
 import javax.inject.Inject
 
 @HiltViewModel
-class CoinsViewModel @Inject constructor( val repository: RepositoryInterface) : ViewModel() {
+class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : ViewModel() {
 
     private val showChecked = MutableLiveData(false)
     val searchQuery = MutableLiveData("")
     val coinList = MediatorLiveData<List<Coin>>()
-    val eventProgressBar = MutableLiveData(false)
+
+    private val _eventErrorResponse = MutableLiveData<Boolean>()
+    val eventErrorResponse: LiveData<Boolean>
+    get() = _eventErrorResponse
+
+
+    private val _eventProgressBar = MutableLiveData(false)
+    val eventProgressBar: LiveData<Boolean>
+    get() = _eventProgressBar
+
 
     private val coinListChecked = Transformations.switchMap(showChecked) {
         if (it) {
@@ -30,7 +36,6 @@ class CoinsViewModel @Inject constructor( val repository: RepositoryInterface) :
     }
 
     init {
-        showLog("coinsViewmodel init called")
         refreshData()
         mediatorSource()
     }
@@ -45,11 +50,11 @@ class CoinsViewModel @Inject constructor( val repository: RepositoryInterface) :
     }
 
     fun refreshData() {
-        Log.d(TAG, "getCoinsFromDataBase called")
         viewModelScope.launch {
-            eventProgressBar.value = true
+            _eventProgressBar.value = true
             repository.refreshData()
-            eventProgressBar.value = false
+            _eventProgressBar.value = false
+           _eventErrorResponse.value = repository.responseError
         }
     }
 
@@ -60,7 +65,6 @@ class CoinsViewModel @Inject constructor( val repository: RepositoryInterface) :
     }
 
     fun showChecked(isChecked: Boolean) {
-        Log.d(TAG, "$isChecked")
         showChecked.value = isChecked
     }
 

@@ -1,14 +1,13 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.databinding.ItemCoinWalletBinding
+import pawel.hn.coinmarketapp.formatter
 
 class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
@@ -30,8 +29,8 @@ class WalletAdapter
                 binding.apply {
                     textViewNamePortfolio.text = coin.name
                     textViewVolume.text = coin.volume
-                    textViewPrice.text = coin.price
-                    textViewTotal.text = coin.total
+                    textViewPrice.text = formatter.format(coin.price)
+                    textViewTotal.text = formatter.format(coin.total)
                 }
             }
     }

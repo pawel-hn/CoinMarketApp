@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
-import pawel.hn.coinmarketapp.formatter
+import pawel.hn.coinmarketapp.numberUtil
 
 class CoinsAdapter(private val listener: CoinsOnClick) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
@@ -52,7 +52,7 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
             binding.apply {
                 textViewName.text = coin.name
                 textViewSymbol.text = coin.symbol
-                textViewUsd.text = formatter.format(coin.price).toString()
+                textViewUsd.text = numberUtil.format(coin.price).toString()
                 checkboxFav.isChecked = coin.favourite
 
                 checkboxFav.setOnClickListener {

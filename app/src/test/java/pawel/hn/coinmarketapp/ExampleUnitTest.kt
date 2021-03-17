@@ -21,9 +21,19 @@ class ExampleUnitTest {
 
     @Test
     fun formatter() {
+        val number = formatter.format(1234.57).replace(",", ".")
 
-        assertThat(formatter.format(1234.567)).matches("1,234.57")
+        assertThat(number).isEqualTo("1 234.57")
     }
+
+    @Test
+    fun numberFormat() {
+        val number = numberUtil.format(12345.6789)
+
+        assertThat(number).isEqualTo("12 345,679")
+    }
+
+
 
     @Test
     fun formatterTotal() {

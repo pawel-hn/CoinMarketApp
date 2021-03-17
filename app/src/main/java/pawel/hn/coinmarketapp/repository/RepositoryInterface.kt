@@ -8,6 +8,8 @@ interface RepositoryInterface {
 
     val coinsRepository: LiveData<List<Coin>>
     val coinListChecked: LiveData<List<Coin>>
+    val walletRepository: LiveData<List<Wallet>>
+    var responseError: Boolean
 
     suspend fun refreshData()
 

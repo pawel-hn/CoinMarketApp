@@ -9,20 +9,20 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.formatterTotal
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.RepositoryInterface
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class WalletViewModel @Inject constructor(private val repository: RepositoryInterface) : ViewModel() {
 
     val walletList = repository.walletRepository
     val coinList = repository.coinsRepository
 
     val eventRefresh = MutableLiveData(false)
 
-    fun calculateTotal(): String {
-        val total = walletList.value!!.sumByDouble {
-            it.total.replace(",", "").toDouble()
+    fun calculateTotal(list: List<Wallet>): String {
+        val total = list.sumByDouble {
+            it.total
         }
         return "${formatterTotal.format(total)} USD"
     }
