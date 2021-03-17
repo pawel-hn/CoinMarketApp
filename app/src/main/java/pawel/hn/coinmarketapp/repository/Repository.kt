@@ -89,12 +89,10 @@ class Repository @Inject constructor(
     override suspend fun deleteFromWallet(coin: Wallet) = coinDao.deleteFromWallet(coin)
 
     override suspend fun updateWallet(coin: Wallet, newPrice: Double) {
-        val newTotal =
-            coin.volume.replace(",", "").toDouble() * newPrice
+        val newTotal = coin.volume.toDouble() * newPrice
+
         coinDao.updateWallet(
-            coin.copy(
-                price = newPrice,
-                total = newTotal
+            coin.copy(price = newPrice, total = newTotal
             )
         )
     }
