@@ -7,7 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.databinding.ItemCoinWalletBinding
-import pawel.hn.coinmarketapp.formatter
+import pawel.hn.coinmarketapp.util.formatter
+import pawel.hn.coinmarketapp.util.numberUtil
 
 class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
@@ -28,7 +29,7 @@ class WalletAdapter
             fun bind(coin: Wallet){
                 binding.apply {
                     textViewNamePortfolio.text = coin.name
-                    textViewVolume.text = coin.volume
+                    textViewVolume.text = numberUtil.format(coin.volume)
                     textViewPrice.text = formatter.format(coin.price)
                     textViewTotal.text = formatter.format(coin.total)
                 }

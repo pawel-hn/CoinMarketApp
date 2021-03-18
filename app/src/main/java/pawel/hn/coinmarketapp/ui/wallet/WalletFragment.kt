@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
-import pawel.hn.coinmarketapp.showLog
+import pawel.hn.coinmarketapp.util.showLog
 
 @AndroidEntryPoint
 class WalletFragment : Fragment(R.layout.fragment_wallet) {
@@ -43,13 +43,11 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
         viewModel.walletList.observe(viewLifecycleOwner) {
-            showLog("wallet walletList observer called")
             binding.textViewBalance.text = viewModel.calculateTotal(it)
             adapter.submitList(it)
         }
 
         viewModel.coinList.observe(viewLifecycleOwner) {
-            showLog("wallet coinList observer called")
             viewModel.walletRefresh(it)
         }
 

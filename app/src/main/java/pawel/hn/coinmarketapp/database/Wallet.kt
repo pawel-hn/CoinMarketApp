@@ -9,7 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Wallet(
     @PrimaryKey val name: String,
-    val volume: String,
+    val volume: Double,
     val price: Double,
     val total: Double
 ): Parcelable

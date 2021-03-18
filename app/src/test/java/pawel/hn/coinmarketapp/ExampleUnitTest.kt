@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import pawel.hn.coinmarketapp.util.numberUtil
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -21,7 +22,7 @@ class ExampleUnitTest {
 
     @Test
     fun formatter() {
-        val number = formatter.format(1234.57).replace(",", ".")
+        val number = pawel.hn.coinmarketapp.util.formatter.format(1234.57).replace(",", ".")
 
         assertThat(number).isEqualTo("1 234.57")
     }
@@ -40,7 +41,7 @@ class ExampleUnitTest {
         val doubleForFormatter = 12345.6789
         val stringExpected = "12,346"
 
-        assertThat(formatterTotal.format(doubleForFormatter)).matches(stringExpected)
+        assertThat(pawel.hn.coinmarketapp.util.formatterTotal.format(doubleForFormatter)).matches(stringExpected)
     }
 
 }

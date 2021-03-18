@@ -11,8 +11,9 @@ import javax.inject.Inject
 class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : ViewModel() {
 
     private val showChecked = MutableLiveData(false)
-    val searchQuery = MutableLiveData("")
-    val coinList = MediatorLiveData<List<Coin>>()
+    private val searchQuery = MutableLiveData("")
+
+    val observableCoinList = MediatorLiveData<List<Coin>>()
 
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean>
@@ -41,11 +42,11 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
     }
 
     private fun mediatorSource() {
-        coinList.addSource(coinListChecked) {
-            coinList.value = it
+        observableCoinList.addSource(coinListChecked) {
+            observableCoinList.value = it
         }
-        coinList.addSource(coinListSearchQuery) {
-            coinList.value = it
+        observableCoinList.addSource(coinListSearchQuery) {
+            observableCoinList.value = it
         }
     }
 
@@ -70,9 +71,13 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
 
     fun unCheckAll() {
         viewModelScope.launch {
-            coinList.value?.forEach {
+            observableCoinList.value?.forEach {
                 repository.updateCoin(it, false)
             }
         }
+    }
+
+    fun searchQuery(query: String) {
+        searchQuery.value = query
     }
 }

@@ -1,6 +1,4 @@
-package pawel.hn.coinmarketapp
-
-
+package pawel.hn.coinmarketapp.util
 
 import android.util.Log
 import androidx.appcompat.widget.SearchView

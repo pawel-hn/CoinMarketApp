@@ -4,22 +4,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.repository.RepositoryInterface
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCoinViewModel @Inject constructor (private val repository: RepositoryInterface) : ViewModel() {
+class AddCoinViewModel @Inject constructor (private val repository: RepositoryInterface)
+    : ViewModel() {
 
-    private val coins = repository.coinsRepository
+    fun createWalletCoin(coinName: String, coinVolume: Double): Wallet {
+        return repository.createWalletCoin(coinName, coinVolume)
+    }
 
-    fun addToWallet(coinName: String, coinVolume: String) {
+    fun addToWallet(walletCoin: Wallet) {
        viewModelScope.launch {
-           repository.addToWallet(coinName, coinVolume)
+           repository.addToWallet(walletCoin)
        }
     }
 
     fun coinsNamesList(): Array<String> {
-        val list = Array(coins.value!!.size){coins.value!![it].name}
+        val list = Array(repository.coinsRepository.value!!.size){
+            repository.coinsRepository.value!![it].name
+        }
         list.sort()
 
         return list

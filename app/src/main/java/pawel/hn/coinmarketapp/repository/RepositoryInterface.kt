@@ -17,12 +17,12 @@ interface RepositoryInterface {
 
     fun getCoinsList(isChecked: Boolean, searchQuery: String): LiveData<List<Coin>>
 
-    suspend fun addToWallet(coinName: String, coinVolume: String)
+    suspend fun addToWallet(coinWallet: Wallet)
 
     suspend fun deleteFromWallet(coin: Wallet)
 
     suspend fun updateWallet(coin: Wallet, newPrice: Double)
 
-    fun getWallet(): LiveData<List<Wallet>>
+    fun createWalletCoin (coinName: String, coinVolume: Double): Wallet
 
 }

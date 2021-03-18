@@ -28,7 +28,7 @@ class WalletViewModelTest {
     }
 
     @Test
-    fun `test total balance`(){
+    fun `test calculate total balance`(){
         val total = viewModel.calculateTotal(walletList)
         assertThat(total).isEqualTo("15 USD")
     }

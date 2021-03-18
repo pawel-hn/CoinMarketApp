@@ -9,7 +9,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
-import pawel.hn.coinmarketapp.onQueryTextChanged
+import pawel.hn.coinmarketapp.util.onQueryTextChanged
 
 
 @AndroidEntryPoint
@@ -27,7 +27,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             coinsRecyclerView.adapter = adapter
             coinsRecyclerView.itemAnimator = null
         }
-        viewModel.coinList.observe(viewLifecycleOwner) {
+        viewModel.observableCoinList.observe(viewLifecycleOwner) {
                adapter.submitList(it)
         }
 
@@ -69,7 +69,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
         val searchItem = menu.findItem(R.id.action_search)
         searchView = searchItem.actionView as SearchView
         searchView.onQueryTextChanged {
-            viewModel.searchQuery.value = it
+            viewModel.searchQuery(it)
         }
         searchView.clearFocus()
     }

@@ -19,7 +19,7 @@ class AddCoinFragmentDialog : DialogFragment() {
 
     private lateinit var binding: FragmentDialogAddEditBinding
     private var coinName: String = ""
-    private var coinVolume: String = ""
+    private var coinVolume: Double = 0.0
 
     private val viewModel: AddCoinViewModel by viewModels()
 
@@ -47,8 +47,9 @@ class AddCoinFragmentDialog : DialogFragment() {
                     Toast.makeText(requireContext(), R.string.dialog_error, Toast.LENGTH_SHORT)
                         .show()
                 } else {
-                    coinVolume = editTextVolume.text.toString()
-                    viewModel.addToWallet(coinName,coinVolume)
+                    coinVolume = editTextVolume.text.toString().toDouble()
+                    val coinWallet = viewModel.createWalletCoin(coinName,coinVolume)
+                    viewModel.addToWallet(coinWallet)
                     dismiss()
                 }
             }

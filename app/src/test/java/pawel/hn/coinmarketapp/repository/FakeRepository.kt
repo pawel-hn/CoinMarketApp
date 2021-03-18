@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.util.numberUtil
 
 class FakeRepository : RepositoryInterface {
 
@@ -11,14 +12,17 @@ class FakeRepository : RepositoryInterface {
         false, 1.0, 0.1)
     private val testCoin2 = Coin(2, "testCoin2", "T2",
         false, 0.5, 0.1)
-    private val coinsList = mutableListOf<Coin>()
+    private val testCoin3 = Coin(3, "testCoin3", "T3",
+        false, 2.0, 0.1)
+
+    private val coinsList = mutableListOf(testCoin1, testCoin2, testCoin3)
     private val observableCoins = MutableLiveData<List<Coin>>(coinsList)
 
     override var responseError = false
 
-    private val testWallet1 = Wallet("testWallet1", "4.0", 2.5, 10.0 )
-    private val testWallet2 = Wallet("testWallet2", "1.0", 5.0, 5.0 )
-    private val walletList = mutableListOf<Wallet>(testWallet1, testWallet2)
+    private val testWallet1 = Wallet("testCoin1", "4.0", 1.0, 10.0 )
+    private val testWallet2 = Wallet("testCoin1", "1.0", 0.5, 5.0 )
+    private val walletList = mutableListOf(testWallet1, testWallet2)
     private val observableWallet = MutableLiveData<List<Wallet>>(walletList)
 
     override val coinsRepository: LiveData<List<Coin>>
@@ -48,8 +52,15 @@ class FakeRepository : RepositoryInterface {
         return observableCoins
     }
 
-    override suspend fun addToWallet(coinName: String, coinVolume: String) {
-        TODO("Not yet implemented")
+    override suspend fun addToWallet(coinWallet: Wallet) {
+        walletList.add(coinWallet)
+    }
+
+    override fun createWalletCoin(coinName: String, coinVolume: String): Wallet {
+        val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0.0
+        val total = price * coinVolume.toDouble()
+
+        return Wallet(coinName, numberUtil.format(coinVolume.toDouble()), price, total)
     }
 
     override suspend fun deleteFromWallet(coin: Wallet) {
@@ -60,7 +71,4 @@ class FakeRepository : RepositoryInterface {
         TODO("Not yet implemented")
     }
 
-    override fun getWallet(): LiveData<List<Wallet>> {
-        TODO("Not yet implemented")
-    }
 }

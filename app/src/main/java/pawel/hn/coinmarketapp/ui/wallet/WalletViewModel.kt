@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
 
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,7 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.formatterTotal
+import pawel.hn.coinmarketapp.util.formatterTotal
 import pawel.hn.coinmarketapp.repository.RepositoryInterface
 import javax.inject.Inject
 
@@ -18,7 +19,9 @@ class WalletViewModel @Inject constructor(private val repository: RepositoryInte
     val walletList = repository.walletRepository
     val coinList = repository.coinsRepository
 
-    val eventRefresh = MutableLiveData(false)
+    private val _eventRefresh = MutableLiveData(false)
+    val eventRefresh: LiveData<Boolean>
+    get() = _eventRefresh
 
     fun calculateTotal(list: List<Wallet>): String {
         val total = list.sumByDouble {
@@ -32,18 +35,18 @@ class WalletViewModel @Inject constructor(private val repository: RepositoryInte
     }
 
     fun refreshData() = viewModelScope.launch {
-        eventRefresh.value = true
+        _eventRefresh.value = true
         repository.refreshData()
-        eventRefresh.value = false
+        _eventRefresh.value = false
     }
 
      fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
 
-        val listTemp = list.filter { c ->
-            c.name == walletList.value?.find { it.name == c.name }?.name
+        val listTemp = list.filter { coin ->
+            coin.name == walletList.value?.find { it.name == coin.name }?.name
         }
         if (listTemp.isNullOrEmpty()) {
-            eventRefresh.value = false
+            _eventRefresh.value = false
             return@launch
         }
         walletList.value!!.forEach { coin ->

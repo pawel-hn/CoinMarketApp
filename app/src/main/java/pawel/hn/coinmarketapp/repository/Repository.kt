@@ -1,16 +1,13 @@
 package pawel.hn.coinmarketapp.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
-import pawel.hn.coinmarketapp.TAG
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.numberUtil
-import pawel.hn.coinmarketapp.showLog
-import pawel.hn.coinmarketapp.apiResponseConvertToCoin
-
+import pawel.hn.coinmarketapp.util.apiResponseConvertToCoin
+import pawel.hn.coinmarketapp.util.numberUtil
+import pawel.hn.coinmarketapp.util.showLog
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -67,7 +64,6 @@ class Repository @Inject constructor(
     }
 
     override fun getCoinsList(isChecked: Boolean, searchQuery: String): LiveData<List<Coin>> {
-        Log.d(TAG, " repository getCoinsList called")
         synchronized(this) {
             return if (isChecked) {
                 coinDao.getCheckedCoins(searchQuery)
@@ -77,14 +73,14 @@ class Repository @Inject constructor(
         }
     }
 
-    override suspend fun addToWallet(coinName: String, coinVolume: String) {
+    override fun createWalletCoin(coinName: String, coinVolume: Double): Wallet {
         val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0.0
-        val total = price * coinVolume.toDouble()
-        val coin =
-            Wallet(coinName, numberUtil.format(coinVolume.toDouble()), price, total)
-        Log.d(TAG, coin.toString())
-        coinDao.insertIntoWallet(coin)
+        val total = price * coinVolume
+
+        return Wallet(coinName, coinVolume, price, total)
     }
+
+    override suspend fun addToWallet(coinWallet: Wallet) = coinDao.insertIntoWallet(coinWallet)
 
     override suspend fun deleteFromWallet(coin: Wallet) = coinDao.deleteFromWallet(coin)
 
@@ -96,6 +92,4 @@ class Repository @Inject constructor(
             )
         )
     }
-
-    override fun getWallet(): LiveData<List<Wallet>> = coinDao.getWallet()
 }

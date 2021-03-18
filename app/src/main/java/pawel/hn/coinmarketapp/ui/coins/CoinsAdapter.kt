@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
-import pawel.hn.coinmarketapp.numberUtil
+import pawel.hn.coinmarketapp.util.numberUtil
 
 class CoinsAdapter(private val listener: CoinsOnClick) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
