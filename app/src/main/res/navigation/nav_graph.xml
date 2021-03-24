@@ -23,4 +23,8 @@
         android:id="@+id/addCoinFragmentDialog"
         android:name="pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialog"
         android:label="AddCoinFragmentDialog" />
+    <fragment
+        android:id="@+id/priceNotifyFragment"
+        android:name="pawel.hn.coinmarketapp.ui.pricenotify.PriceNotifyFragment"
+        android:label="PriceNotifyFragment" />
 </navigation>

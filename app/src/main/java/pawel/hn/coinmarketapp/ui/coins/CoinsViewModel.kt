@@ -17,12 +17,12 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
 
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean>
-    get() = _eventErrorResponse
+        get() = _eventErrorResponse
 
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean>
-    get() = _eventProgressBar
+        get() = _eventProgressBar
 
 
     private val coinListChecked = Transformations.switchMap(showChecked) {
@@ -41,6 +41,12 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
         mediatorSource()
     }
 
+    private fun singleQuote() {
+        viewModelScope.launch {
+            repository.getSingleQuote("1,1027")
+        }
+    }
+
     private fun mediatorSource() {
         observableCoinList.addSource(coinListChecked) {
             observableCoinList.value = it
@@ -55,7 +61,7 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
             _eventProgressBar.value = true
             repository.refreshData()
             _eventProgressBar.value = false
-           _eventErrorResponse.value = repository.responseError
+            _eventErrorResponse.value = repository.responseError
         }
     }
 

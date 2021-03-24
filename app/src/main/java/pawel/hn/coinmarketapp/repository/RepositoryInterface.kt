@@ -11,6 +11,8 @@ interface RepositoryInterface {
     val walletRepository: LiveData<List<Wallet>>
     var responseError: Boolean
 
+    suspend fun getSingleQuote(coinIds: String)
+
     suspend fun refreshData()
 
     suspend fun updateCoin(coin: Coin, isChecked: Boolean)

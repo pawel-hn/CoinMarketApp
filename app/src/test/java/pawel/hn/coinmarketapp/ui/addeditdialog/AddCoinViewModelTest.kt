@@ -30,18 +30,26 @@ class AddCoinViewModelTest {
 
     @Test
     fun `test creating coin Wallet`() {
-        val coinCreate = viewModel.createWalletCoin("testCoin3","2")
-        val coinExpected = Wallet("testCoin3", "2", 2.0, 4.0  )
+        val coinCreate = viewModel.createWalletCoin("testCoin3",2.0)
+        val coinExpected = Wallet("testCoin3", 2.0, 2.0, 4.0  )
 
         assertThat(coinCreate).isEqualTo(coinExpected)
     }
 
     @Test
     fun `test inserting and getting coin from Wallet`() {
-        val coinWallet = Wallet("testCoin4", "3", 2.0, 6.0  )
+        val coinWallet = Wallet("testCoin4", 3.0, 2.0, 6.0  )
         viewModel.addToWallet(coinWallet)
 
         assertThat(repository.walletRepository.value).contains(coinWallet)
+    }
+
+    @Test
+    fun `test inserting without name return error`() {
+        val coinWallet = Wallet("", 3.0, 2.0, 6.0  )
+        viewModel.addToWallet(coinWallet)
+
+        assertThat(repository.walletRepository.value).doesNotContain(coinWallet)
     }
 
     @Test

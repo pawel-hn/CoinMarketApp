@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.util.numberUtil
+
 
 class FakeRepository : RepositoryInterface {
 
@@ -20,8 +20,10 @@ class FakeRepository : RepositoryInterface {
 
     override var responseError = false
 
-    private val testWallet1 = Wallet("testCoin1", "4.0", 1.0, 10.0 )
-    private val testWallet2 = Wallet("testCoin1", "1.0", 0.5, 5.0 )
+
+
+    private val testWallet1 = Wallet("testCoin1", 4.0, 1.0, 10.0 )
+    private val testWallet2 = Wallet("testCoin2", 1.0, 0.5, 5.0 )
     private val walletList = mutableListOf(testWallet1, testWallet2)
     private val observableWallet = MutableLiveData<List<Wallet>>(walletList)
 
@@ -56,11 +58,11 @@ class FakeRepository : RepositoryInterface {
         walletList.add(coinWallet)
     }
 
-    override fun createWalletCoin(coinName: String, coinVolume: String): Wallet {
+    override fun createWalletCoin(coinName: String, coinVolume: Double): Wallet {
         val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0.0
-        val total = price * coinVolume.toDouble()
+        val total = price * coinVolume
 
-        return Wallet(coinName, numberUtil.format(coinVolume.toDouble()), price, total)
+        return Wallet(coinName, coinVolume, price, total)
     }
 
     override suspend fun deleteFromWallet(coin: Wallet) {

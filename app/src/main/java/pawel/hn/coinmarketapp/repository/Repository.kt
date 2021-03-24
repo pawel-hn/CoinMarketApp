@@ -5,9 +5,7 @@ import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.util.apiResponseConvertToCoin
-import pawel.hn.coinmarketapp.util.numberUtil
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.*
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -20,11 +18,31 @@ class Repository @Inject constructor(
     override val walletRepository = coinDao.getWallet()
     override var responseError = true
 
+
+    override suspend fun getSingleQuote(coinIds: String) {
+        try {
+            val response = coinApi.getLatestSingleQuote(coinIds)
+
+            if (response.isSuccessful){
+                showLog("singleQuote: ${response.body()}")
+            } else {
+                showLog("response: not successful ${response.message()}")
+                    }
+        } catch (e: java.lang.Exception){
+            e.printStackTrace()
+            showLog("Exception " + e.message)
+        }
+
+    }
+
     override suspend fun refreshData() {
         val list = mutableListOf<Coin>()
 
         try {
-            val response = coinApi.getLatestQuotes(1, 100, "USD")
+            val response = coinApi.getLatestQuotes(
+                API_QUERY_START,
+                API_QUERY_LIMIT,
+                API_QUERY_CCY_CONVERT)
 
             if (response.isSuccessful) {
                 response.body()?.let { coinResponse ->
