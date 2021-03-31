@@ -33,6 +33,17 @@ interface CoinDao {
     @Update(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
     suspend fun updateWallet(coin: Wallet)
 
+    @Query("SELECT * FROM notifications_table")
+    fun getNotifications(): LiveData<List<Notifications>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Notifications::class)
+    suspend fun insertNotification(notifications: Notifications)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE, entity = Notifications::class)
+    fun updateNotification(notifications: Notifications)
+
+    @Query("DELETE FROM notifications_table")
+    suspend fun deleteNotification()
 
 
 }

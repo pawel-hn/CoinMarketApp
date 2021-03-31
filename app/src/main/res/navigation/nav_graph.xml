@@ -26,5 +26,5 @@
     <fragment
         android:id="@+id/priceNotifyFragment"
         android:name="pawel.hn.coinmarketapp.ui.pricenotify.PriceNotifyFragment"
-        android:label="PriceNotifyFragment" />
+        android:label="@string/notification" />
 </navigation>

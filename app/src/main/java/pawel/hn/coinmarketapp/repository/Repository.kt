@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.CoinDao
+import pawel.hn.coinmarketapp.database.Notifications
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.util.*
+import java.util.*
 import javax.inject.Inject
 
 class Repository @Inject constructor(
@@ -16,24 +18,9 @@ class Repository @Inject constructor(
     override val coinsRepository = coinDao.getAllCoins("")
     override val coinListChecked = coinDao.getCheckedCoins("")
     override val walletRepository = coinDao.getWallet()
+    override val notifications = coinDao.getNotifications()
     override var responseError = true
 
-
-    override suspend fun getSingleQuote(coinIds: String) {
-        try {
-            val response = coinApi.getLatestSingleQuote(coinIds)
-
-            if (response.isSuccessful){
-                showLog("singleQuote: ${response.body()}")
-            } else {
-                showLog("response: not successful ${response.message()}")
-                    }
-        } catch (e: java.lang.Exception){
-            e.printStackTrace()
-            showLog("Exception " + e.message)
-        }
-
-    }
 
     override suspend fun refreshData() {
         val list = mutableListOf<Coin>()
@@ -42,7 +29,8 @@ class Repository @Inject constructor(
             val response = coinApi.getLatestQuotes(
                 API_QUERY_START,
                 API_QUERY_LIMIT,
-                API_QUERY_CCY_CONVERT)
+                API_QUERY_CCY_CONVERT
+            )
 
             if (response.isSuccessful) {
                 response.body()?.let { coinResponse ->
@@ -103,11 +91,63 @@ class Repository @Inject constructor(
     override suspend fun deleteFromWallet(coin: Wallet) = coinDao.deleteFromWallet(coin)
 
     override suspend fun updateWallet(coin: Wallet, newPrice: Double) {
-        val newTotal = coin.volume.toDouble() * newPrice
+        val newTotal = coin.volume * newPrice
 
         coinDao.updateWallet(
-            coin.copy(price = newPrice, total = newTotal
+            coin.copy(
+                price = newPrice, total = newTotal
             )
         )
+    }
+
+    override suspend fun insertNotifications(notifications: Notifications) {
+        coinDao.insertNotification(notifications)
+    }
+
+    override suspend fun getLatestBitcoinPrice(): Double? {
+        var newPrice: Double? = null
+       try {
+           val response = coinApi.getLatestSingleQuote("1")
+           if (response.isSuccessful) {
+               response.body()?.let { apiResponse ->
+                   newPrice = apiResponse.data[1]!!.quote.USD.price
+               }
+           }
+       } catch (e: Exception) {
+           showLog("Exception btc price: ${e.message}")
+       }
+
+        return newPrice
+    }
+
+    override suspend fun getSingleQuote(): Double? {
+
+        try {
+            val response = coinApi.getLatestSingleQuote("1")
+
+            if (response.isSuccessful) {
+                showLog("singleQuote: ${response.body()}")
+                response.body()?.let { it ->
+
+                    return it.data[1]!!.quote.USD.price
+                }
+            } else {
+                showLog("response: not successful ${response.message()}")
+                return null
+            }
+        } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            showLog("Exception " + e.message)
+            return null
+        }
+        return null
+    }
+
+    override suspend fun updateNotifications(id: UUID, send: Boolean) {
+        coinDao.updateNotification(Notifications(id.toString(), send))
+    }
+
+    override suspend fun deleteNotification(id: String) {
+        coinDao.deleteNotification()
     }
 }

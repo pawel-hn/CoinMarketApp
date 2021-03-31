@@ -37,15 +37,10 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
     }
 
     init {
-        refreshData()
-        mediatorSource()
+      //  refreshData()
+      //  mediatorSource()
     }
 
-    private fun singleQuote() {
-        viewModelScope.launch {
-            repository.getSingleQuote("1,1027")
-        }
-    }
 
     private fun mediatorSource() {
         observableCoinList.addSource(coinListChecked) {

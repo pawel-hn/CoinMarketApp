@@ -12,4 +12,8 @@ data class Wallet(
     val volume: Double,
     val price: Double,
     val total: Double
-): Parcelable
+) : Parcelable
+
+
+
+

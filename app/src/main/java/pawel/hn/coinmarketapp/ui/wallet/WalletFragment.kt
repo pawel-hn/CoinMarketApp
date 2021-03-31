@@ -24,11 +24,12 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     private val viewModel: WalletViewModel by viewModels()
 
     lateinit var adapter: WalletAdapter
+    lateinit var binding: FragmentWalletBinding
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binding = FragmentWalletBinding.bind(view)
+        binding = FragmentWalletBinding.bind(view)
         adapter = WalletAdapter()
 
         binding.apply {
@@ -42,6 +43,26 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
             ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
+
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_wallet, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_wallet_refresh -> {
+                viewModel.refreshData()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+
+    private fun subscribeToObservers() {
         viewModel.walletList.observe(viewLifecycleOwner) {
             binding.textViewBalance.text = viewModel.calculateTotal(it)
             adapter.submitList(it)
@@ -63,21 +84,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             }
 
         }
-        setHasOptionsMenu(true)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_wallet, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_wallet_refresh -> {
-                viewModel.refreshData()
-            }
-        }
-        return super.onOptionsItemSelected(item)
     }
 
     private val swipe = object : ItemTouchHelper

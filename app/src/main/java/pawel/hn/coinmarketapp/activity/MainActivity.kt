@@ -36,7 +36,6 @@ class MainActivity : AppCompatActivity() {
             .setOpenableLayout(drawerLayout)
             .build()
 
-
         val navController = this.findNavController(R.id.nav_host_fragment_container)
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)

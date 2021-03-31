@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="cardBackground">#F2F2F2</color>
     <color name="checkboxBackground">#FFACAAAA</color>
+    <color name="snackBarBackground">#838181</color>
 </resources>

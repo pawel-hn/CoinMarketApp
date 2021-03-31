@@ -1,5 +1,7 @@
 package pawel.hn.coinmarketapp.util
 
+
+const val TAG = "PHN"
 const val API_QUERY_START = 1
 const val API_QUERY_LIMIT = 100
 const val API_QUERY_CCY_CONVERT = "USD"
@@ -12,3 +14,11 @@ const val WORKER_CHECK = "coinsCheck"
 
 const val CHANNEL_ID = "channeld"
 const val CHANNEL_NAME = "channelName"
+
+const val PRICE_ALERT = "priceAlert"
+
+const val SAVE_SWITCH_ON_OFF = "notificationSwitch"
+const val SAVE_CURRENT_PRICE_ALERT = "currentPriceAlert"
+
+const val PRICE_ALERT_INPUT = "priceAlertInput"
+const val PRICE_ALERT_NOTIFY_OUTPUT = "priceAlertOutput"

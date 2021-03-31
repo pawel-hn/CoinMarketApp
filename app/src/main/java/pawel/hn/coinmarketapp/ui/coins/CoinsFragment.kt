@@ -17,18 +17,27 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
     private val viewModel: CoinsViewModel by viewModels()
     private lateinit var searchView: SearchView
+    private lateinit var binding: FragmentCoinsBinding
+    private lateinit var adapter: CoinsAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
-        val adapter = CoinsAdapter(this@CoinsFragment)
-        val binding = FragmentCoinsBinding.inflate(inflater, container, false)
+        adapter = CoinsAdapter(this@CoinsFragment)
+        binding = FragmentCoinsBinding.inflate(inflater, container, false)
         binding.apply {
             coinsRecyclerView.adapter = adapter
             coinsRecyclerView.itemAnimator = null
         }
+        subscribeToObservers()
+        setHasOptionsMenu(true)
+        return binding.root
+    }
+
+
+    private fun subscribeToObservers() {
         viewModel.observableCoinList.observe(viewLifecycleOwner) {
-               adapter.submitList(it)
+            adapter.submitList(it)
         }
 
         viewModel.eventProgressBar.observe(viewLifecycleOwner) { eventProgressBar ->
@@ -58,9 +67,6 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
                 }
             }
         }
-
-        setHasOptionsMenu(true)
-        return binding.root
     }
 
 

@@ -25,4 +25,10 @@
     <string name="cancel">Cancel</string>
     <string name="error_occurred">Connection problem :(</string>
     <string name="price_change_alert">Price Change Alert</string>
+    <string name="notification_on">ON</string>
+    <string name="notification_off">OFF</string>
+    <string name="bitcoin_price_alert">Bitcoin price alert</string>
+    <string name="notification">Price notification</string>
+    <string name="price_notification">Below enter the price when Bitcoin reach,\n
+        you would like to be notified.</string>
 </resources>

@@ -24,6 +24,7 @@
         </activity>
 
         <activity android:name=".activity.MainActivity"
+            android:windowSoftInputMode="adjustPan"
             android:theme="@style/Theme.CoinMarketApp"/>
 
         <provider

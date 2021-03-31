@@ -12,6 +12,7 @@ import retrofit2.http.Query
 
 
 interface CoinApi {
+
     @Headers("$API_HEADER $API_KEY", "Accept: application/json")
     @GET("v1/cryptocurrency/listings/latest")
     suspend fun getLatestQuotes(
