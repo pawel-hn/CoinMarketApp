@@ -79,11 +79,11 @@ class Repository @Inject constructor(
         }
     }
 
-    override fun createWalletCoin(coinName: String, coinVolume: Double): Wallet {
+    override fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
         val price = coinsRepository.value?.find { it.name == coinName }?.price ?: 0.0
         val total = price * coinVolume
 
-        return Wallet(coinName, coinVolume, price, total)
+        return Wallet(name = coinName, volume =  coinVolume, price =  price, total =  total, walletNo =  walletNo)
     }
 
     override suspend fun addToWallet(coinWallet: Wallet) = coinDao.insertIntoWallet(coinWallet)

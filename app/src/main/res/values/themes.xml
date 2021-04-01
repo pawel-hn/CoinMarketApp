@@ -34,5 +34,13 @@
         <item name="android:windowBackground">@drawable/splash_screen_background</item>
     </style>
 
+    <style name="MainListItems">
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:textAlignment">textStart</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:lines">1</item>
+    </style>
+
 </resources>
 

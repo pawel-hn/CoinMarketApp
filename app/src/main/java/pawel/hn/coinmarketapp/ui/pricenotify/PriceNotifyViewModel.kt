@@ -47,7 +47,6 @@ class PriceNotifyViewModel @Inject constructor(
             workManager.enqueueUniquePeriodicWork(PRICE_ALERT,
                 ExistingPeriodicWorkPolicy.REPLACE, workRequest)
             val notification = Notifications(workRequest.id.toString(), false)
-            showLog(workRequest.id.toString())
             viewModelScope.launch {
                 repository.insertNotifications(notification)
                 showLog("noti: ${notifications.value?.size}")
@@ -58,25 +57,11 @@ class PriceNotifyViewModel @Inject constructor(
     }
 
 
-    private fun setDataForWorker(msg: Double): Data {
-        showLog("viewModel setDataForWorker")
-        return Data.Builder().putDouble(PRICE_ALERT_INPUT, msg).build()
-    }
-
     private fun setUpWorkManager(context: Context) {
         showLog("viewModel setUpWorkManager")
         workManager = WorkManager.getInstance(context)
     }
 
-
-    private fun getLatestPrice() {
-        viewModelScope.launch {
-            val price = repository.getLatestBitcoinPrice()
-            price?.let {
-                _latestPrice.postValue(it.toString())
-            }
-        }
-    }
 
     fun setPriceAlert(priceAlert: Double) {
         showLog("viewModel setPriceAlert")
@@ -97,6 +82,15 @@ class PriceNotifyViewModel @Inject constructor(
 
     }
 
+    private fun getLatestPrice() {
+        viewModelScope.launch {
+            val price = repository.getLatestBitcoinPrice()
+            price?.let {
+                _latestPrice.postValue(it.toString())
+            }
+        }
+    }
+
     fun setNotificationOn() {
         _notificationOnOff.postValue(true)
     }
@@ -105,8 +99,7 @@ class PriceNotifyViewModel @Inject constructor(
         _notificationOnOff.postValue(false)
     }
 
-    fun workLog() {
-        showLog(workManager.getWorkInfoById(workRequest.id).toString())
+    private fun setDataForWorker(msg: Double): Data {
+        return Data.Builder().putDouble(PRICE_ALERT_INPUT, msg).build()
     }
-
 }

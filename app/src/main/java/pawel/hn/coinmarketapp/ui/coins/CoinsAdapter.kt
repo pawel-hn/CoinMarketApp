@@ -1,16 +1,19 @@
 package pawel.hn.coinmarketapp.ui.coins
 
 import android.graphics.Color
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import pawel.hn.coinmarketapp.R
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
-import pawel.hn.coinmarketapp.util.numberUtil
+import pawel.hn.coinmarketapp.util.*
 
 class CoinsAdapter(private val listener: CoinsOnClick) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
@@ -41,12 +44,8 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
         }
 
         fun bind(coin: Coin) {
-            val percentage = coin.change24h.toString()
-            val percentageForView = if (percentage.substring(percentage.indexOf('.')).length > 2) {
-                percentage.substring(0, percentage.indexOf('.') + 3)
-            } else {
-                percentage
-            }
+            val change7d = formatPriceChange(coin.change7d)
+            val change24h = formatPriceChange(coin.change24h)
 
 
             binding.apply {
@@ -61,18 +60,22 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
                     }
                 }
 
-                if (coin.change24h < 0.00) {
-                    textView24hChange.setTextColor(Color.RED)
-                } else {
-                    textView24hChange
-                        .setTextColor(
-                            ContextCompat.getColor(
-                                binding.root.context, R.color.design_default_color_primary_variant
-                            )
-                        )
-                }
-                textView24hChange.text = "$percentageForView %"
+                setPriceChangeColor(textView24hChange, coin.change24h)
+                setPriceChangeColor(textView7dChange, coin.change7d)
 
+                textView24hChange.text = change24h
+                textView7dChange.text = change7d
+
+                val imageUri = Uri.parse(LOGO_URL).buildUpon()
+                    .appendPath(LOGO_SIZE_PX)
+                    .appendPath(coin.coinId.toString() + LOGO_FILE_TYPE)
+                    .build()
+
+                Glide.with(itemView)
+                    .load(imageUri)
+                    .centerCrop()
+                    .transform(CircleCrop())
+                    .into(coinLogo)
             }
         }
     }

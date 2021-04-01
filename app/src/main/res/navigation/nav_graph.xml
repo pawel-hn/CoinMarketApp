@@ -14,17 +14,24 @@
         android:id="@+id/walletFragment"
         android:name="pawel.hn.coinmarketapp.ui.wallet.WalletFragment"
         android:label="Wallet"
-        tools:layout="@layout/fragment_wallet">
-        <action
-            android:id="@+id/action_walletFragment_to_addCoinFragmentDialog"
-            app:destination="@id/addCoinFragmentDialog" />
-    </fragment>
+        tools:layout="@layout/fragment_wallet"/>
     <dialog
         android:id="@+id/addCoinFragmentDialog"
         android:name="pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialog"
-        android:label="AddCoinFragmentDialog" />
+        android:label="AddCoinFragmentDialog" >
+        <argument
+            android:name="walletNumber"
+            app:argType="integer" />
+    </dialog>
     <fragment
         android:id="@+id/priceNotifyFragment"
         android:name="pawel.hn.coinmarketapp.ui.pricenotify.PriceNotifyFragment"
         android:label="@string/notification" />
+    <fragment
+        android:id="@+id/walletsFragment"
+        android:name="pawel.hn.coinmarketapp.ui.wallet.WalletPagerFragment"
+        android:label="WalletPagerFragment" />
+
+    <action android:id="@+id/action_global_addCoinFragmentDialog"
+        app:destination="@id/addCoinFragmentDialog" />
 </navigation>

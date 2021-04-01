@@ -31,4 +31,5 @@
     <string name="notification">Price notification</string>
     <string name="price_notification">Below enter the price when Bitcoin reach,\n
         you would like to be notified.</string>
+    <string name="coin_logo">coin logo</string>
 </resources>

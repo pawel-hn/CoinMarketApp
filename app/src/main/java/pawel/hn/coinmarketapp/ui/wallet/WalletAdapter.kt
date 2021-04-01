@@ -9,6 +9,7 @@ import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.databinding.ItemCoinWalletBinding
 import pawel.hn.coinmarketapp.util.formatter
 import pawel.hn.coinmarketapp.util.numberUtil
+import pawel.hn.coinmarketapp.util.showLog
 
 class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
@@ -32,6 +33,12 @@ class WalletAdapter
                     textViewVolume.text = numberUtil.format(coin.volume)
                     textViewPrice.text = formatter.format(coin.price)
                     textViewTotal.text = formatter.format(coin.total)
+
+                    root.setOnClickListener {
+                        showLog(coin.toString())
+                    }
+
+
                 }
             }
     }

@@ -37,8 +37,8 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
     }
 
     init {
-      //  refreshData()
-      //  mediatorSource()
+        refreshData()
+        mediatorSource()
     }
 
 

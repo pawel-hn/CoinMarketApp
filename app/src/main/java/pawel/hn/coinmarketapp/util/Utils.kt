@@ -2,9 +2,11 @@ package pawel.hn.coinmarketapp.util
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
@@ -27,7 +29,8 @@ fun Data.apiResponseConvertToCoin() = Coin(
     symbol = this.symbol,
     favourite = false,
     price = this.quote.USD.price,
-    change24h = this.quote.USD.percentChange24h
+    change24h = this.quote.USD.percentChange24h,
+    change7d = this.quote.USD.percentChange7d
 )
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
@@ -62,6 +65,26 @@ fun SharedPreferences.put(action: SharedPreferences.Editor.() -> Unit) {
 fun hideKeyboard(view: View) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     imm.hideSoftInputFromWindow(view.windowToken, 0)
+}
+
+fun formatPriceChange(price: Double): String {
+    val priceString  = price.toString()
+
+    return if (priceString.substring(priceString.indexOf('.')).length > 2) {
+        priceString.substring(0, priceString.indexOf('.') + 3) + " %"
+    } else {
+        "$priceString %"
+    }
+}
+
+fun setPriceChangeColor(view: TextView, change: Double) {
+    if (change < 0.00) {
+        view.setTextColor(Color.RED)
+    } else {
+        view
+            .setTextColor(ContextCompat.getColor(
+                view.context, R.color.design_default_color_primary_variant
+            ))}
 }
 
 

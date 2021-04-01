@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
+import pawel.hn.coinmarketapp.util.showLog
 
 @AndroidEntryPoint
 class AddCoinFragmentDialog : DialogFragment() {
@@ -25,19 +26,23 @@ class AddCoinFragmentDialog : DialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View{
+    ): View {
         binding = FragmentDialogAddEditBinding.inflate(inflater, container, false)
         dialog!!.window!!.setBackgroundDrawableResource(R.drawable.dialog_round_corners)
 
-        val adapter = ArrayAdapter(
+        val walletNo = AddCoinFragmentDialogArgs.fromBundle(requireArguments()).walletNumber
+
+        val spinnerAdapter = ArrayAdapter(
             requireContext(), android.R.layout.simple_spinner_dropdown_item,
             viewModel.coinsNamesList()
         ).apply { setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item) }
 
         binding.apply {
 
-            spinnerDialogSearch.adapter = adapter
-            spinnerDialogSearch.onItemSelectedListener = spinnerCoinSelected
+            spinnerDialogSearch.apply {
+                adapter = spinnerAdapter
+                onItemSelectedListener = spinnerCoinSelected
+            }
 
             btnDialogCancel.setOnClickListener {
                 dismiss()
@@ -48,7 +53,7 @@ class AddCoinFragmentDialog : DialogFragment() {
                         .show()
                 } else {
                     coinVolume = editTextVolume.text.toString().toDouble()
-                    val coinWallet = viewModel.createWalletCoin(coinName,coinVolume)
+                    val coinWallet = viewModel.createWalletCoin(coinName, coinVolume, walletNo)
                     viewModel.addToWallet(coinWallet)
                     dismiss()
                 }

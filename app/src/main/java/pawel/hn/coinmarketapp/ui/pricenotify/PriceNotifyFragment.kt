@@ -48,7 +48,6 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                         viewModel.setNotificationOff()
                     }
                 }
-
             }
 
             btnPriceAlertUpdate.setOnClickListener {
@@ -87,10 +86,6 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                         }
                     }
                 }
-            }
-
-            btnWorkLog.setOnClickListener {
-                viewModel.workLog()
             }
         }
 

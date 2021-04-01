@@ -7,7 +7,7 @@
         />
 
     <item
-        android:id="@+id/walletFragment"
+        android:id="@+id/walletsFragment"
         android:title="@string/wallet" />
 
     <item

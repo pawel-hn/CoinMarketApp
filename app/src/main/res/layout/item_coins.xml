@@ -28,20 +28,39 @@
             android:minWidth="0dp"
             android:minHeight="0dp" />
 
-        <TextView
-            android:id="@+id/text_view_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:textStyle="bold"
-            tools:text="Name" />
 
-        <TextView
-            android:id="@+id/text_view_symbol"
+        <ImageView
+            android:id="@+id/coin_logo"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/coin_logo" />
+
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.7"
-            tools:text="BTC" />
+            android:layout_margin="4dp"
+            android:layout_weight="1.5"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_name"
+                style="@style/MainListItems"
+                android:layout_marginBottom="4dp"
+                android:textStyle="bold"
+                tools:text="Name" />
+
+            <TextView
+                android:id="@+id/text_view_symbol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAlignment="center"
+                tools:text="BTC" />
+
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_view_usd"
@@ -51,13 +70,26 @@
             android:textAlignment="center"
             tools:text="99.9999" />
 
-        <TextView
-            android:id="@+id/text_view_24h_change"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="4dp"
             android:layout_weight="1"
-            android:textAlignment="textEnd"
-            tools:text="50%" />
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/text_view_24h_change"
+                style="@style/MainListItems"
+                android:layout_marginBottom="4dp"
+                tools:text="50%" />
+
+            <TextView
+                android:id="@+id/text_view_7d_change"
+                style="@style/MainListItems"
+                tools:text="50%" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
 

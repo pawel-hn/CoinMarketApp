@@ -3,7 +3,7 @@ package pawel.hn.coinmarketapp.util
 
 const val TAG = "PHN"
 const val API_QUERY_START = 1
-const val API_QUERY_LIMIT = 100
+const val API_QUERY_LIMIT = 15
 const val API_QUERY_CCY_CONVERT = "USD"
 
 const val BASE_URL = "https://pro-api.coinmarketcap.com/"
@@ -22,3 +22,9 @@ const val SAVE_CURRENT_PRICE_ALERT = "currentPriceAlert"
 
 const val PRICE_ALERT_INPUT = "priceAlertInput"
 const val PRICE_ALERT_NOTIFY_OUTPUT = "priceAlertOutput"
+
+const val WALLET_NO = "walletNo"
+
+const val LOGO_URL = "https://s2.coinmarketcap.com/static/img/coins"
+const val LOGO_SIZE_PX = "64x64"
+const val LOGO_FILE_TYPE = ".png"

@@ -19,13 +19,11 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="19dp"
-        android:layout_margin="4dp"
+        android:layout_margin="8dp"
         android:text="@string/text_view_wallet_title"
-        app:layout_constraintBottom_toTopOf="@+id/linear"
+        app:layout_constraintEnd_toStartOf="@id/btn_add_coin"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/btn_add_coin"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/btn_add_coin"
@@ -39,6 +37,9 @@
 
     <LinearLayout
         android:id="@+id/linear"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -46,9 +47,7 @@
         android:layout_marginEnd="8dp"
         android:orientation="vertical"
         android:padding="4dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_add_coin">
+        >
 
         <View
             android:layout_width="match_parent"
@@ -72,14 +71,14 @@
 
             <TextView
                 android:id="@+id/text_view_balance"
+                tools:text="1,000,000 USD"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/zero_balance"
                 android:textAlignment="center"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                tools:text="1,000,000 USD" />
+                android:textStyle="bold" />
 
         </LinearLayout>
 
@@ -133,29 +132,29 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view_wallet"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:visibility="visible"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linear"
-        tools:listitem="@layout/item_coin_wallet" />
+        tools:listitem="@layout/item_coin_wallet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:visibility="visible" />
 
     <ProgressBar
         android:id="@+id/progress_bar_wallet"
-        android:layout_width="64dp"
-        android:layout_height="61dp"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linear"
-        tools:visibility="visible" />
+        tools:visibility="visible"
+        android:layout_width="64dp"
+        android:layout_height="61dp"
+        android:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

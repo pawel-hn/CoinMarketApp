@@ -10,12 +10,14 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
+import pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialogDirections
+import pawel.hn.coinmarketapp.util.WALLET_NO
 import pawel.hn.coinmarketapp.util.showLog
 
 @AndroidEntryPoint
@@ -25,6 +27,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
     lateinit var adapter: WalletAdapter
     lateinit var binding: FragmentWalletBinding
+    private var walletNo: Int? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -32,17 +35,25 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         binding = FragmentWalletBinding.bind(view)
         adapter = WalletAdapter()
 
+        walletNo = requireArguments()[WALLET_NO] as Int
+        showLog("walletFragment: $walletNo")
+
         binding.apply {
             btnAddCoin.setOnClickListener {
-                val action = WalletFragmentDirections
-                    .actionWalletFragmentToAddCoinFragmentDialog()
-                findNavController().navigate(action)
+               walletNo?.let {
+                   showLog("add clicked: $walletNo")
+                   val action =
+                       AddCoinFragmentDialogDirections.actionGlobalAddCoinFragmentDialog(walletNo!!)
+                   view.findNavController().navigate(action)
+               }
             }
             recyclerViewWallet.adapter = adapter
             recyclerViewWallet.itemAnimator = null
 
             ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
         }
+
+        subscribeToObservers()
 
         setHasOptionsMenu(true)
     }
@@ -63,9 +74,11 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
 
     private fun subscribeToObservers() {
-        viewModel.walletList.observe(viewLifecycleOwner) {
-            binding.textViewBalance.text = viewModel.calculateTotal(it)
-            adapter.submitList(it)
+        viewModel.walletList.observe(viewLifecycleOwner) { allWallets ->
+            val specificWalletList = allWallets.filter { it.walletNo == walletNo }
+            binding.textViewBalance.text = viewModel.calculateTotal(specificWalletList)
+
+            adapter.submitList(specificWalletList)
         }
 
         viewModel.coinList.observe(viewLifecycleOwner) {

@@ -28,7 +28,7 @@ interface RepositoryInterface {
 
     suspend fun updateWallet(coin: Wallet, newPrice: Double)
 
-    fun createWalletCoin (coinName: String, coinVolume: Double): Wallet
+    fun createWalletCoin (coinName: String, coinVolume: Double, walletNo: Int): Wallet
 
     suspend fun insertNotifications(notifications: Notifications)
 

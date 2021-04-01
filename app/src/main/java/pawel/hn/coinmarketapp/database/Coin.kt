@@ -12,7 +12,8 @@ data class Coin(
     val symbol: String,
     val favourite: Boolean,
     val price: Double,
-    val change24h: Double
+    val change24h: Double,
+    val change7d: Double
 )
 
 

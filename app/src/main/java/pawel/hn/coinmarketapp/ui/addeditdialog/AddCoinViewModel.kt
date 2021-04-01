@@ -12,8 +12,8 @@ import javax.inject.Inject
 class AddCoinViewModel @Inject constructor (private val repository: RepositoryInterface)
     : ViewModel() {
 
-    fun createWalletCoin(coinName: String, coinVolume: Double): Wallet {
-        return repository.createWalletCoin(coinName, coinVolume)
+    fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
+        return repository.createWalletCoin(coinName, coinVolume, walletNo)
     }
 
     fun addToWallet(walletCoin: Wallet) {
