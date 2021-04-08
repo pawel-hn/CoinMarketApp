@@ -3,7 +3,7 @@ package pawel.hn.coinmarketapp.util
 
 const val TAG = "PHN"
 const val API_QUERY_START = 1
-const val API_QUERY_LIMIT = 15
+const val API_QUERY_LIMIT = 100
 const val API_QUERY_CCY_CONVERT = "USD"
 
 const val BASE_URL = "https://pro-api.coinmarketcap.com/"
