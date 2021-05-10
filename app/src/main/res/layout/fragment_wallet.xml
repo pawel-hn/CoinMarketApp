@@ -22,12 +22,20 @@
         <TextView
             android:id="@+id/textView_header"
             android:layout_width="0dp"
-
             android:layout_height="wrap_content"
             android:text="@string/text_view_wallet_title"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="textView_header"
+            tools:layout_editor_absoluteX="403dp"
+            tools:layout_editor_absoluteY="8dp" />
 
 
         <View
@@ -36,7 +44,7 @@
             android:layout_height="15dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/gradient_top"
-            app:layout_constraintTop_toBottomOf="@id/textView_header" />
+            app:layout_constraintTop_toBottomOf="@id/barrier" />
 
 
         <TextView

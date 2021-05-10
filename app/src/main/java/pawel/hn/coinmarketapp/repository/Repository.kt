@@ -60,10 +60,8 @@ class Repository @Inject constructor(
             }
 
             if (coins.coinsAll.value.isNullOrEmpty()) {
-                showLog("coins empty, insert called")
                 coins.insertCoins(list)
             } else {
-                showLog("coins not empty, update called")
                 coins.updateCoins(list)
             }
         }

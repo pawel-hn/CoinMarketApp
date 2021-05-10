@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp.ui.wallet
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
@@ -19,13 +20,17 @@ class WalletPagerFragment : Fragment(R.layout.page_wallet) {
         binding.walletPager.adapter = WalletsPagerAdapter(this)
 
         TabLayoutMediator(binding.tabLayout, binding.walletPager) { tab, position ->
-            tab.text = "Wallet ${position+1}" }.attach()
+            tab.text = if (position == 3) {
+                context?.getString(R.string.total)
+            } else {
+                "Wallet ${position+1}" }
+            }.attach()
     }
 }
 
 class WalletsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment){
 
-    override fun getItemCount(): Int = 3
+    override fun getItemCount(): Int = 4
 
     override fun createFragment(position: Int): Fragment {
         val fragment = WalletFragment()

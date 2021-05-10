@@ -1,7 +1,6 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
 
-import android.text.SpannableString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,8 +10,6 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.repository.Repository
-import pawel.hn.coinmarketapp.util.ValueType
-import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,12 +26,31 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
     val eventErrorResponse: LiveData<Boolean>
         get() = _eventErrorResponse
 
-    fun calculateTotal(list: List<Wallet>): SpannableString {
-        val total = list.sumByDouble {
-            it.total
+    fun calculateTotal(list: List<Wallet>): Double = list.sumByDouble { it.total }
+
+    fun totalWallet(list: List<Wallet>):  List<Wallet>{
+
+        val totalList = mutableListOf<Wallet>()
+        val listOfCoinIds = mutableListOf<Int>()
+
+        for (coinLoop in list) {
+            if (listOfCoinIds.contains(coinLoop.coinId)) {
+                continue
+            } else {
+                listOfCoinIds.add(coinLoop.coinId)
+                val tempList = list.filter { it.coinId == coinLoop.coinId }
+                val newVolume = tempList.sumByDouble { it.volume}
+                val newTotal = tempList.sumByDouble { it.total }
+                totalList.add(
+                    Wallet(coinId = coinLoop.coinId, name = coinLoop.name,
+                        volume = newVolume, price = coinLoop.price, total = newTotal, walletNo = 3)
+                )
+            }
         }
-        return formatPriceAndVolForView(total, ValueType.Fiat)
+
+        return totalList.sortedByDescending { it.total }
     }
+
 
     fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
         repository.wallet.deleteFromWallet(coin)
@@ -59,6 +75,12 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         walletLiveData.value!!.forEach { coin ->
             val newPrice = listTemp.filter { it.name == coin.name }[0].price
             repository.wallet.updateWallet(coin, newPrice)
+        }
+    }
+
+    fun deleteAll() {
+        viewModelScope.launch {
+            repository.wallet.deleteAllFromWallets()
         }
     }
 }

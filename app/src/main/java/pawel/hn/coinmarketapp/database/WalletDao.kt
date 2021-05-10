@@ -16,8 +16,8 @@ interface WalletDao {
     @Delete(entity = Wallet::class)
     suspend fun deleteFromWallet(coin: Wallet)
 
-    @Query("DELETE FROM wallet_table WHERE id = :id")
-    suspend fun deleteFromWalletTest(id: Int)
+    @Query("DELETE FROM wallet_table")
+    suspend fun deleteAllFromWallets()
 
     @Update(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
     suspend fun updateWallet(coin: Wallet)

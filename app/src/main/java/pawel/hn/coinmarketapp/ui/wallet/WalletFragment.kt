@@ -8,6 +8,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -17,7 +18,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
 import pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialogDirections
+import pawel.hn.coinmarketapp.util.ValueType
 import pawel.hn.coinmarketapp.util.WALLET_NO
+import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
 import pawel.hn.coinmarketapp.util.showLog
 
 @AndroidEntryPoint
@@ -29,6 +32,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     lateinit var binding: FragmentWalletBinding
     private var walletNo: Int? = null
 
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -39,6 +43,9 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         showLog("walletFragment: $walletNo")
 
         binding.apply {
+
+            textViewAndFabVisibility(walletNo!!)
+
             btnAddCoin.setOnClickListener {
                walletNo?.let {
                    showLog("add clicked: $walletNo")
@@ -52,12 +59,25 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             recyclerViewWallet.adapter = adapter
             recyclerViewWallet.itemAnimator = null
 
-            ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
+            if (walletNo!! < 3) {
+                ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
+            }
+
         }
 
         subscribeToObservers()
 
         setHasOptionsMenu(true)
+    }
+
+    private fun textViewAndFabVisibility(walletNo: Int) {
+        if (walletNo == 3) {
+            binding.btnAddCoin.visibility = View.GONE
+            binding.textViewHeader.visibility =View.GONE
+        } else {
+            binding.btnAddCoin.visibility = View.VISIBLE
+            binding.textViewHeader.visibility =View.VISIBLE
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -70,6 +90,18 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             R.id.menu_wallet_refresh -> {
                 viewModel.refreshData()
             }
+            R.id.menu_wallet_delete_all -> {
+                AlertDialog.Builder(requireContext())
+                    .setTitle("Clear all coins")
+                    .setMessage("This will delete ALL coins from ALL wallets")
+                    .setPositiveButton("Yes") {_, _ ->
+                        viewModel.deleteAll()
+                    }
+                    .setNegativeButton("No"){ dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            }
         }
         return super.onOptionsItemSelected(item)
     }
@@ -77,9 +109,15 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
     private fun subscribeToObservers() {
         viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->
-            val specificWalletList = allWallets.filter { it.walletNo == walletNo }
-            binding.textViewBalance.text = viewModel.calculateTotal(specificWalletList)
 
+            val specificWalletList = if (walletNo == 3) {
+                viewModel.totalWallet(allWallets)
+            } else {
+                allWallets.filter { it.walletNo == walletNo }
+            }
+
+            val total = viewModel.calculateTotal(specificWalletList)
+            binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat)
             adapter.submitList(specificWalletList)
         }
 
