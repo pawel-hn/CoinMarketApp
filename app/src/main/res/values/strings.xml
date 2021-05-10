@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">CoinMarketApp</string>
+    <string name="app_name">Coin Market</string>
     <string name="coin_name">Name</string>
     <string name="coin">Crypto</string>
     <string name="coin_symbol">Symbol</string>
@@ -11,7 +11,7 @@
     <string name="menu_uncheck_all">Uncheck all</string>
     <string name="text_view_wallet_title">Add coins to check your total balance, swipe left to delete, refresh for latest price </string>
     <string name="wallet_button_add_coins">Add</string>
-    <string name="total">TOTAL</string>
+    <string name="total">Total</string>
     <string name="volume">Volume</string>
     <string name="amountPrice">   Volume\nUSD Price</string>
     <string name="wallet">Wallet</string>
@@ -37,4 +37,5 @@
     <string name="latest_bitcoin_price">Latest Bitcoin price:</string>
     <string name="in_bitcoin_we_trust">In Bitcoin we trust</string>
     <string name="current_price_alert">Current price alert:</string>
+    <string name="wallets">Wallets</string>
 </resources>

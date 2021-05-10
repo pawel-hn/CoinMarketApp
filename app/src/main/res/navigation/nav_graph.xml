@@ -30,7 +30,7 @@
     <fragment
         android:id="@+id/walletsFragment"
         android:name="pawel.hn.coinmarketapp.ui.wallet.WalletPagerFragment"
-        android:label="WalletPagerFragment" />
+        android:label="@string/wallet" />
 
     <action android:id="@+id/action_global_addCoinFragmentDialog"
         app:destination="@id/addCoinFragmentDialog" />
