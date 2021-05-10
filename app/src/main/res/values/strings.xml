@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">CoinMarketApp</string>
     <string name="coin_name">Name</string>
+    <string name="coin">Crypto</string>
     <string name="coin_symbol">Symbol</string>
-    <string name="coin_quote">USD</string>
-    <string name="coin_24h_change">24h</string>
+    <string name="coin_quote">Price</string>
+    <string name="coin_change">24h/7d</string>
     <string name="menu_search">Search</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_show_ticked">Show favourites</string>
     <string name="menu_uncheck_all">Uncheck all</string>
-    <string name="text_view_wallet_title">Add coins to check your total balance,\n
-        swipe left to delete </string>
+    <string name="text_view_wallet_title">Add coins to check your total balance, swipe left to delete, refresh for latest price </string>
     <string name="wallet_button_add_coins">Add</string>
     <string name="total">TOTAL</string>
     <string name="volume">Volume</string>
+    <string name="amountPrice">   Volume\nUSD Price</string>
     <string name="wallet">Wallet</string>
     <string name="coins">Coins</string>
     <string name="dialog_title">Choose coin and enter volume</string>
@@ -32,4 +33,8 @@
     <string name="price_notification">Below enter the price when Bitcoin reach,\n
         you would like to be notified.</string>
     <string name="coin_logo">coin logo</string>
+    <string name="response_error">Couldn\'t get latest data. Try refresh</string>
+    <string name="latest_bitcoin_price">Latest Bitcoin price:</string>
+    <string name="in_bitcoin_we_trust">In Bitcoin we trust</string>
+    <string name="current_price_alert">Current price alert:</string>
 </resources>

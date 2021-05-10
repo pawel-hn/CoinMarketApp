@@ -7,7 +7,7 @@ const val API_QUERY_LIMIT = 100
 const val API_QUERY_CCY_CONVERT = "USD"
 
 const val BASE_URL = "https://pro-api.coinmarketcap.com/"
-const val API_KEY = "1498da2f-e373-4820-ac54-b986d62cf1fa"
+const val API_KEY = "6ad8c4b0-fce8-41c8-86fb-a509c166d269"
 const val API_HEADER = "X-CMC_PRO_API_KEY:"
 
 const val WORKER_CHECK = "coinsCheck"
@@ -15,16 +15,21 @@ const val WORKER_CHECK = "coinsCheck"
 const val CHANNEL_ID = "channeld"
 const val CHANNEL_NAME = "channelName"
 
+const val BITCOIN_ID = "1"
+
 const val PRICE_ALERT = "priceAlert"
 
 const val SAVE_SWITCH_ON_OFF = "notificationSwitch"
 const val SAVE_CURRENT_PRICE_ALERT = "currentPriceAlert"
 
 const val PRICE_ALERT_INPUT = "priceAlertInput"
-const val PRICE_ALERT_NOTIFY_OUTPUT = "priceAlertOutput"
+const val DEFAULT_PRICE_ALERT = 50000
 
 const val WALLET_NO = "walletNo"
 
 const val LOGO_URL = "https://s2.coinmarketcap.com/static/img/coins"
 const val LOGO_SIZE_PX = "64x64"
 const val LOGO_FILE_TYPE = ".png"
+
+const val COIN_PATTERN = "#,##0.0000"
+const val FIAT_PATTERN = "#,##0.00"

@@ -18,7 +18,6 @@ class WalletPagerFragment : Fragment(R.layout.page_wallet) {
         val binding = PageWalletBinding.bind(view)
         binding.walletPager.adapter = WalletsPagerAdapter(this)
 
-
         TabLayoutMediator(binding.tabLayout, binding.walletPager) { tab, position ->
             tab.text = "Wallet ${position+1}" }.attach()
     }
@@ -34,7 +33,6 @@ class WalletsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment){
         fragment.arguments = Bundle().apply {
             putInt(WALLET_NO,position)
         }
-
 
         return fragment
     }

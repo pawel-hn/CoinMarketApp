@@ -10,29 +10,30 @@
     <color name="yellow">#FFC107</color>
     <color name="lightGrey">#FAF5F5</color>
     <color name="mediumGrey">#838181</color>
+    <color name="dark">#2B2B2B</color>
+    <color name="darker">#000000</color>
     <color name="red">#C62828</color>
     <color name="green">#02A609</color>
     <color name="darkGreen">#1A531C</color>
-    <color name="dark">#121212</color>
-    <color name="darker">#121212</color>
 
     <!-- single item colors -->
+
     <color name="priceDrop">@color/red</color>
     <color name="priceUp">@color/green</color>
-    <color name="mainPrice">@color/black</color>
-    <color name="coinName">@color/purple_700</color>
-    <color name="cardBackground">@color/lightGrey</color>
+    <color name="mainPrice">@color/white</color>
+    <color name="coinName">@color/white</color>
+    <color name="cardBackground">@color/dark</color>
     <color name="cardStroke">@color/mediumGrey</color>
 
     <color name="walletLine">@color/mediumGrey</color>
 
     <color name="walletTotalBalance">@color/darkGreen</color>
-    <color name="coinsListHeader">@color/black</color>
+    <color name="coinsListHeader">@color/white</color>
 
-    <color name="dialogText">@color/mediumGrey</color>
+    <color name="dialogText">@color/white</color>
     <color name="dialogTextButtons">@color/purple_700</color>
 
-    <color name="backGround">@color/white</color>
+    <color name="backGround">@color/darker</color>
     <color name="checkboxBackground">@color/mediumGrey</color>
     <color name="snackBarBackground">@color/mediumGrey</color>
     <color name="starChecked">@color/yellow</color>

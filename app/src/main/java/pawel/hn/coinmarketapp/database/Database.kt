@@ -8,6 +8,7 @@ import androidx.room.RoomDatabase
 @Database(entities = [Coin::class, Wallet::class, Notifications::class], version = 1)
 abstract class CoinDatabase : RoomDatabase() {
     abstract val coinDao: CoinDao
+    abstract val walletDao: WalletDao
 
     companion object {
         @Volatile

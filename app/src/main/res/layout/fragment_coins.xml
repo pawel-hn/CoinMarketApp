@@ -1,98 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".ui.coins.CoinsFragment"
-    android:layout_margin="4dp"
-    android:theme="@style/Theme.CoinMarketApp">
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible"/>
+    <data>
 
+        <variable
+            name="coinViewModel"
+            type="pawel.hn.coinmarketapp.ui.coins.CoinsViewModel" />
 
-    <LinearLayout
-        android:id="@+id/linear_lay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
+    </data>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.5"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:text="@string/coin_name"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:text="@string/coin_symbol"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textStyle="bold"
-            android:textAlignment="center"
-            android:text="@string/coin_quote"/>
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/coin_24h_change"
-            android:textStyle="bold"
-            android:textAlignment="center"/>
-
-    </LinearLayout>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/coins_recycler_view"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constrain_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:layout_below="@id/linear_lay"
-        android:layout_margin="4dp"
-        tools:listitem="@layout/item_coins" />
+        android:theme="@style/Theme.MyTheme"
+        tools:context=".ui.coins.CoinsFragment">
 
-    <LinearLayout
-        android:id="@+id/layout_error"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_centerInParent="true"
-        android:visibility="gone"
-        tools:visibility="visible">
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            errorViewVisibility="@{coinViewModel.eventErrorResponse}"
+            progressBarVisibility="@{coinViewModel.eventProgressBar}"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/ic_data_error"
-            android:layout_gravity="center"/>
+
+        <LinearLayout
+            android:id="@+id/linear_lay"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:orientation="horizontal"
+            android:paddingTop="8dp"
+            android:background="@color/backGround"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.9"
+                android:text=""
+                android:layout_marginStart="12dp"
+                android:textAlignment="center"
+                android:textStyle="bold"
+                app:drawableLeftCompat="@drawable/ic_star_checked" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/coin"
+                android:textColor="@color/coinsListHeader"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/coin_quote"
+                android:textColor="@color/coinsListHeader"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/coin_change"
+                android:textColor="@color/coinsListHeader"
+                android:textAlignment="center"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/coins_recycler_view"
+            android:layout_marginTop="4dp"
+            progressBarVisibility="@{coinViewModel.eventProgressBar}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/backGround"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linear_lay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:listitem="@layout/item_coins" />
+
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/text_view_error_response"
+            errorViewVisibility="@{coinViewModel.eventErrorResponse}"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@string/error_occurred"
-            android:textStyle="bold"
+            android:background="@color/responseErrorBackground"
+            tools:text="@string/error_occurred"
+            android:textColor="@color/black"
             android:textSize="24sp"
-            android:textColor="@color/black"/>
+            android:textAlignment="center"
+            android:textStyle="bold"
+            android:layout_margin="4dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@id/coins_recycler_view"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible" />
 
-    </LinearLayout>
 
 
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-
-
-</RelativeLayout>
+</layout>

@@ -16,6 +16,7 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
 
     private val viewModel: PriceNotifyViewModel by viewModels()
     lateinit var binding: FragmentPriceNotifyBinding
+    private var latestPrice = 0.0
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -28,8 +29,11 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
         binding.apply {
 
             sharedPref.run {
-                tvCurrPriceAlert.text = getSavedPriceAlert(this)
-                viewModel.setCurrentPriceAlert(getSavedPriceAlert(this)!!)
+
+                tvCurrPriceAlert.text = formatPriceAndVolForView(
+                    getSavedPriceAlert(this).toDouble(), ValueType.Fiat
+                )
+                viewModel.setCurrentPriceAlert(getSavedPriceAlert(this))
             }
 
             notificationSwitch.apply {
@@ -51,34 +55,32 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
             }
 
             btnPriceAlertUpdate.setOnClickListener {
-                var priceAlert: Double? = null
+                var priceAlert: Int? = null
                 if (!editTextPriceToAlert.text.isNullOrEmpty()) {
-                    priceAlert = editTextPriceToAlert.text.toString().toDouble() }
-
-                val latestPrice = tvLatestPrice.text.toString().toDouble()
+                    priceAlert = editTextPriceToAlert.text.toString().toInt()
+                }
 
                 when {
-                    (priceAlert== null) || (priceAlert.isNaN()) -> {
+                    (priceAlert == null) || (priceAlert == 0) -> {
                         hideKeyboard(view)
                         showSnack(requireView(), "Error")
                     }
 
-                    priceAlert - latestPrice < 0 -> {
+                    priceAlert - latestPrice < 1000 -> {
                         hideKeyboard(view)
-                        showSnack(requireView(),
-                            "Price alert must be higher at least by 2k$ than late price "
+                        showSnack(
+                            requireView(),
+                            "Alert must be higher at least by $1000 than latest price "
                         )
                     }
 
                     else -> {
                         sharedPref.put {
-                            putString(SAVE_CURRENT_PRICE_ALERT, priceAlert.toString())
+                            putInt(SAVE_CURRENT_PRICE_ALERT, priceAlert)
                         }
-                        showLog("price saved: $priceAlert")
-
                         viewModel.setPriceAlert(priceAlert)
-
-                        tvCurrPriceAlert.text = "$priceAlert USD"
+                        tvCurrPriceAlert.text =
+                            formatPriceAndVolForView(priceAlert.toDouble(), ValueType.Fiat)
                         hideKeyboard(view)
                         editTextPriceToAlert.apply {
                             text.clear()
@@ -92,26 +94,28 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
         subscribeToObservers(binding)
     }
 
-    private fun getSavedPriceAlert(sharedPref: SharedPreferences)
-    = sharedPref.getString(SAVE_CURRENT_PRICE_ALERT, "50000")
+    private fun getSavedPriceAlert(sharedPref: SharedPreferences): Int =
+        sharedPref.getInt(SAVE_CURRENT_PRICE_ALERT, DEFAULT_PRICE_ALERT)
 
     private fun subscribeToObservers(binding: FragmentPriceNotifyBinding) {
+
         viewModel.latestPrice.observe(viewLifecycleOwner) {
-            binding.tvLatestPrice.text = it
-        }
+            latestPrice = it
+            binding.tvLatestPrice.text = formatPriceAndVolForView(it, ValueType.Fiat)
 
-        viewModel.notificationOnOff.observe(viewLifecycleOwner) {
-            viewModel.notifyWorker(it)
-            binding.notificationSwitch.isChecked = it
-            showLog("ischecked: ${binding.notificationSwitch.isChecked}")
-        }
-
-        viewModel.notifications.observe(viewLifecycleOwner) { list ->
-            showLog("notifications obs, list: ${list.size}")
-            if (list.isEmpty()) {
-                viewModel.setNotificationOff()
+            viewModel.notificationOnOff.observe(viewLifecycleOwner) {
+                viewModel.notifyWorker(it)
+                binding.notificationSwitch.isChecked = it
+                showLog("ischecked: ${binding.notificationSwitch.isChecked}")
             }
-        }
 
+            viewModel.notifications.observe(viewLifecycleOwner) { list ->
+                showLog("notifications obs, list: ${list.size}")
+                if (list.isEmpty()) {
+                    viewModel.setNotificationOff()
+                }
+            }
+
+        }
     }
 }

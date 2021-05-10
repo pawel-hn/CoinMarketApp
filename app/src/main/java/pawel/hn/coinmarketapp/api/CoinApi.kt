@@ -15,7 +15,7 @@ interface CoinApi {
 
     @Headers("$API_HEADER $API_KEY", "Accept: application/json")
     @GET("v1/cryptocurrency/listings/latest")
-    suspend fun getLatestQuotes(
+    suspend fun getCoinsFromNetwork(
             @Query("start") start: Int,
             @Query("limit") limit: Int,
             @Query("convert") convert: String

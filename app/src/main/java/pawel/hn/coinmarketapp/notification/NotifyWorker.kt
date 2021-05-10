@@ -27,19 +27,16 @@ class NotifyWorker @AssistedInject constructor(
     private var notificationID = 2
 
     override suspend fun doWork(): Result {
-        showLog("doWork called")
 
         val currentPriceAlert = workParams.inputData
             .getDouble(PRICE_ALERT_INPUT, 10000.0)
 
-        showLog("worker input: $currentPriceAlert")
-
         withContext(Dispatchers.IO) {
             val newPrice = repository.getLatestBitcoinPrice()
-            showLog("worker newprice: $newPrice")
+
             if (newPrice != null && newPrice > currentPriceAlert) {
                 sendNotification("price above $currentPriceAlert, it's $newPrice")
-                repository.deleteNotification(id.toString())
+                repository.coins.deleteNotification(id.toString())
             }
         }
 

@@ -9,9 +9,7 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Notifications
 import pawel.hn.coinmarketapp.notification.NotifyWorker
 import pawel.hn.coinmarketapp.repository.Repository
-import pawel.hn.coinmarketapp.util.PRICE_ALERT
-import pawel.hn.coinmarketapp.util.PRICE_ALERT_INPUT
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -21,19 +19,19 @@ class PriceNotifyViewModel @Inject constructor(
     @ApplicationContext context: Context
 ) : ViewModel() {
 
-    private val _latestPrice = MutableLiveData<String>()
-    val latestPrice: LiveData<String>
+    private val _latestPrice = MutableLiveData<Double>()
+    val latestPrice: LiveData<Double>
         get() = _latestPrice
 
     private val _notificationOnOff = MutableLiveData<Boolean>()
     val notificationOnOff: LiveData<Boolean>
         get() = _notificationOnOff
 
-    val notifications = repository.notifications
+    val notifications = repository.coins.notifications
 
-    private var priceAlertData: Double = 2.0
-    lateinit var workManager: WorkManager
-    lateinit var workRequest: PeriodicWorkRequest
+    private var priceAlertData: Int = 0
+    private lateinit var workManager: WorkManager
+    private lateinit var workRequest: PeriodicWorkRequest
 
 
     init {
@@ -42,14 +40,12 @@ class PriceNotifyViewModel @Inject constructor(
     }
 
     fun notifyWorker(notificationOnOff: Boolean) {
-        showLog("notifyWorker $notificationOnOff")
         if (notificationOnOff) {
             workManager.enqueueUniquePeriodicWork(PRICE_ALERT,
                 ExistingPeriodicWorkPolicy.REPLACE, workRequest)
             val notification = Notifications(workRequest.id.toString(), false)
             viewModelScope.launch {
-                repository.insertNotifications(notification)
-                showLog("noti: ${notifications.value?.size}")
+                repository.coins.insertNotifications(notification)
             }
         } else {
             workManager.cancelUniqueWork(PRICE_ALERT)
@@ -63,18 +59,18 @@ class PriceNotifyViewModel @Inject constructor(
     }
 
 
-    fun setPriceAlert(priceAlert: Double) {
+    fun setPriceAlert(priceAlert: Int) {
         showLog("viewModel setPriceAlert")
         priceAlertData = priceAlert
         if (notificationOnOff.value == true) {
             notifyWorker(true)
         }
-        setCurrentPriceAlert(priceAlertData.toString())
+        setCurrentPriceAlert(priceAlertData)
     }
 
-    fun setCurrentPriceAlert(alertPrice: String) {
+    fun setCurrentPriceAlert(alertPrice: Int) {
         showLog("viewModel setCurrentPriceAlert")
-        priceAlertData = alertPrice.toDouble()
+        priceAlertData = alertPrice
         workRequest = PeriodicWorkRequestBuilder<NotifyWorker>(10, TimeUnit.MINUTES)
             .setInitialDelay(15, TimeUnit.SECONDS)
             .setInputData(setDataForWorker(priceAlertData))
@@ -86,7 +82,7 @@ class PriceNotifyViewModel @Inject constructor(
         viewModelScope.launch {
             val price = repository.getLatestBitcoinPrice()
             price?.let {
-                _latestPrice.postValue(it.toString())
+                _latestPrice.postValue(it)
             }
         }
     }
@@ -99,7 +95,7 @@ class PriceNotifyViewModel @Inject constructor(
         _notificationOnOff.postValue(false)
     }
 
-    private fun setDataForWorker(msg: Double): Data {
-        return Data.Builder().putDouble(PRICE_ALERT_INPUT, msg).build()
+    private fun setDataForWorker(msg: Int): Data {
+        return Data.Builder().putInt(PRICE_ALERT_INPUT, msg).build()
     }
 }

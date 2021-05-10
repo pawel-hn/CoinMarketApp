@@ -9,6 +9,7 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class Wallet(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
+    val coinId: Int,
     val name: String,
     val volume: Double,
     val price: Double,

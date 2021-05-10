@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
 
+import android.text.SpannableString
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -9,49 +10,55 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.util.formatterTotal
-import pawel.hn.coinmarketapp.repository.RepositoryInterface
+import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.util.ValueType
+import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val repository: RepositoryInterface) : ViewModel() {
+class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
-    val walletList = repository.walletRepository
-    val coinList = repository.coinsRepository
+    val walletLiveData = repository.wallet.wallet
+    val coinLiveData = repository.coins.coinsAll
 
-    private val _eventRefresh = MutableLiveData(false)
-    val eventRefresh: LiveData<Boolean>
-    get() = _eventRefresh
+    private val _eventProgressBar = MutableLiveData(false)
+    val eventProgressBar: LiveData<Boolean>
+    get() = _eventProgressBar
 
-    fun calculateTotal(list: List<Wallet>): String {
+    private val _eventErrorResponse = MutableLiveData<Boolean>()
+    val eventErrorResponse: LiveData<Boolean>
+        get() = _eventErrorResponse
+
+    fun calculateTotal(list: List<Wallet>): SpannableString {
         val total = list.sumByDouble {
             it.total
         }
-        return "${formatterTotal.format(total)} USD"
+        return formatPriceAndVolForView(total, ValueType.Fiat)
     }
 
     fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
-        repository.deleteFromWallet(coin)
+        repository.wallet.deleteFromWallet(coin)
     }
 
     fun refreshData() = viewModelScope.launch {
-        _eventRefresh.value = true
+        _eventProgressBar.value = true
         repository.refreshData()
-        _eventRefresh.value = false
+        _eventProgressBar.value = false
+        _eventErrorResponse.value = repository.responseError
     }
 
      fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
 
         val listTemp = list.filter { coin ->
-            coin.name == walletList.value?.find { it.name == coin.name }?.name
+            coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
         }
         if (listTemp.isNullOrEmpty()) {
-            _eventRefresh.value = false
+            _eventProgressBar.value = false
             return@launch
         }
-        walletList.value!!.forEach { coin ->
+        walletLiveData.value!!.forEach { coin ->
             val newPrice = listTemp.filter { it.name == coin.name }[0].price
-            repository.updateWallet(coin, newPrice)
+            repository.wallet.updateWallet(coin, newPrice)
         }
     }
 }

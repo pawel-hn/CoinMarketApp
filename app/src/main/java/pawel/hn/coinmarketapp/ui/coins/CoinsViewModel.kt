@@ -1,19 +1,26 @@
 package pawel.hn.coinmarketapp.ui.coins
 
+import android.app.Application
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.repository.RepositoryInterface
+import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.util.showLog
 import javax.inject.Inject
 
 @HiltViewModel
-class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : ViewModel() {
+class CoinsViewModel @Inject constructor(
+    val repository: Repository,
+    application: Application
+) : AndroidViewModel(application) {
 
-    private val showChecked = MutableLiveData(false)
+    private val showFavourites = MutableLiveData<Boolean>()
     private val searchQuery = MutableLiveData("")
 
     val observableCoinList = MediatorLiveData<List<Coin>>()
+    val coinsTest = repository.coins.coinsAll
 
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean>
@@ -24,23 +31,22 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
     val eventProgressBar: LiveData<Boolean>
         get() = _eventProgressBar
 
-
-    private val coinListChecked = Transformations.switchMap(showChecked) {
+    private val coinListChecked = Transformations.switchMap(showFavourites) {
         if (it) {
-            repository.coinListChecked
+            repository.coins.coinsFavourite
         } else {
-            repository.coinsRepository
+            repository.coins.coinsAll
         }
     }
-    private val coinListSearchQuery = Transformations.switchMap(searchQuery) {
-        repository.getCoinsList(showChecked.value!!, it)
+
+    private val coinListSearchQuery = Transformations.switchMap(searchQuery) { searchQuery ->
+        repository.coins.getCoinsList(searchQuery)
     }
 
     init {
         refreshData()
         mediatorSource()
     }
-
 
     private fun mediatorSource() {
         observableCoinList.addSource(coinListChecked) {
@@ -51,29 +57,31 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
         }
     }
 
+
     fun refreshData() {
         viewModelScope.launch {
             _eventProgressBar.value = true
             repository.refreshData()
             _eventProgressBar.value = false
+            showLog("ResponseError: ${repository.responseError}")
             _eventErrorResponse.value = repository.responseError
+
         }
     }
+
+
 
     fun coinCheckedBoxClicked(coin: Coin, isChecked: Boolean) {
-        viewModelScope.launch {
-            repository.updateCoin(coin, isChecked)
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.coins.update(coin, isChecked)
         }
     }
 
-    fun showChecked(isChecked: Boolean) {
-        showChecked.value = isChecked
-    }
 
     fun unCheckAll() {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             observableCoinList.value?.forEach {
-                repository.updateCoin(it, false)
+                repository.coins.update(it, false)
             }
         }
     }
@@ -81,4 +89,8 @@ class CoinsViewModel @Inject constructor(val repository: RepositoryInterface) : 
     fun searchQuery(query: String) {
         searchQuery.value = query
     }
+
+    fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
+    
 }
+

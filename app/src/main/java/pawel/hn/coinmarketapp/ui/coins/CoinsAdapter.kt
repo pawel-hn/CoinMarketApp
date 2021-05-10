@@ -2,16 +2,18 @@ package pawel.hn.coinmarketapp.ui.coins
 
 import android.graphics.Color
 import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.widget.TextViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
-
+import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.util.*
@@ -29,6 +31,8 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
         val coin = getItem(position)
         holder.bind(coin)
     }
+
+
 
     interface CoinsOnClick {
         fun onCheckBoxClicked(coin: Coin, isChecked: Boolean)
@@ -52,7 +56,18 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
             binding.apply {
                 textViewName.text = coin.name
                 textViewSymbol.text = coin.symbol
-                textViewUsd.text = numberUtil.format(coin.price).toString()
+
+                val price = formatPriceAndVolForView(coin.price, ValueType.Fiat)
+
+                val spannablePrice = SpannableString(price)
+                val dollarColor = ForegroundColorSpan(
+                    ContextCompat.getColor(root.context, R.color.mediumGrey)
+                )
+                spannablePrice.setSpan(dollarColor, 0,2, Spanned.SPAN_COMPOSING)
+
+
+
+                textViewPriceCoin.text = formatPriceAndVolForView(coin.price, ValueType.Fiat)
                 checkboxFav.isChecked = coin.favourite
 
                 checkboxFav.setOnClickListener {

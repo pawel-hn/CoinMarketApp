@@ -3,11 +3,11 @@
 
     <item
         android:state_pressed="true"
-        android:drawable="@drawable/ic__star_checked"/>
+        android:drawable="@drawable/ic_star_checked"/>
 
     <item
         android:state_checked="true"
-        android:drawable="@drawable/ic__star_checked"/>
+        android:drawable="@drawable/ic_star_checked"/>
 
     <item
         android:state_checked="false"
@@ -15,11 +15,11 @@
 
     <item
         android:state_activated="true"
-        android:drawable="@drawable/ic__star_checked"/>
+        android:drawable="@drawable/ic_star_checked"/>
 
     <item
         android:state_selected="true"
-        android:drawable="@drawable/ic__star_checked"/>
+        android:drawable="@drawable/ic_star_checked"/>
 
 
 </selector>

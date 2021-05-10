@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:padding="4dp"
     android:layout_margin="4dp"
     android:elevation="5dp"
+    app:strokeColor="@color/cardStroke"
+    app:strokeWidth="1dp"
     app:cardBackgroundColor="@color/cardBackground"
     app:cardCornerRadius="8dp">
 
@@ -23,6 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="4dp"
+            android:layout_marginStart="4dp"
             android:background="@color/checkboxBackground"
             android:button="@drawable/checkbox_star"
             android:minWidth="0dp"
@@ -42,7 +47,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
-            android:layout_weight="1.5"
+            android:layout_weight="1.3"
             android:orientation="vertical">
 
             <TextView
@@ -50,24 +55,31 @@
                 style="@style/MainListItems"
                 android:layout_marginBottom="4dp"
                 android:textStyle="bold"
-                tools:text="Name" />
+                tools:text="Name"
+                android:textColor="@color/coinName"/>
 
             <TextView
                 android:id="@+id/text_view_symbol"
+                android:textSize="12sp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textAlignment="center"
-                tools:text="BTC" />
+                android:textAlignment="textStart"
+                tools:text="BTC"
+                android:textColor="@color/coinName"/>
 
 
         </LinearLayout>
 
         <TextView
-            android:id="@+id/text_view_usd"
+            android:id="@+id/text_view_price_coin"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_weight="1.5"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
+            android:textColor="@color/coinName"
+            android:textSize="20sp"
+            android:textStyle="bold"
             tools:text="99.9999" />
 
         <LinearLayout
@@ -79,13 +91,13 @@
 
             <TextView
                 android:id="@+id/text_view_24h_change"
-                style="@style/MainListItems"
+                style="@style/MPriceChange"
                 android:layout_marginBottom="4dp"
                 tools:text="50%" />
 
             <TextView
                 android:id="@+id/text_view_7d_change"
-                style="@style/MainListItems"
+                style="@style/MPriceChange"
                 tools:text="50%" />
 
         </LinearLayout>
@@ -93,4 +105,4 @@
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

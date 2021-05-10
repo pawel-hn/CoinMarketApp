@@ -7,10 +7,13 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import pawel.hn.coinmarketapp.api.CoinApi
+import pawel.hn.coinmarketapp.data.CoinsData
+import pawel.hn.coinmarketapp.data.RemoteData
+import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
+import pawel.hn.coinmarketapp.database.WalletDao
 import pawel.hn.coinmarketapp.repository.Repository
-import pawel.hn.coinmarketapp.repository.RepositoryInterface
 import pawel.hn.coinmarketapp.util.BASE_URL
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -40,11 +43,15 @@ object Module {
 
     @Provides
     @Singleton
-    fun provideRepository(database: CoinDatabase, coinApi: CoinApi) =
-        Repository(database.coinDao, coinApi) as RepositoryInterface
+    fun provideRepository(coinsData: CoinsData, walletData: WalletData, remoteData: RemoteData) =
+        Repository(coinsData, walletData, remoteData)
 
     @Provides
     @Singleton
     fun provideCoinDao(database: CoinDatabase): CoinDao = database.coinDao
+
+    @Provides
+    @Singleton
+    fun provideWalletDao(database: CoinDatabase): WalletDao = database.walletDao
 
 }

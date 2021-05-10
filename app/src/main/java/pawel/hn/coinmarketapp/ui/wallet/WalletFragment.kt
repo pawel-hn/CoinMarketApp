@@ -47,6 +47,8 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
                    view.findNavController().navigate(action)
                }
             }
+            lifecycleOwner = this@WalletFragment
+            walletViewModel = viewModel
             recyclerViewWallet.adapter = adapter
             recyclerViewWallet.itemAnimator = null
 
@@ -74,28 +76,15 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
 
     private fun subscribeToObservers() {
-        viewModel.walletList.observe(viewLifecycleOwner) { allWallets ->
+        viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->
             val specificWalletList = allWallets.filter { it.walletNo == walletNo }
             binding.textViewBalance.text = viewModel.calculateTotal(specificWalletList)
 
             adapter.submitList(specificWalletList)
         }
 
-        viewModel.coinList.observe(viewLifecycleOwner) {
+        viewModel.coinLiveData.observe(viewLifecycleOwner) {
             viewModel.walletRefresh(it)
-        }
-
-        viewModel.eventRefresh.observe(viewLifecycleOwner) { event ->
-            binding.apply {
-                if (event) {
-                    recyclerViewWallet.visibility = View.GONE
-                    progressBarWallet.visibility = View.VISIBLE
-                } else {
-                    recyclerViewWallet.visibility = View.VISIBLE
-                    progressBarWallet.visibility = View.GONE
-                }
-            }
-
         }
     }
 

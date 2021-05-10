@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
+    android:background="@color/backGround"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Choose coin:"
         android:textStyle="bold"
+        android:textColor="@color/dialogText"
         android:layout_marginBottom="10dp"/>
 
     <com.toptoche.searchablespinnerlibrary.SearchableSpinner
@@ -24,6 +26,7 @@
         android:textStyle="bold"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="@color/dialogText"
         android:text="@string/enter_volume"
         android:layout_marginBottom="10dp"/>
 
@@ -48,7 +51,6 @@
             android:id="@+id/btn_dialog_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/cancel"
             android:layout_marginEnd="10dp"/>
 
@@ -56,7 +58,6 @@
             android:id="@+id/btn_dialog_save"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="?android:attr/buttonBarButtonStyle"
             android:text="@string/save"/>
 
     </LinearLayout>

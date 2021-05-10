@@ -65,7 +65,7 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/bitcoin_price_alert"
-        android:inputType="numberDecimal"
+        android:inputType="number"
         app:layout_constraintBaseline_toBaselineOf="@+id/btn_price_alert_update"
         app:layout_constraintEnd_toStartOf="@+id/btn_price_alert_update"
         app:layout_constraintStart_toStartOf="parent" />
@@ -93,12 +93,10 @@
 
     <TextView
         android:id="@+id/textView8"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="36dp"
-        android:layout_marginEnd="8dp"
-        android:text="Current price alert:"
+        android:text="@string/current_price_alert"
         android:textSize="20sp"
         app:layout_constraintEnd_toStartOf="@+id/tv_curr_price_alert"
         app:layout_constraintHorizontal_bias="0.5"
@@ -108,10 +106,10 @@
     <TextView
         android:id="@+id/tv_curr_price_alert"
         style="@style/NotificationOnOff"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="8dp"
         android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
         app:layout_constraintEnd_toEndOf="parent"
@@ -121,25 +119,21 @@
 
     <TextView
         android:id="@+id/textView9"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="88dp"
-        android:layout_marginEnd="8dp"
-        android:text="Latest Bitcoin price:"
+        android:layout_marginTop="8dp"
+        android:text="@string/latest_bitcoin_price"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_latest_price"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_price_to_alert" />
+        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
         android:id="@+id/tv_latest_price"
         style="@style/NotificationOnOff"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="40dp"
+        android:layout_marginEnd="8dp"
         android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
         app:layout_constraintEnd_toEndOf="parent"
@@ -151,11 +145,12 @@
         android:id="@+id/imageView"
         android:layout_width="113dp"
         android:layout_height="117dp"
+        android:contentDescription="@string/in_bitcoin_we_trust"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_curr_price_alert"
-        app:layout_constraintVertical_bias="0.763"
+        app:layout_constraintVertical_bias="0.451"
         app:srcCompat="@drawable/in_one_coin" />
 
 

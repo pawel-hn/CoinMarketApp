@@ -3,6 +3,9 @@ package pawel.hn.coinmarketapp.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -13,15 +16,33 @@ import com.google.android.material.snackbar.Snackbar
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.model.Data
+import java.math.RoundingMode
 import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.*
+
+enum class ValueType(val pattern: String) {
+    Crypto(COIN_PATTERN),
+    Fiat(FIAT_PATTERN),
+}
+
+fun formatPriceAndVolForView(volume: Double, type: ValueType): SpannableString {
+    val df = DecimalFormat(type.pattern)
+    df.roundingMode = RoundingMode.DOWN
+
+    val spannablePrice = SpannableString("$${df.format(volume)}")
+    val spannableVol = SpannableString(df.format(volume))
+    val dollarColor = ForegroundColorSpan(
+        Color.GRAY
+    )
+    spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_COMPOSING)
 
 
-var locale: Locale = Locale.getDefault()
-val numberUtil: NumberFormat = NumberFormat.getInstance(locale)
-val formatter = DecimalFormat("#,##0.0#")
-val formatterTotal = DecimalFormat("##,###")
+    return if (type == ValueType.Fiat) {
+        spannablePrice
+    } else {
+       spannableVol
+    }
+}
+
 
 fun Data.apiResponseConvertToCoin() = Coin(
     coinId = this.id,
@@ -30,7 +51,8 @@ fun Data.apiResponseConvertToCoin() = Coin(
     favourite = false,
     price = this.quote.USD.price,
     change24h = this.quote.USD.percentChange24h,
-    change7d = this.quote.USD.percentChange7d
+    change7d = this.quote.USD.percentChange7d,
+    cmcRank = this.cmcRank
 )
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
@@ -45,7 +67,7 @@ inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit)
 }
 
 fun showSnack(view: View, text: String) {
-    Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply{
+    Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
         this.view.apply {
             setBackgroundColor(ContextCompat.getColor(view.context, R.color.snackBarBackground))
             textAlignment = View.TEXT_ALIGNMENT_CENTER
@@ -68,7 +90,7 @@ fun hideKeyboard(view: View) {
 }
 
 fun formatPriceChange(price: Double): String {
-    val priceString  = price.toString()
+    val priceString = price.toString()
 
     return if (priceString.substring(priceString.indexOf('.')).length > 2) {
         priceString.substring(0, priceString.indexOf('.') + 3) + " %"
@@ -79,12 +101,15 @@ fun formatPriceChange(price: Double): String {
 
 fun setPriceChangeColor(view: TextView, change: Double) {
     if (change < 0.00) {
-        view.setTextColor(Color.RED)
+        view.setTextColor(ContextCompat.getColor(view.context, R.color.priceDrop))
     } else {
         view
-            .setTextColor(ContextCompat.getColor(
-                view.context, R.color.design_default_color_primary_variant
-            ))}
+            .setTextColor(
+                ContextCompat.getColor(
+                    view.context, R.color.priceUp
+                )
+            )
+    }
 }
 
 

@@ -3,6 +3,7 @@ package pawel.hn.coinmarketapp.ui.coins
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
@@ -10,6 +11,7 @@ import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.util.onQueryTextChanged
+import pawel.hn.coinmarketapp.util.showLog
 
 
 @AndroidEntryPoint
@@ -19,6 +21,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentCoinsBinding
     private lateinit var adapter: CoinsAdapter
+    private var showFav = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -26,6 +29,8 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
         adapter = CoinsAdapter(this@CoinsFragment)
         binding = FragmentCoinsBinding.inflate(inflater, container, false)
         binding.apply {
+            lifecycleOwner = this@CoinsFragment
+            coinViewModel = viewModel
             coinsRecyclerView.adapter = adapter
             coinsRecyclerView.itemAnimator = null
         }
@@ -36,39 +41,11 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
 
     private fun subscribeToObservers() {
-        viewModel.observableCoinList.observe(viewLifecycleOwner) {
-            adapter.submitList(it)
+        viewModel.observableCoinList.observe(viewLifecycleOwner) { list ->
+            adapter.submitList(list)
         }
-
-        viewModel.eventProgressBar.observe(viewLifecycleOwner) { eventProgressBar ->
-            if (eventProgressBar) {
-                binding.apply {
-                    coinsRecyclerView.visibility = View.GONE
-                    layoutError.visibility = View.GONE
-                    progressBar.visibility = View.VISIBLE
-                }
-            } else {
-                binding.apply {
-                    coinsRecyclerView.visibility = View.VISIBLE
-                    progressBar.visibility = View.GONE
-                }
-            }
-        }
-        viewModel.eventErrorResponse.observe(viewLifecycleOwner) { errorOccurred ->
-            if (errorOccurred) {
-                binding.apply {
-                    coinsRecyclerView.visibility = View.GONE
-                    layoutError.visibility = View.VISIBLE
-                }
-            } else {
-                binding.apply {
-                    coinsRecyclerView.visibility = View.VISIBLE
-                    layoutError.visibility = View.GONE
-                }
-            }
-        }
+        viewModel.coinsTest.observe(viewLifecycleOwner) {}
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_coins, menu)
@@ -87,7 +64,9 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
             }
             R.id.menu_favourite -> {
                 item.isChecked = !item.isChecked
-                viewModel.showChecked(item.isChecked)
+                applyStarColor(item.isChecked, item)
+                viewModel.showFavourites(item.isChecked)
+                binding.coinsRecyclerView.scrollToPosition(0)
             }
             R.id.menu_uncheck -> {
                 viewModel.unCheckAll()
@@ -96,10 +75,26 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
         return super.onOptionsItemSelected(item)
     }
 
+    private fun applyStarColor(isChecked: Boolean, menuItem: MenuItem) {
+        if(menuItem.itemId == R.id.menu_favourite) {
+            if (isChecked) {
+                menuItem.icon.setTint(
+                    ContextCompat.getColor(requireContext(), R.color.yellow)
+                )
+            } else {
+                menuItem.icon.setTint(
+                    ContextCompat.getColor(requireContext(), R.color.white)
+                )
+            }
+        }
+
+    }
+
     override fun onCheckBoxClicked(coin: Coin, isChecked: Boolean) {
         viewModel.coinCheckedBoxClicked(coin, isChecked)
     }
 
     override fun onCoinClicked(coin: Coin) {
+        showLog(coin.toString())
     }
 }

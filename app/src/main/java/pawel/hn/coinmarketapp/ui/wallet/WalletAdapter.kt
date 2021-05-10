@@ -1,15 +1,16 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.databinding.ItemCoinWalletBinding
-import pawel.hn.coinmarketapp.util.formatter
-import pawel.hn.coinmarketapp.util.numberUtil
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.*
 
 class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
@@ -30,14 +31,25 @@ class WalletAdapter
             fun bind(coin: Wallet){
                 binding.apply {
                     textViewNamePortfolio.text = coin.name
-                    textViewVolume.text = numberUtil.format(coin.volume)
-                    textViewPrice.text = formatter.format(coin.price)
-                    textViewTotal.text = formatter.format(coin.total)
+
+                    textViewVolume.text = formatPriceAndVolForView(coin.volume, ValueType.Crypto)
+                    textViewPrice.text = formatPriceAndVolForView(coin.price, ValueType.Fiat)
+                    textViewTotal.text = formatPriceAndVolForView(coin.total, ValueType.Fiat)
 
                     root.setOnClickListener {
                         showLog(coin.toString())
                     }
 
+                    val imageUri = Uri.parse(LOGO_URL).buildUpon()
+                        .appendPath(LOGO_SIZE_PX)
+                        .appendPath(coin.coinId.toString() + LOGO_FILE_TYPE)
+                        .build()
+
+                    Glide.with(itemView)
+                        .load(imageUri)
+                        .centerCrop()
+                        .transform(CircleCrop())
+                        .into(coinLogo)
 
                 }
             }
