@@ -12,7 +12,6 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
-import pawel.hn.coinmarketapp.util.showLog
 
 @AndroidEntryPoint
 class AddCoinFragmentDialog : DialogFragment() {

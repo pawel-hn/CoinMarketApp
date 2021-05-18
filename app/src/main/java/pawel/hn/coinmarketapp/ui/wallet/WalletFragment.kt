@@ -1,5 +1,6 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
+import android.content.SharedPreferences
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -12,16 +13,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
 import pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialogDirections
-import pawel.hn.coinmarketapp.util.ValueType
-import pawel.hn.coinmarketapp.util.WALLET_NO
-import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.*
 
 @AndroidEntryPoint
 class WalletFragment : Fragment(R.layout.fragment_wallet) {
@@ -31,10 +30,23 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     lateinit var adapter: WalletAdapter
     lateinit var binding: FragmentWalletBinding
     private var walletNo: Int? = null
+    private var currency = ""
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+         val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+         currency = sharedPreferences.getString(
+            context?.getString(R.string.settings_currency_key),
+            CURRENCY_USD
+        )!!
+
+
 
         binding = FragmentWalletBinding.bind(view)
         adapter = WalletAdapter()
@@ -88,7 +100,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_wallet_refresh -> {
-                viewModel.refreshData()
+                viewModel.refreshData(currency)
             }
             R.id.menu_wallet_delete_all -> {
                 AlertDialog.Builder(requireContext())
@@ -110,6 +122,8 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     private fun subscribeToObservers() {
         viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->
 
+            adapter.setCurrency(currency)
+
             val specificWalletList = if (walletNo == 3) {
                 viewModel.totalWallet(allWallets)
             } else {
@@ -117,7 +131,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             }
 
             val total = viewModel.calculateTotal(specificWalletList)
-            binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat)
+            binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat, currency)
             adapter.submitList(specificWalletList)
         }
 

@@ -34,4 +34,12 @@
 
     <action android:id="@+id/action_global_addCoinFragmentDialog"
         app:destination="@id/addCoinFragmentDialog" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="pawel.hn.coinmarketapp.ui.settings.SettingsFragment"
+        android:label="@string/settings" />
+    <dialog
+        android:id="@+id/aboutFragment"
+        android:name="pawel.hn.coinmarketapp.ui.AboutFragment"
+        android:label="AboutFragment" />
 </navigation>

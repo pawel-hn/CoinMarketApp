@@ -56,9 +56,9 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         repository.wallet.deleteFromWallet(coin)
     }
 
-    fun refreshData() = viewModelScope.launch {
+    fun refreshData(ccy: String) = viewModelScope.launch {
         _eventProgressBar.value = true
-        repository.refreshData()
+        repository.refreshData(ccy)
         _eventProgressBar.value = false
         _eventErrorResponse.value = repository.responseError
     }

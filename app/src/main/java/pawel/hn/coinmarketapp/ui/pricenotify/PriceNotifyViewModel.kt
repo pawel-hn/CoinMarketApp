@@ -29,7 +29,7 @@ class PriceNotifyViewModel @Inject constructor(
 
     val notifications = repository.coins.notifications
 
-    private var priceAlertData: Int = 0
+    private var priceAlertData: Double = 0.0
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: PeriodicWorkRequest
 
@@ -41,8 +41,11 @@ class PriceNotifyViewModel @Inject constructor(
 
     fun notifyWorker(notificationOnOff: Boolean) {
         if (notificationOnOff) {
-            workManager.enqueueUniquePeriodicWork(PRICE_ALERT,
-                ExistingPeriodicWorkPolicy.REPLACE, workRequest)
+            workManager.enqueueUniquePeriodicWork(
+                PRICE_ALERT,
+                ExistingPeriodicWorkPolicy.REPLACE,
+                workRequest
+            )
             val notification = Notifications(workRequest.id.toString(), false)
             viewModelScope.launch {
                 repository.coins.insertNotifications(notification)
@@ -52,24 +55,23 @@ class PriceNotifyViewModel @Inject constructor(
         }
     }
 
-
     private fun setUpWorkManager(context: Context) {
-        showLog("viewModel setUpWorkManager")
+        showLog("viewModel setUpWorkManager through init")
         workManager = WorkManager.getInstance(context)
     }
 
 
     fun setPriceAlert(priceAlert: Int) {
-        showLog("viewModel setPriceAlert")
-        priceAlertData = priceAlert
+        showLog("viewModel setPriceAlert $priceAlert")
+        priceAlertData = priceAlert.toDouble()
         if (notificationOnOff.value == true) {
             notifyWorker(true)
         }
         setCurrentPriceAlert(priceAlertData)
     }
 
-    fun setCurrentPriceAlert(alertPrice: Int) {
-        showLog("viewModel setCurrentPriceAlert")
+    private fun setCurrentPriceAlert(alertPrice: Double) {
+        showLog("viewModel setCurrentPriceAlert $alertPrice")
         priceAlertData = alertPrice
         workRequest = PeriodicWorkRequestBuilder<NotifyWorker>(10, TimeUnit.MINUTES)
             .setInitialDelay(15, TimeUnit.SECONDS)
@@ -95,7 +97,7 @@ class PriceNotifyViewModel @Inject constructor(
         _notificationOnOff.postValue(false)
     }
 
-    private fun setDataForWorker(msg: Int): Data {
-        return Data.Builder().putInt(PRICE_ALERT_INPUT, msg).build()
+    private fun setDataForWorker(priceAlert: Double): Data {
+        return Data.Builder().putDouble(PRICE_ALERT_INPUT, priceAlert).build()
     }
 }

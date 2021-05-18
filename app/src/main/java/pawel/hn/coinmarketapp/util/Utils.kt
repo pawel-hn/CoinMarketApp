@@ -24,16 +24,25 @@ enum class ValueType(val pattern: String) {
     Fiat(FIAT_PATTERN),
 }
 
-fun formatPriceAndVolForView(volume: Double, type: ValueType): SpannableString {
+
+fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String): SpannableString {
+
+    val ccySymbol = when (currency) {
+        CURRENCY_USD -> "$"
+        CURRENCY_PLN-> "zł"
+        CURRENCY_EUR -> "€"
+        else -> ""
+    }
+
     val df = DecimalFormat(type.pattern)
     df.roundingMode = RoundingMode.DOWN
 
-    val spannablePrice = SpannableString("$${df.format(volume)}")
+    val spannablePrice = SpannableString("$ccySymbol ${df.format(volume)}")
     val spannableVol = SpannableString(df.format(volume))
     val dollarColor = ForegroundColorSpan(
         Color.GRAY
     )
-    spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_COMPOSING)
+    spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
 
     return if (type == ValueType.Fiat) {
@@ -44,16 +53,36 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType): SpannableString {
 }
 
 
-fun Data.apiResponseConvertToCoin() = Coin(
-    coinId = this.id,
-    name = this.name,
-    symbol = this.symbol,
-    favourite = false,
-    price = this.quote.USD.price,
-    change24h = this.quote.USD.percentChange24h,
-    change7d = this.quote.USD.percentChange7d,
-    cmcRank = this.cmcRank
-)
+fun Data.apiResponseConvertToCoin(ccy: String): Coin {
+    val price = when(ccy) {
+        CURRENCY_USD -> this.quote.USD.price
+        CURRENCY_PLN -> this.quote.PLN.price
+        else -> this.quote.EUR.price
+    }
+
+    val change24h = when(ccy) {
+        CURRENCY_USD -> this.quote.USD.percentChange24h
+        CURRENCY_PLN -> this.quote.PLN.percentChange24h
+        else -> this.quote.EUR.percentChange24h
+    }
+
+    val change7d = when(ccy) {
+        CURRENCY_USD -> this.quote.USD.percentChange7d
+        CURRENCY_PLN -> this.quote.PLN.percentChange7d
+        else -> this.quote.EUR.percentChange7d
+    }
+
+    return Coin(
+        coinId = this.id,
+        name = this.name,
+        symbol = this.symbol,
+        favourite = false,
+        price = price,
+        change24h = change24h,
+        change7d = change7d,
+        cmcRank = this.cmcRank
+    )
+}
 
 inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
     this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {

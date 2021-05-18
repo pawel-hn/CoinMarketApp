@@ -1,6 +1,5 @@
 package pawel.hn.coinmarketapp.ui.coins
 
-import android.graphics.Color
 import android.net.Uri
 import android.text.SpannableString
 import android.text.Spanned
@@ -21,6 +20,11 @@ import pawel.hn.coinmarketapp.util.*
 class CoinsAdapter(private val listener: CoinsOnClick) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 
+    private var currency: String = CURRENCY_USD
+
+    fun setCurrency(ccy: String) {
+        currency = ccy
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsViewHolder {
         val binding = ItemCoinsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -57,7 +61,7 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
                 textViewName.text = coin.name
                 textViewSymbol.text = coin.symbol
 
-                val price = formatPriceAndVolForView(coin.price, ValueType.Fiat)
+                val price = formatPriceAndVolForView(coin.price, ValueType.Fiat, currency)
 
                 val spannablePrice = SpannableString(price)
                 val dollarColor = ForegroundColorSpan(
@@ -67,7 +71,7 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
 
 
 
-                textViewPriceCoin.text = formatPriceAndVolForView(coin.price, ValueType.Fiat)
+                textViewPriceCoin.text = formatPriceAndVolForView(coin.price, ValueType.Fiat, currency)
                 checkboxFav.isChecked = coin.favourite
 
                 checkboxFav.setOnClickListener {

@@ -1,15 +1,18 @@
 package pawel.hn.coinmarketapp.ui.coins
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
+import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.onQueryTextChanged
 import pawel.hn.coinmarketapp.util.showLog
 
@@ -21,11 +24,23 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     private lateinit var searchView: SearchView
     private lateinit var binding: FragmentCoinsBinding
     private lateinit var adapter: CoinsAdapter
-    private var showFav = false
+    private var currency = ""
+
+
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
+
+        val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        currency = sharedPreferences.getString(
+            requireContext().getString(R.string.settings_currency_key),
+            CURRENCY_USD
+        ) ?: "USD"
+
+
+        viewModel.refreshData(currency)
         adapter = CoinsAdapter(this@CoinsFragment)
         binding = FragmentCoinsBinding.inflate(inflater, container, false)
         binding.apply {
@@ -42,6 +57,8 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
     private fun subscribeToObservers() {
         viewModel.observableCoinList.observe(viewLifecycleOwner) { list ->
+            showLog("fragment: $currency")
+            adapter.setCurrency(currency)
             adapter.submitList(list)
         }
         viewModel.coinsTest.observe(viewLifecycleOwner) {}
@@ -60,7 +77,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_refresh -> {
-                viewModel.refreshData()
+                viewModel.refreshData(currency)
             }
             R.id.menu_favourite -> {
                 item.isChecked = !item.isChecked

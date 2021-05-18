@@ -2,14 +2,12 @@ package pawel.hn.coinmarketapp.ui.wallet
 
 import android.os.Bundle
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.google.android.material.tabs.TabLayoutMediator
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.PageWalletBinding
 import pawel.hn.coinmarketapp.util.WALLET_NO
-import pawel.hn.coinmarketapp.util.showLog
 
 class WalletPagerFragment : Fragment(R.layout.page_wallet) {
 
@@ -23,7 +21,7 @@ class WalletPagerFragment : Fragment(R.layout.page_wallet) {
             tab.text = if (position == 3) {
                 context?.getString(R.string.total)
             } else {
-                "Wallet ${position+1}" }
+                "${context?.getString(R.string.wallet)} ${position+1}" }
             }.attach()
     }
 }
@@ -34,7 +32,7 @@ class WalletsPagerAdapter(fragment: Fragment) : FragmentStateAdapter(fragment){
 
     override fun createFragment(position: Int): Fragment {
         val fragment = WalletFragment()
-        showLog("createFragment $position")
+
         fragment.arguments = Bundle().apply {
             putInt(WALLET_NO,position)
         }

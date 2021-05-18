@@ -1,16 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+
+    <group
+        android:id="@+id/group1">
     <item
         android:id="@+id/coinsFragment"
+        android:icon="@drawable/ic_bitcoin"
         android:title="@string/coins"
         />
 
     <item
         android:id="@+id/walletsFragment"
+        android:icon="@drawable/ic_wallet"
         android:title="@string/wallet" />
-
     <item
         android:id="@+id/priceNotifyFragment"
+        android:icon="@drawable/ic_alert"
         android:title="@string/price_change_alert"/>
+    </group>
+
+    <group
+        android:id="@+id/group2">
+    <item
+        android:id="@+id/settingsFragment"
+        android:icon="@drawable/ic_settings"
+        android:title="@string/settings"/>
+
+        <item
+        android:id="@+id/aboutFragment"
+        android:icon="@drawable/ic_about"
+        android:title="@string/about"/>
+    </group>
 </menu>

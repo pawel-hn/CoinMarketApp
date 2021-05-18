@@ -4,7 +4,9 @@ package pawel.hn.coinmarketapp.util
 const val TAG = "PHN"
 const val API_QUERY_START = 1
 const val API_QUERY_LIMIT = 100
-const val API_QUERY_CCY_CONVERT = "USD"
+const val CURRENCY_USD = "USD"
+const val CURRENCY_PLN = "PLN"
+const val `CURRENCY_EUR` = "EUR"
 
 const val BASE_URL = "https://pro-api.coinmarketcap.com/"
 const val API_KEY = "6ad8c4b0-fce8-41c8-86fb-a509c166d269"
@@ -33,3 +35,7 @@ const val LOGO_FILE_TYPE = ".png"
 
 const val COIN_PATTERN = "#,##0.0000"
 const val FIAT_PATTERN = "#,##0.00"
+
+
+
+

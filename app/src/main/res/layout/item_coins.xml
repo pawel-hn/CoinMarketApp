@@ -9,7 +9,7 @@
     android:padding="4dp"
     android:layout_margin="4dp"
     android:elevation="5dp"
-    app:strokeColor="@color/cardStroke"
+    app:strokeColor="@color/black"
     app:strokeWidth="1dp"
     app:cardBackgroundColor="@color/cardBackground"
     app:cardCornerRadius="8dp">
@@ -54,7 +54,6 @@
                 android:id="@+id/text_view_name"
                 style="@style/MainListItems"
                 android:layout_marginBottom="4dp"
-                android:textStyle="bold"
                 tools:text="Name"
                 android:textColor="@color/coinName"/>
 
@@ -79,7 +78,8 @@
             android:textAlignment="textEnd"
             android:textColor="@color/coinName"
             android:textSize="20sp"
-            android:textStyle="bold"
+            android:autoSizeTextType="uniform"
+            android:maxLines="1"
             tools:text="99.9999" />
 
         <LinearLayout

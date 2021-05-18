@@ -24,7 +24,7 @@ class CoinsData @Inject constructor(private val coinDao: CoinDao) {
         coinDao.update(coin.copy(favourite = isChecked))
     }
 
-    suspend fun deleteNotification(id: String) {
+    suspend fun deleteNotification() {
         coinDao.deleteNotification()
     }
 

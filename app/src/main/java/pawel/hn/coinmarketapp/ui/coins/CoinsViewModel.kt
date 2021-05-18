@@ -7,7 +7,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.Repository
-import pawel.hn.coinmarketapp.util.showLog
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,7 +43,6 @@ class CoinsViewModel @Inject constructor(
     }
 
     init {
-        refreshData()
         mediatorSource()
     }
 
@@ -58,12 +56,11 @@ class CoinsViewModel @Inject constructor(
     }
 
 
-    fun refreshData() {
+    fun refreshData(ccy: String) {
         viewModelScope.launch {
             _eventProgressBar.value = true
-            repository.refreshData()
+            repository.refreshData(ccy)
             _eventProgressBar.value = false
-            showLog("ResponseError: ${repository.responseError}")
             _eventErrorResponse.value = repository.responseError
 
         }
@@ -91,6 +88,6 @@ class CoinsViewModel @Inject constructor(
     }
 
     fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
-    
+
 }
 

@@ -15,6 +15,12 @@ import pawel.hn.coinmarketapp.util.*
 class WalletAdapter
     : ListAdapter<Wallet, WalletAdapter.WalletViewHolder>(WalletDiffCallBack()) {
 
+    private var currency: String = CURRENCY_USD
+
+    fun setCurrency(ccy: String) {
+        currency = ccy
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WalletViewHolder {
         val binding = ItemCoinWalletBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -25,16 +31,16 @@ class WalletAdapter
         holder.bind(getItem(position))
     }
 
-    class WalletViewHolder(private val binding: ItemCoinWalletBinding)
+    inner class WalletViewHolder(private val binding: ItemCoinWalletBinding)
         : RecyclerView.ViewHolder(binding.root){
 
             fun bind(coin: Wallet){
                 binding.apply {
                     textViewNamePortfolio.text = coin.name
 
-                    textViewVolume.text = formatPriceAndVolForView(coin.volume, ValueType.Crypto)
-                    textViewPrice.text = formatPriceAndVolForView(coin.price, ValueType.Fiat)
-                    textViewTotal.text = formatPriceAndVolForView(coin.total, ValueType.Fiat)
+                    textViewVolume.text = formatPriceAndVolForView(coin.volume, ValueType.Crypto, currency)
+                    textViewPrice.text = formatPriceAndVolForView(coin.price, ValueType.Fiat, currency)
+                    textViewTotal.text = formatPriceAndVolForView(coin.total, ValueType.Fiat, currency)
 
                     root.setOnClickListener {
                         showLog(coin.toString())

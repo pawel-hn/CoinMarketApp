@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentPriceNotifyBinding
@@ -17,10 +18,20 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
     private val viewModel: PriceNotifyViewModel by viewModels()
     lateinit var binding: FragmentPriceNotifyBinding
     private var latestPrice = 0.0
+    private var currency = ""
+
+
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val sharedPreferences: SharedPreferences =
+            PreferenceManager.getDefaultSharedPreferences(requireContext())
+        currency = sharedPreferences.getString(
+            context?.getString(R.string.settings_currency_key),
+            CURRENCY_USD
+        )!!
 
         binding = FragmentPriceNotifyBinding.bind(view)
 
@@ -31,9 +42,9 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
             sharedPref.run {
 
                 tvCurrPriceAlert.text = formatPriceAndVolForView(
-                    getSavedPriceAlert(this).toDouble(), ValueType.Fiat
-                )
-                viewModel.setCurrentPriceAlert(getSavedPriceAlert(this))
+                    getSavedPriceAlert(this).toDouble(), ValueType.Fiat,
+                currency)
+                viewModel.setPriceAlert(getSavedPriceAlert(this))
             }
 
             notificationSwitch.apply {
@@ -63,14 +74,15 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                 when {
                     (priceAlert == null) || (priceAlert == 0) -> {
                         hideKeyboard(view)
-                        showSnack(requireView(), "Error")
+                        showSnack(requireView(),
+                        requireContext().getString(R.string.something_wrong))
                     }
 
-                    priceAlert - latestPrice < 1000 -> {
+                    priceAlert - latestPrice < 10 -> {
                         hideKeyboard(view)
                         showSnack(
                             requireView(),
-                            "Alert must be higher at least by $1000 than latest price "
+                            requireContext().getString(R.string.info_price_alert_too_small)
                         )
                     }
 
@@ -80,7 +92,7 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                         }
                         viewModel.setPriceAlert(priceAlert)
                         tvCurrPriceAlert.text =
-                            formatPriceAndVolForView(priceAlert.toDouble(), ValueType.Fiat)
+                            formatPriceAndVolForView(priceAlert.toDouble(), ValueType.Fiat, currency)
                         hideKeyboard(view)
                         editTextPriceToAlert.apply {
                             text.clear()
@@ -101,21 +113,19 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
 
         viewModel.latestPrice.observe(viewLifecycleOwner) {
             latestPrice = it
-            binding.tvLatestPrice.text = formatPriceAndVolForView(it, ValueType.Fiat)
+            binding.tvLatestPrice.text = formatPriceAndVolForView(it, ValueType.Fiat, currency)
+        }
 
-            viewModel.notificationOnOff.observe(viewLifecycleOwner) {
-                viewModel.notifyWorker(it)
-                binding.notificationSwitch.isChecked = it
-                showLog("ischecked: ${binding.notificationSwitch.isChecked}")
+        viewModel.notificationOnOff.observe(viewLifecycleOwner) {
+            viewModel.notifyWorker(it)
+            binding.notificationSwitch.isChecked = it
+        }
+
+        viewModel.notifications.observe(viewLifecycleOwner) { list ->
+            showLog("notifications obs, list: ${list.size}")
+            if (list.isEmpty()) {
+                viewModel.setNotificationOff()
             }
-
-            viewModel.notifications.observe(viewLifecycleOwner) { list ->
-                showLog("notifications obs, list: ${list.size}")
-                if (list.isEmpty()) {
-                    viewModel.setNotificationOff()
-                }
-            }
-
         }
     }
 }

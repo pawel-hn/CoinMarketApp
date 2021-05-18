@@ -31,11 +31,8 @@
             android:layout_height="match_parent"
             android:layout_gravity="start"
             app:headerLayout="@layout/nav_header"
-            app:menu="@menu/nav_drawer_menu"
             app:itemTextAppearance="@style/DrawerText"
-            />
-
-
+            app:menu="@menu/nav_drawer_menu"/>
     </androidx.drawerlayout.widget.DrawerLayout>
 
 </layout>

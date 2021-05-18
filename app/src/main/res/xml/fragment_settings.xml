@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:allowDividerAbove="true">
+    <ListPreference
+        android:entries="@array/settings_language_entries"
+        android:entryValues="@array/settings_language_values"
+        android:icon="@drawable/ic_language"
+        android:key="@string/settings_language_key"
+        android:title="@string/language"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        android:entries="@array/settings_themes"
+        android:entryValues="@array/settings_themes"
+        android:icon="@drawable/ic_dark_theme"
+        android:key="@string/settings_theme_key"
+        android:title="@string/theme"
+        app:useSimpleSummaryProvider="true"/>
+
+    <ListPreference
+        android:entries="@array/settings_currency"
+        android:entryValues="@array/settings_currency"
+        android:icon="@drawable/ic_dollar"
+        android:key="@string/settings_currency_key"
+        android:title="@string/currency"
+        app:useSimpleSummaryProvider="true"
+        />
+
+
+
+</PreferenceScreen>
