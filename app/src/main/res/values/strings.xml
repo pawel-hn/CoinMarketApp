@@ -8,11 +8,10 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_show_ticked">Show favourites</string>
     <string name="menu_uncheck_all">Uncheck all</string>
-    <string name="text_view_wallet_title">Add coins to check your total balance, swipe left to delete, refresh for latest price </string>
     <string name="wallet_button_add_coins">Add</string>
     <string name="total">Total</string>
     <string name="volume">Volume</string>
-    <string name="amountPrice">"   Volume\n      Price"</string>
+    <string name="amountPrice"> Volume / Price</string>
     <string name="wallet">Wallet</string>
     <string name="coins">Coins</string>
     <string name="dialog_title">Choose crypto and enter volume</string>

@@ -1,12 +1,22 @@
 package pawel.hn.coinmarketapp.ui.wallet
 
 
+import android.content.Context
+import android.graphics.Color
+import android.graphics.Typeface
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.repository.Repository
@@ -20,15 +30,15 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean>
-    get() = _eventProgressBar
+        get() = _eventProgressBar
 
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean>
         get() = _eventErrorResponse
 
-    fun calculateTotal(list: List<Wallet>): Double = list.sumByDouble { it.total }
+    fun calculateTotalBalance(list: List<Wallet>): Double = list.sumByDouble { it.total }
 
-    fun totalWallet(list: List<Wallet>):  List<Wallet>{
+    fun totalWallet(list: List<Wallet>): List<Wallet> {
 
         val totalList = mutableListOf<Wallet>()
         val listOfCoinIds = mutableListOf<Int>()
@@ -39,11 +49,18 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             } else {
                 listOfCoinIds.add(coinLoop.coinId)
                 val tempList = list.filter { it.coinId == coinLoop.coinId }
-                val newVolume = tempList.sumByDouble { it.volume}
+                val newVolume = tempList.sumByDouble { it.volume }
                 val newTotal = tempList.sumByDouble { it.total }
                 totalList.add(
-                    Wallet(coinId = coinLoop.coinId, name = coinLoop.name,
-                        volume = newVolume, price = coinLoop.price, total = newTotal, walletNo = 3)
+                    Wallet(
+                        coinId = coinLoop.coinId,
+                        name = coinLoop.name,
+                        symbol = coinLoop.symbol,
+                        volume = newVolume,
+                        price = coinLoop.price,
+                        total = newTotal,
+                        walletNo = 3
+                    )
                 )
             }
         }
@@ -63,7 +80,7 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         _eventErrorResponse.value = repository.responseError
     }
 
-     fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
+    fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
 
         val listTemp = list.filter { coin ->
             coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
@@ -82,5 +99,59 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         viewModelScope.launch {
             repository.wallet.deleteAllFromWallets()
         }
+    }
+
+    fun setChart(list: List<Wallet>, pieChart: PieChart, context: Context) {
+        val entries = ArrayList<PieEntry>()
+        if (!list.isNullOrEmpty()) {
+            list.forEach {
+                entries.add(
+                    PieEntry(it.total.toFloat(), it.symbol)
+                )
+            }
+        }
+
+        val setData = PieDataSet(entries, "Wallet")
+        val colorIds = listOf(
+            R.color.chartColor1,
+            R.color.chartColor2,
+            R.color.chartColor3,
+            R.color.chartColor4,
+            R.color.chartColor5,
+            R.color.chartColor6,
+            R.color.chartColor7,
+            R.color.chartColor8,
+            R.color.chartColor9
+        )
+        val colorList = colorIds.map {
+            ContextCompat.getColor(context, it)
+        }
+
+        setData.apply {
+            colors = colorList
+            sliceSpace = 2f
+            yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
+            xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
+            valueTextColor = R.color.coinsListHeader
+            valueTextSize = 12f
+            valueFormatter = PercentFormatter(pieChart)
+
+        }
+
+        val dataPie = PieData(setData)
+        dataPie.setDrawValues(true)
+        pieChart.apply {
+            data = dataPie
+            setUsePercentValues(true)
+            description.isEnabled = false
+            legend.isEnabled = false
+            setEntryLabelTextSize(14f)
+            setEntryLabelTypeface(Typeface.MONOSPACE)
+            isDrawHoleEnabled = true
+            setEntryLabelColor(R.color.coinsListHeader)
+            setNoDataText("Empty wallet")
+            invalidate()
+        }
+
     }
 }

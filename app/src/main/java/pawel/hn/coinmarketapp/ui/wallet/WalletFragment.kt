@@ -56,7 +56,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
         binding.apply {
 
-            textViewAndFabVisibility(walletNo!!)
 
             btnAddCoin.setOnClickListener {
                walletNo?.let {
@@ -82,15 +81,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         setHasOptionsMenu(true)
     }
 
-    private fun textViewAndFabVisibility(walletNo: Int) {
-        if (walletNo == 3) {
-            binding.btnAddCoin.visibility = View.GONE
-            binding.textViewHeader.visibility =View.GONE
-        } else {
-            binding.btnAddCoin.visibility = View.VISIBLE
-            binding.textViewHeader.visibility =View.VISIBLE
-        }
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -130,7 +121,9 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
                 allWallets.filter { it.walletNo == walletNo }
             }
 
-            val total = viewModel.calculateTotal(specificWalletList)
+
+            val total = viewModel.calculateTotalBalance(specificWalletList)
+            viewModel.setChart(specificWalletList, binding.chart, requireContext())
             binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat, currency)
             adapter.submitList(specificWalletList)
         }

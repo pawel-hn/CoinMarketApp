@@ -3,7 +3,7 @@ package pawel.hn.coinmarketapp.database
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "wallet_table")
 @Parcelize
@@ -11,6 +11,7 @@ data class Wallet(
     @PrimaryKey(autoGenerate = true) var id: Int = 0,
     val coinId: Int,
     val name: String,
+    val symbol: String,
     val volume: Double,
     val price: Double,
     val total: Double,

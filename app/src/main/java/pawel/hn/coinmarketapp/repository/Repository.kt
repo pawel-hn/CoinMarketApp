@@ -4,7 +4,7 @@ import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.ApiResponseArray
+import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseArray
 import pawel.hn.coinmarketapp.util.*
 import retrofit2.Response
 import javax.inject.Inject

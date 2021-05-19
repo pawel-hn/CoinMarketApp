@@ -6,13 +6,12 @@ const val API_QUERY_START = 1
 const val API_QUERY_LIMIT = 100
 const val CURRENCY_USD = "USD"
 const val CURRENCY_PLN = "PLN"
-const val `CURRENCY_EUR` = "EUR"
+const val CURRENCY_EUR = "EUR"
 
 const val BASE_URL = "https://pro-api.coinmarketcap.com/"
 const val API_KEY = "6ad8c4b0-fce8-41c8-86fb-a509c166d269"
 const val API_HEADER = "X-CMC_PRO_API_KEY:"
 
-const val WORKER_CHECK = "coinsCheck"
 
 const val CHANNEL_ID = "channeld"
 const val CHANNEL_NAME = "channelName"

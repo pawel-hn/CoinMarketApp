@@ -42,11 +42,13 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
     fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int, coins: List<Coin>): Wallet {
         val price = coins.find { it.name == coinName }?.price ?: 0.0
         val coinId = coins.find { it.name == coinName }?.coinId ?: 1
+        val symbol = coins.find { it.name == coinName }?.symbol ?: ""
         val total = price * coinVolume
 
         return Wallet(
             coinId = coinId,
             name = coinName,
+            symbol = symbol,
             volume = coinVolume,
             price = price,
             total = total,

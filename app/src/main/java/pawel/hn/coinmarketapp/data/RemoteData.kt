@@ -1,8 +1,8 @@
 package pawel.hn.coinmarketapp.data
 
 import pawel.hn.coinmarketapp.api.CoinApi
-import pawel.hn.coinmarketapp.model.ApiResponse
-import pawel.hn.coinmarketapp.model.ApiResponseArray
+import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponse
+import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseArray
 import retrofit2.Response
 import javax.inject.Inject
 

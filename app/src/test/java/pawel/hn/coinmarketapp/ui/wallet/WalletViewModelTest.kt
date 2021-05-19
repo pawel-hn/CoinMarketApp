@@ -6,8 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.getOrAwaitValue
-import pawel.hn.coinmarketapp.repository.FakeRepository
+
 
 class WalletViewModelTest {
 
@@ -16,20 +15,16 @@ class WalletViewModelTest {
 
 
     private lateinit var viewModel: WalletViewModel
-    private lateinit var repository: FakeRepository
     private lateinit var walletList: List<Wallet>
 
     @Before
     fun setup() {
 
-        repository = FakeRepository()
-        viewModel = WalletViewModel(repository)
-        walletList = repository.walletRepository.getOrAwaitValue()
     }
 
     @Test
     fun `test calculate total balance`(){
-        val total = viewModel.calculateTotal(walletList)
+        val total = viewModel.calculateTotalBalance(walletList)
         assertThat(total).isEqualTo("15 USD")
     }
 
