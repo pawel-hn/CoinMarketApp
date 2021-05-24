@@ -30,6 +30,7 @@
     <color name="walletTotalBalance">@color/darkGreen</color>
     <color name="coinsListHeader">@color/white</color>
 
+    <color name="dialogStroke">@color/white</color>
     <color name="dialogText">@color/white</color>
     <color name="dialogTextButtons">@color/purple_700</color>
 

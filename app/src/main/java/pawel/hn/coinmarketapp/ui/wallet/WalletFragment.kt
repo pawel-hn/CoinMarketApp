@@ -52,14 +52,12 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         adapter = WalletAdapter()
 
         walletNo = requireArguments()[WALLET_NO] as Int
-        showLog("walletFragment: $walletNo")
 
         binding.apply {
 
 
             btnAddCoin.setOnClickListener {
                walletNo?.let {
-                   showLog("add clicked: $walletNo")
                    val action =
                        AddCoinFragmentDialogDirections.actionGlobalAddCoinFragmentDialog(walletNo!!)
                    view.findNavController().navigate(action)
@@ -95,12 +93,12 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             }
             R.id.menu_wallet_delete_all -> {
                 AlertDialog.Builder(requireContext())
-                    .setTitle("Clear all coins")
-                    .setMessage("This will delete ALL coins from ALL wallets")
-                    .setPositiveButton("Yes") {_, _ ->
+                    .setTitle(getString(R.string.clear_wallet))
+                    .setMessage(getString(R.string.clear_wallet_msg))
+                    .setPositiveButton(R.string.yes) {_, _ ->
                         viewModel.deleteAll()
                     }
-                    .setNegativeButton("No"){ dialog, _ ->
+                    .setNegativeButton(R.string.no){ dialog, _ ->
                         dialog.dismiss()
                     }
                     .show()

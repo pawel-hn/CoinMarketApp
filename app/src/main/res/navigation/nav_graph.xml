@@ -38,8 +38,30 @@
         android:id="@+id/settingsFragment"
         android:name="pawel.hn.coinmarketapp.ui.settings.SettingsFragment"
         android:label="@string/settings" />
+    <fragment
+        android:id="@+id/newsFragment"
+        android:name="pawel.hn.coinmarketapp.ui.news.NewsFragment"
+        android:label="@string/cointelegraph"
+        tools:layout="@layout/fragment_news">
+        <action
+            android:id="@+id/action_newsFragment_to_newsWebFragment"
+            app:destination="@id/newsWebFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/newsWebFragment"
+        android:name="pawel.hn.coinmarketapp.ui.news.NewsWebFragment"
+        android:label="@string/cointelegraph"
+        tools:layout="@layout/fragment_news_webview">
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </fragment>
     <dialog
-        android:id="@+id/aboutFragment"
-        android:name="pawel.hn.coinmarketapp.ui.AboutFragment"
-        android:label="AboutFragment" />
+        android:id="@+id/aboutFragmentDialog"
+        android:name="pawel.hn.coinmarketapp.ui.AboutDialogFragment"
+        android:label="AboutDialogFragment" >
+        <action
+            android:id="@+id/action_aboutFragmentDialog_to_nav_graph"
+            app:popUpTo="@id/nav_graph" />
+    </dialog>
 </navigation>

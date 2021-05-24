@@ -14,7 +14,7 @@ import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.database.WalletDao
 import pawel.hn.coinmarketapp.repository.Repository
-import pawel.hn.coinmarketapp.util.BASE_URL
+import pawel.hn.coinmarketapp.util.BASE_URL_COINS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
@@ -28,7 +28,7 @@ object Module {
 
     @Provides
     fun provideRetrofit(): Retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl(BASE_URL_COINS)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

@@ -78,7 +78,7 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                         requireContext().getString(R.string.something_wrong))
                     }
 
-                    priceAlert - latestPrice < 10 -> {
+                    priceAlert - latestPrice < 1000 -> {
                         hideKeyboard(view)
                         showSnack(
                             requireView(),

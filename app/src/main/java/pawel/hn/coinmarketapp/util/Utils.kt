@@ -3,6 +3,8 @@ package pawel.hn.coinmarketapp.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
@@ -15,7 +17,7 @@ import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.Data
+import pawel.hn.coinmarketapp.model.coinmarketcap.Data
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -42,8 +44,12 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String):
     val dollarColor = ForegroundColorSpan(
         Color.GRAY
     )
-    spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    if (currency == CURRENCY_PLN) {
+        spannablePrice.setSpan(dollarColor, 0,2, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+    } else {
+        spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
+    }
 
     return if (type == ValueType.Fiat) {
         spannablePrice
@@ -138,6 +144,18 @@ fun setPriceChangeColor(view: TextView, change: Double) {
                     view.context, R.color.priceUp
                 )
             )
+    }
+}
+
+fun hasInternetConnection(context: Context): Boolean {
+    val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val activeNetwork = connectivityManager.activeNetwork ?: return false
+    val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+    return when {
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+        capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+        else -> false
     }
 }
 

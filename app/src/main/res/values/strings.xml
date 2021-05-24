@@ -8,6 +8,8 @@
     <string name="menu_refresh">Refresh</string>
     <string name="menu_show_ticked">Show favourites</string>
     <string name="menu_uncheck_all">Uncheck all</string>
+
+
     <string name="wallet_button_add_coins">Add</string>
     <string name="total">Total</string>
     <string name="volume">Volume</string>
@@ -22,6 +24,9 @@
     <string name="insert_volume_here">Insert volume here</string>
     <string name="save">Save</string>
     <string name="cancel">Cancel</string>
+
+
+
     <string name="error_occurred">Connection problem :(</string>
     <string name="price_change_alert">Price Change Alert</string>
     <string name="notification_on" translatable="false">ON</string>
@@ -42,6 +47,8 @@
     <string name="choose_coin">Choose coin:</string>
     <string name="currency">Currency</string>
     <string name="about">About</string>
+    <string name="cointelegraph" translatable="false">Cointelegraph</string>
+    <string name="drawer_bottom" translatable="false">coinmarketcap.com</string>
 
    <!-- settings -->
     <string name="settings">Settings</string>
@@ -80,10 +87,16 @@
         <item>"EUR"</item>
         <item>"PLN"</item>
     </string-array>
-
-
-
-
+    <string name="news">Crypto News</string>
+    <string name="wait_for_connection">Wait for connection</string>
+    <string name="alert_hint">Enter price here</string>
+    <string name="about_source">Source code:\n https://github.com/pawel-hn/CoinMarketApp</string>
+    <string name="about_data">Data from www.coinmarketcap.com</string>
+    <string name="about_news">News from www.cointelegraph.com</string>
+    <string name="clear_wallet">Clear all coins</string>
+    <string name="clear_wallet_msg">This will delete ALL coins from ALL wallets</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>

@@ -66,6 +66,7 @@ class Repository @Inject constructor(
                 coins.updateCoins(list)
             }
         }
+
     }
 
     suspend fun getLatestBitcoinPrice(): Double? {

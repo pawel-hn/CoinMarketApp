@@ -3,11 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/header"
         style="@style/NotificationOnOff"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -16,8 +15,8 @@
         android:layout_marginEnd="8dp"
         android:text="@string/bitcoin_price_alert"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView8"
         app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -25,50 +24,49 @@
         android:id="@+id/notification_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
         android:thumb="@drawable/thumb"
-        app:layout_constraintBottom_toTopOf="@+id/textView3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/header"
         app:track="@drawable/track" />
 
     <TextView
-        android:id="@+id/textView3"
+        android:id="@+id/info"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginTop="24dp"
+        android:padding="12dp"
         android:text="@string/price_notification"
         android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/edit_text_price_to_alert"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/notification_switch"
-        app:layout_constraintVertical_bias="0.724" />
+        app:layout_constraintTop_toBottomOf="@id/notification_switch" />
+
+    <EditText
+        android:id="@+id/edit_text_price_to_alert"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="36dp"
+        android:layout_marginEnd="36dp"
+        android:autofillHints=""
+        android:hint="@string/alert_hint"
+        android:inputType="number"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btn_price_alert_update"
+        app:layout_constraintEnd_toStartOf="@+id/btn_price_alert_update"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="edittext" />
 
     <Button
         android:id="@+id/btn_price_alert_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
-        android:layout_marginEnd="36dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/save"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+        app:layout_constraintTop_toBottomOf="@id/info" />
 
-    <EditText
-        android:id="@+id/edit_text_price_to_alert"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:autofillHints=""
-        android:ems="10"
-        android:hint="@string/bitcoin_price_alert"
-        android:inputType="number"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btn_price_alert_update"
-        app:layout_constraintEnd_toStartOf="@+id/btn_price_alert_update"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView4"
@@ -88,43 +86,38 @@
         android:text="@string/notification_on"
         app:layout_constraintBaseline_toBaselineOf="@+id/notification_switch"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/notification_switch" />
 
     <TextView
         android:id="@+id/textView8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
         android:text="@string/current_price_alert"
         android:textSize="20sp"
-        app:layout_constraintEnd_toStartOf="@+id/tv_curr_price_alert"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/latest_price_text"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_price_to_alert" />
 
     <TextView
         android:id="@+id/tv_curr_price_alert"
         style="@style/NotificationOnOff"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:textSize="20sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toStartOf="@+id/tv_latest_price"
         tools:text="50,000" />
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/latest_price_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:layout_marginTop="40dp"
         android:text="@string/latest_bitcoin_price"
         android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="@+id/textView8"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView8" />
 
     <TextView
@@ -132,25 +125,23 @@
         style="@style/NotificationOnOff"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="32dp"
         android:textSize="20sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/textView9"
+        app:layout_constraintBaseline_toBaselineOf="@+id/latest_price_text"
+        app:layout_constraintStart_toEndOf="@+id/latest_price_text"
         tools:text="50,000" />
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="113dp"
-        android:layout_height="117dp"
+        android:layout_width="227dp"
+        android:layout_height="152dp"
+        android:layout_marginTop="12dp"
         android:contentDescription="@string/in_bitcoin_we_trust"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_curr_price_alert"
-        app:layout_constraintVertical_bias="0.451"
+        app:layout_constraintTop_toBottomOf="@+id/latest_price_text"
+        app:layout_constraintVertical_bias="0.127"
         app:srcCompat="@drawable/in_one_coin" />
 
 

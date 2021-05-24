@@ -9,8 +9,10 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.google.android.material.navigation.NavigationView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.ActivityMainBinding
@@ -34,14 +36,18 @@ class MainActivity : AppCompatActivity() {
         appBarConfiguration = AppBarConfiguration
             .Builder(R.id.coinsFragment,
                 R.id.walletsFragment,
+                R.id.newsFragment,
                 R.id.priceNotifyFragment)
             .setOpenableLayout(drawerLayout)
             .build()
 
-        val navController = this.findNavController(R.id.nav_host_fragment_container)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.nav_host_fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
 
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
         NavigationUI.setupWithNavController(binding.navView, navController)
+
 
         createChannelNotification()
     }

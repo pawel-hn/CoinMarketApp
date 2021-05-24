@@ -29,6 +29,8 @@
     <color name="walletTotalBalance">@color/darkGreen</color>
     <color name="coinsListHeader">@color/black</color>
 
+
+    <color name="dialogStroke">@color/black</color>
     <color name="dialogText">@color/mediumGrey</color>
     <color name="dialogTextButtons">@color/purple_700</color>
 

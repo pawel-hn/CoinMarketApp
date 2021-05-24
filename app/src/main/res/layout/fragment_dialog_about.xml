@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center"
+    app:strokeWidth="2dp"
+    app:strokeColor="@color/dialogStroke"
+    android:padding="8dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="4dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:textAlignment="center"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            android:text="@string/about"
+            android:textColor="@color/white"
+            android:background="@color/mediumGrey"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            style="@style/TextAppearance.AppCompat.Body2"
+            android:textAlignment="center"
+            android:text="App done by Pawel Hnacik"
+            android:textColor="@color/dialogText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/about_source"
+            android:textColor="@color/dialogText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/about_data"
+            android:textColor="@color/dialogText" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textAlignment="center"
+            style="@style/TextAppearance.AppCompat.Body1"
+            android:text="@string/about_news"
+            android:textColor="@color/dialogText" />
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>

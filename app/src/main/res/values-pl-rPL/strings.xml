@@ -29,7 +29,7 @@
     <string name="current_price_alert">Akutalny alarm:</string>
     <string name="latest_bitcoin_price">Aktualna cena Bitcoina</string>
     <string name="response_error">NIe można dostać danych. Spróbuj odświeżyć.</string>
-    <string name="price_notification">Poniżej podaj cene, zostanie powiadomiony gdy Bitcoin ją przekroczy</string>
+    <string name="price_notification">Poniżej podaj cene, zostaniesz powiadomiony gdy Bitcoin ją przekroczy</string>
     <string name="amountPrice"> Ilość / Cena</string>
     <string name="something_wrong">Coś poszło nie tak, odśwież</string>
     <string name="choose_coin">Wybierz krypto:</string>
@@ -44,4 +44,14 @@
     <string name="theme">Motyw</string>
     <string name="currency">Waluta</string>
     <string name="about">O aplikacji</string>
+    <string name="news">Krypto Niusy</string>
+    <string name="wait_for_connection">Poczekaj na połączenie</string>
+    <string name="alert_hint">Podaj cene</string>
+    <string name="about_source">Kod żródłowy:\n https://github.com/pawel-hn/CoinMarketApp</string>
+    <string name="about_data">Dane z www.coinmarketcap.com</string>
+    <string name="about_news">Newsy z www.cointelegraph.com</string>
+    <string name="clear_wallet">Usuń całe krypto</string>
+    <string name="clear_wallet_msg">To spowoduje wyczyszczenie wszystkich portfeli.</string>
+    <string name="yes">Tak</string>
+    <string name="no">Nie</string>
 </resources>
