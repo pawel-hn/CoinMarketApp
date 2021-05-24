@@ -2,7 +2,7 @@
 
 Simple app which shows current  price for 100 cryptos with highest market cap and simple wallet to calculate holdings.<br>
 -prices in USD, EUR, PLN<br>
--set up to three wallets<br>
+-create up to three wallets<br>
 -Bitcoin price alarm<br>
 -news from crypto-world<br>
 -ver. EN and PL
@@ -10,7 +10,7 @@ Simple app which shows current  price for 100 cryptos with highest market cap an
 Based on API from coinmarketcap.com.<br>
 News from cointelegraph.com
 <br>
-Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect.<br>
+Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode.<br>
 <br>
 Other libraries:
 Glide, MPAndroidChrt, RSS Parser, SpinnerSearchable
