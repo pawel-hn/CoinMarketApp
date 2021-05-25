@@ -4,7 +4,9 @@ import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponse
 import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseArray
+import pawel.hn.coinmarketapp.model.coinmarketcap.Data
 import pawel.hn.coinmarketapp.util.*
 import retrofit2.Response
 import javax.inject.Inject
@@ -17,7 +19,6 @@ class Repository @Inject constructor(
     var responseError = true
 
     suspend fun refreshData(ccy: String) {
-        showLog("repo refresh $ccy")
         try {
             val response = remote.getCoins(
                 API_QUERY_START,
@@ -35,7 +36,6 @@ class Repository @Inject constructor(
 
 
     private suspend fun handleApiResponse(response: Response<ApiResponseArray>, currency: String){
-        showLog("response code: ${response.code()}")
         when(response.code()) {
             200 -> responseSuccess(response.body(), currency)
             else -> responseFail(response.code())
@@ -76,6 +76,7 @@ class Repository @Inject constructor(
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
                     newPrice = apiResponse.data[1]!!.quote.USD.price
+                    showLog("getBtc: $newPrice")
                 }
             }
         } catch (e: Exception) {
@@ -83,6 +84,23 @@ class Repository @Inject constructor(
         }
 
         return newPrice
+    }
+
+    suspend fun getBitcoinData(): Data? {
+       var btc: Data? = null
+        try {
+            val response = remote.getLatestBitcoinPrice(BITCOIN_ID)
+            if (response.isSuccessful) {
+                response.body()?.let { apiResponse ->
+                    btc = apiResponse.data[1]
+
+                }
+            }
+        } catch (e: Exception) {
+            showLog("Exception btc price: ${e.message}")
+        }
+
+        return  btc
     }
 
 }

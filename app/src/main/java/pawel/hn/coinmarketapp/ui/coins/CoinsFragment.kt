@@ -57,7 +57,6 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
     private fun subscribeToObservers() {
         viewModel.observableCoinList.observe(viewLifecycleOwner) { list ->
-            showLog("fragment: $currency")
             adapter.setCurrency(currency)
             adapter.submitList(list)
         }

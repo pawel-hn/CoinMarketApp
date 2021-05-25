@@ -43,7 +43,7 @@
     <string name="follow_system">Zgodnie z systemem</string>
     <string name="theme">Motyw</string>
     <string name="currency">Waluta</string>
-    <string name="about">O aplikacji</string>
+    <string name="about">O aplikacji:</string>
     <string name="news">Krypto Niusy</string>
     <string name="wait_for_connection">Poczekaj na połączenie</string>
     <string name="alert_hint">Podaj cene</string>
@@ -54,4 +54,5 @@
     <string name="clear_wallet_msg">To spowoduje wyczyszczenie wszystkich portfeli.</string>
     <string name="yes">Tak</string>
     <string name="no">Nie</string>
+    <string name="done_by">Przygotowane przez Paweł Hnacik</string>
 </resources>

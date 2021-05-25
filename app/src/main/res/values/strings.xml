@@ -46,7 +46,7 @@
     <string name="something_wrong">Something went wrong, refresh"</string>
     <string name="choose_coin">Choose coin:</string>
     <string name="currency">Currency</string>
-    <string name="about">About</string>
+    <string name="about">About this app:</string>
     <string name="cointelegraph" translatable="false">Cointelegraph</string>
     <string name="drawer_bottom" translatable="false">coinmarketcap.com</string>
 
@@ -97,6 +97,7 @@
     <string name="clear_wallet_msg">This will delete ALL coins from ALL wallets</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="done_by">App done by Pawel Hnacik</string>
 
 
 </resources>
