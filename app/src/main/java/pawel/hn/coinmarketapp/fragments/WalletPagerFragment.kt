@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.wallet
+package pawel.hn.coinmarketapp.fragments
 
 import android.os.Bundle
 import android.view.View

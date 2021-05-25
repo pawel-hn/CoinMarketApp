@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.news
+package pawel.hn.coinmarketapp.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.prof.rssparser.Article
 import pawel.hn.coinmarketapp.databinding.ItemNewsBinding
-import pawel.hn.coinmarketapp.util.showLog
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -26,7 +25,6 @@ class NewsAdapter(val list: List<Article>, val onCLick: (String) -> Unit) : Recy
     inner class NewsViewHolder(private val binding: ItemNewsBinding) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(article: Article) {
-            showLog("bind called")
 
             val dateSourceString = article.pubDate
             val sourceSdf = SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH)

@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.news
+package pawel.hn.coinmarketapp.fragments
 
 import android.content.Context
 import android.os.Bundle
@@ -8,10 +8,14 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.prof.rssparser.Parser
 import pawel.hn.coinmarketapp.R
+import pawel.hn.coinmarketapp.adapters.NewsAdapter
 import pawel.hn.coinmarketapp.databinding.FragmentNewsBinding
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.viewmodels.NewsViewModel
 
 
+/**
+ * Fragment displaying list of news from CoinTelegraph
+ */
 class NewsFragment : Fragment(R.layout.fragment_news) {
 
     private lateinit var newsAdapter: NewsAdapter
@@ -24,15 +28,14 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentNewsBinding.bind(view)
 
-        parser = Parser.Builder().build()
-
-
+        binding.lifecycleOwner = this
         binding.newsViewModel = viewModel
 
-        getData(parser, requireContext())
+        parser = Parser.Builder().build().also {
+            getData(it, requireContext())
+        }
 
         viewModel.rssChannel.observe(viewLifecycleOwner) { channel ->
-            showLog("rssChannel observer")
             if (channel != null) {
 
                 newsAdapter = NewsAdapter(channel.articles) {

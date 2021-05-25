@@ -6,6 +6,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 
 
 class WalletViewModelTest {

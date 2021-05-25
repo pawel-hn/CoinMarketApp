@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.settings
+package pawel.hn.coinmarketapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.ui.coins.CoinsViewModel
+import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 import pawel.hn.coinmarketapp.util.showLog
 
 

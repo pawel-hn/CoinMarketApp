@@ -3,9 +3,12 @@ package pawel.hn.coinmarketapp.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
+
+/**
+ * Standard Room Dao class to maintain wallets list presented to user.
+ */
 @Dao
 interface WalletDao {
-
 
     @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
     suspend fun insertIntoWallet(coin: Wallet)
@@ -21,6 +24,5 @@ interface WalletDao {
 
     @Update(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
     suspend fun updateWallet(coin: Wallet)
-
 
 }

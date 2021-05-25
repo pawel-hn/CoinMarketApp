@@ -28,14 +28,12 @@ enum class ValueType(val pattern: String) {
 
 
 fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String): SpannableString {
-
     val ccySymbol = when (currency) {
         CURRENCY_USD -> "$"
         CURRENCY_PLN-> "zł"
         CURRENCY_EUR -> "€"
         else -> ""
     }
-
     val df = DecimalFormat(type.pattern)
     df.roundingMode = RoundingMode.DOWN
 
@@ -50,7 +48,6 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String):
         spannablePrice.setSpan(dollarColor, 0,1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
     }
-
     return if (type == ValueType.Fiat) {
         spannablePrice
     } else {

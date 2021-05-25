@@ -4,13 +4,15 @@ import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponse
 import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseArray
 import pawel.hn.coinmarketapp.model.coinmarketcap.Data
 import pawel.hn.coinmarketapp.util.*
 import retrofit2.Response
 import javax.inject.Inject
 
+/**
+ * Repository class, responsible for handling requests between viewModels and data.
+ */
 class Repository @Inject constructor(
     val coins: CoinsData,
     val wallet: WalletData,
@@ -18,7 +20,11 @@ class Repository @Inject constructor(
 ) {
     var responseError = true
 
-    suspend fun refreshData(ccy: String) {
+
+    /**
+     * Getting new data from for all coins from CoinMarketCap.
+     */
+    suspend fun getCoinsData(ccy: String) {
         try {
             val response = remote.getCoins(
                 API_QUERY_START,
@@ -35,6 +41,9 @@ class Repository @Inject constructor(
     }
 
 
+    /**
+     * Whether response code is success or fail, passing on data further.
+     */
     private suspend fun handleApiResponse(response: Response<ApiResponseArray>, currency: String){
         when(response.code()) {
             200 -> responseSuccess(response.body(), currency)
@@ -42,6 +51,9 @@ class Repository @Inject constructor(
         }
     }
 
+    /**
+     * If code is one of errors, message is shows through logcat.
+     */
     private fun responseFail(responseCode: Int)  {
         responseError = true
         when(responseCode) {
@@ -51,7 +63,11 @@ class Repository @Inject constructor(
         }
     }
 
-
+    /**
+     * If response is success, fresh data is added to database. If database was not empty,
+     * updateCoins() method makes sure that coins which were marked as favourite,
+     * still are checked after refreshing data.
+     */
     private suspend fun responseSuccess(response: ApiResponseArray?, currency: String) {
         val list = mutableListOf<Coin>()
         response?.let { coinResponse ->
@@ -69,6 +85,10 @@ class Repository @Inject constructor(
 
     }
 
+    /**
+     * Bitcoin latest price, used by NotifyWorker to check if price alert criteria are met,
+     * also used by NotifyViewModel, so latest price is presented to user in NotifyFragment
+     */
     suspend fun getLatestBitcoinPrice(): Double? {
         var newPrice: Double? = null
         try {
@@ -86,6 +106,9 @@ class Repository @Inject constructor(
         return newPrice
     }
 
+    /**
+     * Bitcoin data for widget
+     */
     suspend fun getBitcoinData(): Data? {
        var btc: Data? = null
         try {

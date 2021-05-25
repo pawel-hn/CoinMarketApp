@@ -7,7 +7,7 @@
 
         <variable
             name="coinViewModel"
-            type="pawel.hn.coinmarketapp.ui.coins.CoinsViewModel" />
+            type="pawel.hn.coinmarketapp.viewmodels.CoinsViewModel" />
 
     </data>
 
@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:theme="@style/Theme.MyTheme"
-        tools:context=".ui.coins.CoinsFragment">
+        tools:context=".fragments.CoinsFragment">
 
         <ProgressBar
             android:id="@+id/progress_bar"

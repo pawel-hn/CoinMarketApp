@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.addeditdialog
+package pawel.hn.coinmarketapp.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentDialogAddEditBinding
+import pawel.hn.coinmarketapp.viewmodels.AddCoinViewModel
 
 @AndroidEntryPoint
 class AddCoinFragmentDialog : DialogFragment() {
@@ -46,6 +47,7 @@ class AddCoinFragmentDialog : DialogFragment() {
             btnDialogCancel.setOnClickListener {
                 dismiss()
             }
+
             btnDialogSave.setOnClickListener {
                 if (editTextVolume.text!!.isBlank()) {
                     Toast.makeText(requireContext(), R.string.dialog_error, Toast.LENGTH_SHORT)
@@ -61,6 +63,9 @@ class AddCoinFragmentDialog : DialogFragment() {
         return binding.root
     }
 
+    /**
+     * Spinner list with built in search field, shows available coins to the user
+     */
     private val spinnerCoinSelected = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             coinName = parent?.getItemAtPosition(position).toString()

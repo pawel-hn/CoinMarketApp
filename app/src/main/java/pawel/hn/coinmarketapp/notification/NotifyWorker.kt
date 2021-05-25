@@ -20,7 +20,11 @@ import pawel.hn.coinmarketapp.activity.MainActivity
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.*
 
-
+/**
+ * WorManager, if price alert is on, this class is responsible for background connection with CoinMarketCap,
+ * checking if price alert criteria is met, if yes, worker sends notification and clear notification database,
+ * which turns switch OFF.
+ */
 @HiltWorker
 class NotifyWorker @AssistedInject constructor(
     @Assisted val context: Context,
@@ -36,7 +40,6 @@ class NotifyWorker @AssistedInject constructor(
     )!!
 
     override suspend fun doWork(): Result {
-
         val currentPriceAlert = workParams.inputData
             .getDouble(PRICE_ALERT_INPUT, 10000.0)
 
@@ -56,7 +59,6 @@ class NotifyWorker @AssistedInject constructor(
                 repository.coins.deleteNotification()
             }
         }
-
         return Result.success()
     }
 

@@ -9,7 +9,7 @@
 
         <variable
             name="walletViewModel"
-            type="pawel.hn.coinmarketapp.ui.wallet.WalletViewModel" />
+            type="pawel.hn.coinmarketapp.viewmodels.WalletViewModel" />
     </data>
 
     <androidx.constraintlayout.motion.widget.MotionLayout
@@ -17,7 +17,7 @@
         android:layout_height="match_parent"
         android:background="@color/backGround"
         android:padding="8dp"
-        tools:context=".ui.wallet.WalletFragment"
+        tools:context=".fragments.WalletFragment"
         app:layoutDescription="@xml/fragment_wallet_scene"
         >
 

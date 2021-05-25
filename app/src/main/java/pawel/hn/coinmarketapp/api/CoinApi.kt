@@ -10,9 +10,15 @@ import retrofit2.http.Headers
 import retrofit2.http.Query
 
 
-
+/**
+ * Interface with two methods, to use for Retrofit to connect with Coinmarketcap API and get data.
+ */
 interface CoinApi {
 
+
+    /**
+     * Get data for amount(limit parameter) of coins.
+     */
     @Headers("$API_HEADER $API_KEY", "Accept: application/json")
     @GET("v1/cryptocurrency/listings/latest")
     suspend fun getCoinsFromNetwork(
@@ -21,6 +27,9 @@ interface CoinApi {
             @Query("convert") convert: String
      ): Response<ApiResponseArray>
 
+    /**
+     * Get data one particular coin. In this app used for Widget and Notification
+     */
     @Headers("$API_HEADER $API_KEY", "Accept: application/json")
     @GET("v1/cryptocurrency/quotes/latest")
     suspend fun getLatestSingleQuote(

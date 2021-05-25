@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.coins
+package pawel.hn.coinmarketapp.adapters
 
 import android.net.Uri
 import android.text.SpannableString
@@ -17,7 +17,10 @@ import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.util.*
 
-class CoinsAdapter(private val listener: CoinsOnClick) :
+/**
+ * Adapter for recycler view used in main list in CoinsFragment.
+ */
+class CoinsAdapter(val listener: OnCLickListener) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 
     private var currency: String = CURRENCY_USD
@@ -26,31 +29,24 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
         currency = ccy
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsViewHolder {
+    interface OnCLickListener {
+        fun onClick(coin: Coin, isChecked: Boolean)
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsAdapter.CoinsViewHolder {
         val binding = ItemCoinsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return CoinsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CoinsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: CoinsAdapter.CoinsViewHolder, position: Int) {
         val coin = getItem(position)
         holder.bind(coin)
     }
 
 
-
-    interface CoinsOnClick {
-        fun onCheckBoxClicked(coin: Coin, isChecked: Boolean)
-        fun onCoinClicked(coin: Coin)
-    }
-
     inner class CoinsViewHolder(private val binding: ItemCoinsBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener {
-                listener.onCoinClicked(getItem(adapterPosition))
-            }
-        }
 
         fun bind(coin: Coin) {
             val change7d = formatPriceChange(coin.change7d)
@@ -69,14 +65,12 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
                 )
                 spannablePrice.setSpan(dollarColor, 0,2, Spanned.SPAN_COMPOSING)
 
-
-
                 textViewPriceCoin.text = formatPriceAndVolForView(coin.price, ValueType.Fiat, currency)
                 checkboxFav.isChecked = coin.favourite
 
                 checkboxFav.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
-                        listener.onCheckBoxClicked(getItem(adapterPosition), checkboxFav.isChecked)
+                       listener.onClick(coin, checkboxFav.isChecked)
                     }
                 }
 
@@ -109,6 +103,4 @@ class CoinsAdapter(private val listener: CoinsOnClick) :
             return oldItem == newItem
         }
     }
-
-
 }

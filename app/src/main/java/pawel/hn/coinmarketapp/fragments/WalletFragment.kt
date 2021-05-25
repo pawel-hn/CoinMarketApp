@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.wallet
+package pawel.hn.coinmarketapp.fragments
 
 import android.content.SharedPreferences
 import android.graphics.Canvas
@@ -19,7 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentWalletBinding
-import pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialogDirections
+import pawel.hn.coinmarketapp.adapters.WalletAdapter
+import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 import pawel.hn.coinmarketapp.util.*
 
 @AndroidEntryPoint
@@ -32,9 +33,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
     private var walletNo: Int? = null
     private var currency = ""
 
-
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -46,15 +44,12 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             CURRENCY_USD
         )!!
 
-
-
         binding = FragmentWalletBinding.bind(view)
         adapter = WalletAdapter()
 
         walletNo = requireArguments()[WALLET_NO] as Int
 
         binding.apply {
-
 
             btnAddCoin.setOnClickListener {
                walletNo?.let {
@@ -78,7 +73,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
         setHasOptionsMenu(true)
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -130,6 +124,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             viewModel.walletRefresh(it)
         }
     }
+
 
     private val swipe = object : ItemTouchHelper
     .SimpleCallback(0, ItemTouchHelper.LEFT) {

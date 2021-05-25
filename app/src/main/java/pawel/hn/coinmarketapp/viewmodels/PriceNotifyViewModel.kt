@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.pricenotify
+package pawel.hn.coinmarketapp.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.*
@@ -19,16 +19,21 @@ class PriceNotifyViewModel @Inject constructor(
     @ApplicationContext context: Context
 ) : ViewModel() {
 
+    /**
+     * Livedata with latest price, presented to the user.
+     */
     private val _latestPrice = MutableLiveData<Double>()
     val latestPrice: LiveData<Double>
         get() = _latestPrice
 
+    /**
+     * Livedata which reflects state of switch in the NotifyFragment.
+     */
     private val _notificationOnOff = MutableLiveData<Boolean>()
     val notificationOnOff: LiveData<Boolean>
         get() = _notificationOnOff
 
     val notifications = repository.coins.notifications
-
     private var priceAlertData: Double = 0.0
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: PeriodicWorkRequest
@@ -39,6 +44,10 @@ class PriceNotifyViewModel @Inject constructor(
         setUpWorkManager(context)
     }
 
+    /**
+     * Based on state of switch this functions calls worker to check if price alert criteria is met or
+     * to cancel worker.
+     */
     fun notifyWorker(notificationOnOff: Boolean) {
         if (notificationOnOff) {
             workManager.enqueueUniquePeriodicWork(
@@ -56,30 +65,36 @@ class PriceNotifyViewModel @Inject constructor(
     }
 
     private fun setUpWorkManager(context: Context) {
-        showLog("viewModel setUpWorkManager through init")
         workManager = WorkManager.getInstance(context)
     }
 
 
+    /**
+     * Called from fragment in onCreateView to get previously set alarm and called
+     * when user sets new price alert. If notification switch is ON, Worker is updated.
+     */
     fun setPriceAlert(priceAlert: Int) {
-        showLog("viewModel setPriceAlert $priceAlert")
         priceAlertData = priceAlert.toDouble()
+        setCurrentPriceAlert(priceAlertData)
         if (notificationOnOff.value == true) {
             notifyWorker(true)
         }
-        setCurrentPriceAlert(priceAlertData)
     }
 
+    /**
+     * Called in setPriceAlert() in order to prepare work request for work manager.
+     */
     private fun setCurrentPriceAlert(alertPrice: Double) {
-        showLog("viewModel setCurrentPriceAlert $alertPrice")
         priceAlertData = alertPrice
         workRequest = PeriodicWorkRequestBuilder<NotifyWorker>(10, TimeUnit.MINUTES)
             .setInitialDelay(15, TimeUnit.SECONDS)
             .setInputData(setDataForWorker(priceAlertData))
             .build()
-
     }
 
+    /**
+     * Called to get latest btc price and display it in the fragment
+     */
     private fun getLatestPrice() {
         viewModelScope.launch {
             val price = repository.getLatestBitcoinPrice()
@@ -89,10 +104,17 @@ class PriceNotifyViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Called when switch is set to ON (true)
+     */
     fun setNotificationOn() {
         _notificationOnOff.postValue(true)
     }
 
+    /**
+     * Called when switch is set to OFF (false)
+     * and when table with notifications is empty
+     */
     fun setNotificationOff() {
         _notificationOnOff.postValue(false)
     }

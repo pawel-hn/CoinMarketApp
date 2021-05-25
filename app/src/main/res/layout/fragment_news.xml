@@ -7,14 +7,14 @@
 
         <variable
             name="newsViewModel"
-            type="pawel.hn.coinmarketapp.ui.news.NewsViewModel" />
+            type="pawel.hn.coinmarketapp.viewmodels.NewsViewModel" />
     </data>
 
     <RelativeLayout
         android:id="@+id/root_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".ui.news.NewsFragment">
+        tools:context=".fragments.NewsFragment">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_layout"

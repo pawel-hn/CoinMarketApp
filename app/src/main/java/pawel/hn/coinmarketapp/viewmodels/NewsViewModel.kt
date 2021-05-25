@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.news
+package pawel.hn.coinmarketapp.viewmodels
 
 import android.content.Context
 import androidx.lifecycle.LiveData
@@ -7,26 +7,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.prof.rssparser.Channel
 import com.prof.rssparser.Parser
-
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.util.BASE_URL_NEWS
 import pawel.hn.coinmarketapp.util.hasInternetConnection
-import pawel.hn.coinmarketapp.util.showLog
-
 
 class NewsViewModel : ViewModel() {
 
+    /**
+     * Livedata with Channel from RssParser library, observes data from CoinTelegraph.
+     */
     private val _rssChannel = MutableLiveData<Channel>()
     val rssChannel: LiveData<Channel>
         get() = _rssChannel
 
+    /**
+     * Error livedata, observed in xml layout through data binding.
+     */
     private val _eventError = MutableLiveData<Boolean>()
     val eventError: LiveData<Boolean>
         get() = _eventError
 
 
     fun fetchFeed(parser: Parser, context: Context) {
-        showLog("fetchFeed called")
         if (hasInternetConnection(context)) {
             viewModelScope.launch {
                 try {
@@ -55,7 +57,5 @@ class NewsViewModel : ViewModel() {
         } else {
             _eventError.value = true
         }
-
-        showLog("end of fetch ${eventError.value}")
     }
 }

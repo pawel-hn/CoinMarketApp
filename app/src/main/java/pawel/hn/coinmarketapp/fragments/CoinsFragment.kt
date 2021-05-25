@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.coins
+package pawel.hn.coinmarketapp.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -10,15 +10,16 @@ import androidx.fragment.app.viewModels
 import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
+import pawel.hn.coinmarketapp.adapters.CoinsAdapter
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.onQueryTextChanged
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
 @AndroidEntryPoint
-class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnClick {
+class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.OnCLickListener {
 
     private val viewModel: CoinsViewModel by viewModels()
     private lateinit var searchView: SearchView
@@ -26,13 +27,13 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
     private lateinit var adapter: CoinsAdapter
     private var currency = ""
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
+        /**
+         * Getting currency to be applied for api request.
+         */
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         currency = sharedPreferences.getString(
             requireContext().getString(R.string.settings_currency_key),
@@ -41,8 +42,9 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
 
         viewModel.refreshData(currency)
-        adapter = CoinsAdapter(this@CoinsFragment)
+        adapter = CoinsAdapter(this)
         binding = FragmentCoinsBinding.inflate(inflater, container, false)
+
         binding.apply {
             lifecycleOwner = this@CoinsFragment
             coinViewModel = viewModel
@@ -56,11 +58,11 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
 
     private fun subscribeToObservers() {
-        viewModel.observableCoinList.observe(viewLifecycleOwner) { list ->
+        viewModel.observableCoinsAllMediator.observe(viewLifecycleOwner) { list ->
             adapter.setCurrency(currency)
             adapter.submitList(list)
         }
-        viewModel.coinsTest.observe(viewLifecycleOwner) {}
+        viewModel.observableCoinsAll.observe(viewLifecycleOwner) {}
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -85,7 +87,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
                 binding.coinsRecyclerView.scrollToPosition(0)
             }
             R.id.menu_uncheck -> {
-                viewModel.unCheckAll()
+                viewModel.unCheckAllFavourites()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -106,11 +108,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.CoinsOnCli
 
     }
 
-    override fun onCheckBoxClicked(coin: Coin, isChecked: Boolean) {
-        viewModel.coinCheckedBoxClicked(coin, isChecked)
-    }
-
-    override fun onCoinClicked(coin: Coin) {
-        showLog(coin.toString())
+    override fun onClick(coin: Coin, isChecked: Boolean) {
+       viewModel.coinFavouriteClicked(coin, isChecked)
     }
 }

@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.ui.pricenotify
+package pawel.hn.coinmarketapp.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -10,6 +10,7 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentPriceNotifyBinding
+import pawel.hn.coinmarketapp.viewmodels.PriceNotifyViewModel
 import pawel.hn.coinmarketapp.util.*
 
 @AndroidEntryPoint
@@ -19,8 +20,6 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
     lateinit var binding: FragmentPriceNotifyBinding
     private var latestPrice = 0.0
     private var currency = ""
-
-
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -52,19 +51,19 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
 
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
-                        sharedPref.put {
-                            putBoolean(SAVE_SWITCH_ON_OFF, isChecked)
-                        }
+                        sharedPref.put { putBoolean(SAVE_SWITCH_ON_OFF, isChecked) }
                         viewModel.setNotificationOn()
                     } else {
-                        sharedPref.put {
-                            putBoolean(SAVE_SWITCH_ON_OFF, isChecked)
-                        }
+                        sharedPref.put { putBoolean(SAVE_SWITCH_ON_OFF, isChecked) }
                         viewModel.setNotificationOff()
                     }
                 }
             }
 
+            /**
+             * When user press save, first validation if proper or any number has been provided.
+             * If yes, current alert text view is updated and also alert value is sent to viewModel.
+             */
             btnPriceAlertUpdate.setOnClickListener {
                 var priceAlert: Int? = null
                 if (!editTextPriceToAlert.text.isNullOrEmpty()) {
@@ -87,9 +86,7 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                     }
 
                     else -> {
-                        sharedPref.put {
-                            putInt(SAVE_CURRENT_PRICE_ALERT, priceAlert)
-                        }
+                        sharedPref.put { putInt(SAVE_CURRENT_PRICE_ALERT, priceAlert) }
                         viewModel.setPriceAlert(priceAlert)
                         tvCurrPriceAlert.text =
                             formatPriceAndVolForView(priceAlert.toDouble(), ValueType.Fiat, currency)
@@ -111,16 +108,26 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
 
     private fun subscribeToObservers(binding: FragmentPriceNotifyBinding) {
 
+        /**
+         * Display latest BTC price
+         */
         viewModel.latestPrice.observe(viewLifecycleOwner) {
             latestPrice = it
             binding.tvLatestPrice.text = formatPriceAndVolForView(it, ValueType.Fiat, currency)
         }
 
+        /**
+         * Determinate state of switch and call worker or cancels it.
+         */
         viewModel.notificationOnOff.observe(viewLifecycleOwner) {
             viewModel.notifyWorker(it)
             binding.notificationSwitch.isChecked = it
         }
 
+        /**
+         * If notification was sent, price alert criteria met,
+         * notification table in database is cleared and switch turn OFF
+         */
         viewModel.notifications.observe(viewLifecycleOwner) { list ->
             showLog("notifications obs, list: ${list.size}")
             if (list.isEmpty()) {

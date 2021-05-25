@@ -7,17 +7,17 @@
 
     <fragment
         android:id="@+id/coinsFragment"
-        android:name="pawel.hn.coinmarketapp.ui.coins.CoinsFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.CoinsFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_coins" />
     <fragment
         android:id="@+id/walletFragment"
-        android:name="pawel.hn.coinmarketapp.ui.wallet.WalletFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.WalletFragment"
         android:label="Wallet"
         tools:layout="@layout/fragment_wallet"/>
     <dialog
         android:id="@+id/addCoinFragmentDialog"
-        android:name="pawel.hn.coinmarketapp.ui.addeditdialog.AddCoinFragmentDialog"
+        android:name="pawel.hn.coinmarketapp.fragments.AddCoinFragmentDialog"
         android:label="AddCoinFragmentDialog" >
         <argument
             android:name="walletNumber"
@@ -25,22 +25,22 @@
     </dialog>
     <fragment
         android:id="@+id/priceNotifyFragment"
-        android:name="pawel.hn.coinmarketapp.ui.pricenotify.PriceNotifyFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.PriceNotifyFragment"
         android:label="@string/notification" />
     <fragment
         android:id="@+id/walletsFragment"
-        android:name="pawel.hn.coinmarketapp.ui.wallet.WalletPagerFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.WalletPagerFragment"
         android:label="@string/wallet" />
 
     <action android:id="@+id/action_global_addCoinFragmentDialog"
         app:destination="@id/addCoinFragmentDialog" />
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="pawel.hn.coinmarketapp.ui.settings.SettingsFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.SettingsFragment"
         android:label="@string/settings" />
     <fragment
         android:id="@+id/newsFragment"
-        android:name="pawel.hn.coinmarketapp.ui.news.NewsFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.NewsFragment"
         android:label="@string/cointelegraph"
         tools:layout="@layout/fragment_news">
         <action
@@ -49,7 +49,7 @@
     </fragment>
     <fragment
         android:id="@+id/newsWebFragment"
-        android:name="pawel.hn.coinmarketapp.ui.news.NewsWebFragment"
+        android:name="pawel.hn.coinmarketapp.fragments.NewsWebFragment"
         android:label="@string/cointelegraph"
         tools:layout="@layout/fragment_news_webview">
         <argument
@@ -58,10 +58,6 @@
     </fragment>
     <dialog
         android:id="@+id/aboutFragmentDialog"
-        android:name="pawel.hn.coinmarketapp.ui.AboutDialogFragment"
-        android:label="AboutDialogFragment" >
-        <action
-            android:id="@+id/action_aboutFragmentDialog_to_nav_graph"
-            app:popUpTo="@id/nav_graph" />
-    </dialog>
+        android:name="pawel.hn.coinmarketapp.fragments.AboutDialogFragment"
+        android:label="AboutDialogFragment" />
 </navigation>

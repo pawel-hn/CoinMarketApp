@@ -9,11 +9,13 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.R
 
+/**
+ * Binding adapters used for showing progress bar and error massages.
+ */
 
 class BindingAdapter {
 
     companion object {
-
 
         @BindingAdapter("progressBarVisibility")
         @JvmStatic

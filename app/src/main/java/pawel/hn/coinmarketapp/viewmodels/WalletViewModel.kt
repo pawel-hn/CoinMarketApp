@@ -1,8 +1,7 @@
-package pawel.hn.coinmarketapp.ui.wallet
+package pawel.hn.coinmarketapp.viewmodels
 
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Typeface
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
@@ -38,6 +37,9 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
 
     fun calculateTotalBalance(list: List<Wallet>): Double = list.sumByDouble { it.total }
 
+    /**
+     * Function which consolidates all three wallets.
+     */
     fun totalWallet(list: List<Wallet>): List<Wallet> {
 
         val totalList = mutableListOf<Wallet>()
@@ -73,12 +75,16 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         repository.wallet.deleteFromWallet(coin)
     }
 
+    /**
+     * Calls and api so latest price can be displayed in wallet
+     */
     fun refreshData(ccy: String) = viewModelScope.launch {
         _eventProgressBar.value = true
-        repository.refreshData(ccy)
+        repository.getCoinsData(ccy)
         _eventProgressBar.value = false
         _eventErrorResponse.value = repository.responseError
     }
+
 
     fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
 
@@ -100,6 +106,9 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             repository.wallet.deleteAllFromWallets()
         }
     }
+
+
+
 
     fun setChart(list: List<Wallet>, pieChart: PieChart, context: Context) {
         val entries = ArrayList<PieEntry>()
