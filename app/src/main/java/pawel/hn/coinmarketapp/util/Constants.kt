@@ -11,7 +11,8 @@ const val CURRENCY_EUR = "EUR"
 const val DATABASE_NAME = "coins"
 
 const val BASE_URL_COINS = "https://pro-api.coinmarketcap.com/"
-const val API_KEY = "6ad8c4b0-fce8-41c8-86fb-a509c166d269"
+
+const val API_KEY = "put your coinmarketcap api key here"
 const val API_HEADER = "X-CMC_PRO_API_KEY:"
 
 const val BASE_URL_NEWS = "https://cointelegraph.com/rss/"
