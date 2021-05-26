@@ -20,17 +20,13 @@ import pawel.hn.coinmarketapp.util.*
 /**
  * Adapter for recycler view used in main list in CoinsFragment.
  */
-class CoinsAdapter(val listener: OnCLickListener) :
+class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 
     private var currency: String = CURRENCY_USD
 
     fun setCurrency(ccy: String) {
         currency = ccy
-    }
-
-    interface OnCLickListener {
-        fun onClick(coin: Coin, isChecked: Boolean)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CoinsAdapter.CoinsViewHolder {
@@ -70,7 +66,7 @@ class CoinsAdapter(val listener: OnCLickListener) :
 
                 checkboxFav.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
-                       listener.onClick(coin, checkboxFav.isChecked)
+                       onClick(coin, checkboxFav.isChecked)
                     }
                 }
 

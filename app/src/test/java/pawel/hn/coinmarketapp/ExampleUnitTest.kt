@@ -20,28 +20,22 @@ class ExampleUnitTest {
     }
 
 
-//    @Test
-//    fun formatter() {
-//        val number = pawel.hn.coinmarketapp.util.formatter.format(1234.57).replace(",", ".")
-//
-//        assertThat(number).isEqualTo("1 234.57")
-//    }
-//
-//    @Test
-//    fun numberFormat() {
-//        val number = numberUtil.format(12345.6789)
-//
-//        assertThat(number).isEqualTo("12 345,679")
-//    }
-//
-//
-//
-//    @Test
-//    fun formatterTotal() {
-//        val doubleForFormatter = 12345.6789
-//        val stringExpected = "12,346"
-//
-//        assertThat(pawel.hn.coinmarketapp.util.formatterTotal.format(doubleForFormatter)).matches(stringExpected)
-//    }
+    @Test
+    fun formatter() {
+        val number = pawel.hn.coinmarketapp.util.formatter.format(1234.57).replace(",", ".")
+
+        assertThat(number).isEqualTo("1 234.57")
+    }
+
+    @Test
+    fun numberFormat() {
+        val number = numberUtil.format(12345.6789)
+
+        assertThat(number).isEqualTo("12 345,679")
+    }
+
+
+
+
 
 }

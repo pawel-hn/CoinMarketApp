@@ -19,7 +19,7 @@ import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
 @AndroidEntryPoint
-class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.OnCLickListener {
+class CoinsFragment : Fragment(R.layout.fragment_coins) {
 
     private val viewModel: CoinsViewModel by viewModels()
     private lateinit var searchView: SearchView
@@ -42,7 +42,9 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.OnCLickLis
 
 
         viewModel.refreshData(currency)
-        adapter = CoinsAdapter(this)
+        adapter = CoinsAdapter { coin, isChecked ->
+            viewModel.coinFavouriteClicked(coin, isChecked)
+        }
         binding = FragmentCoinsBinding.inflate(inflater, container, false)
 
         binding.apply {
@@ -105,10 +107,5 @@ class CoinsFragment : Fragment(R.layout.fragment_coins), CoinsAdapter.OnCLickLis
                 )
             }
         }
-
-    }
-
-    override fun onClick(coin: Coin, isChecked: Boolean) {
-       viewModel.coinFavouriteClicked(coin, isChecked)
     }
 }
