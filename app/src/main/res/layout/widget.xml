@@ -72,7 +72,7 @@
             android:id="@+id/text_view_24h_change_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
             android:layout_marginBottom="4dp"
             tools:text="24h 50%" />
 
@@ -80,7 +80,7 @@
             android:id="@+id/text_view_7d_change_widget"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
+            android:textAlignment="textEnd"
             tools:text="7d 50%" />
 
     </LinearLayout>

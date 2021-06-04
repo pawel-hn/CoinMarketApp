@@ -13,12 +13,14 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.activity.MainActivity
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.*
+import javax.inject.Inject
 
 /**
  * WorManager, if price alert is on, this class is responsible for background connection with CoinMarketCap,
@@ -28,9 +30,11 @@ import pawel.hn.coinmarketapp.util.*
 @HiltWorker
 class NotifyWorker @AssistedInject constructor(
     @Assisted val context: Context,
-    @Assisted val workParams: WorkerParameters,
-    private val repository: Repository
+    @Assisted val workParams: WorkerParameters
 ) : CoroutineWorker(context, workParams) {
+
+    @Inject
+    lateinit var repository: Repository
 
     private var notificationID = 2
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -48,6 +52,7 @@ class NotifyWorker @AssistedInject constructor(
         withContext(Dispatchers.IO) {
             val newPrice = repository.getLatestBitcoinPrice()
 
+
             if (newPrice != null && newPrice > currentPriceAlert) {
                 sendNotification(
                     "price above: " +
@@ -56,7 +61,7 @@ class NotifyWorker @AssistedInject constructor(
                             currency)}," +
                             " it's ${formatPriceAndVolForView(newPrice, ValueType.Fiat, currency)}"
                 )
-                repository.coins.deleteNotification()
+            repository.coins.deleteNotification()
             }
         }
         return Result.success()

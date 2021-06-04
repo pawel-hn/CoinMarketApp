@@ -7,10 +7,8 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.os.Build
 import android.util.TypedValue.COMPLEX_UNIT_SP
 import android.widget.RemoteViews
-import androidx.annotation.RequiresApi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

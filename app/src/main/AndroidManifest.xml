@@ -38,15 +38,6 @@
 </intent-filter>
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/widget_provider" />
-
-
         </receiver>
-        
-        
     </application>
-    
-    
-
-
-
 </manifest>

@@ -31,6 +31,8 @@
                 app:shimmer_recycler_layout="@layout/item_news_shimmer"
                 tools:listitem="@layout/item_news" />
 
+
+
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView

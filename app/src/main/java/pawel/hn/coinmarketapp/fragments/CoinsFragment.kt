@@ -11,10 +11,10 @@ import androidx.preference.PreferenceManager
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.adapters.CoinsAdapter
-import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.onQueryTextChanged
+import pawel.hn.coinmarketapp.util.showLog
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
@@ -61,6 +61,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
 
     private fun subscribeToObservers() {
         viewModel.observableCoinsAllMediator.observe(viewLifecycleOwner) { list ->
+            showLog("mediator livedata called")
             adapter.setCurrency(currency)
             adapter.submitList(list)
         }

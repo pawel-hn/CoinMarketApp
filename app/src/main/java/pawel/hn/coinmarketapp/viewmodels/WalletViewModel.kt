@@ -35,7 +35,7 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
     val eventErrorResponse: LiveData<Boolean>
         get() = _eventErrorResponse
 
-    fun calculateTotalBalance(list: List<Wallet>): Double = list.sumByDouble { it.total }
+    fun calculateTotalBalance(list: List<Wallet>): Double = list.sumOf { it.total }
 
     /**
      * Function which consolidates all three wallets.
@@ -51,8 +51,8 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             } else {
                 listOfCoinIds.add(coinLoop.coinId)
                 val tempList = list.filter { it.coinId == coinLoop.coinId }
-                val newVolume = tempList.sumByDouble { it.volume }
-                val newTotal = tempList.sumByDouble { it.total }
+                val newVolume = tempList.sumOf{ it.volume }
+                val newTotal = tempList.sumOf { it.total }
                 totalList.add(
                     Wallet(
                         coinId = coinLoop.coinId,
@@ -108,8 +108,6 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
     }
 
 
-
-
     fun setChart(list: List<Wallet>, pieChart: PieChart, context: Context) {
         val entries = ArrayList<PieEntry>()
         if (!list.isNullOrEmpty()) {
@@ -147,8 +145,6 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             valueLinePart1OffsetPercentage = 80f
             valueLinePart1Length = 0.3f
             valueLinePart2Length = 0.4f
-
-
         }
 
         val dataPie = PieData(setData)
@@ -165,6 +161,5 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             setNoDataText("Empty wallet")
             invalidate()
         }
-
     }
 }

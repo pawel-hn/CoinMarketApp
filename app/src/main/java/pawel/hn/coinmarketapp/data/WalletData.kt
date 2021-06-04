@@ -12,9 +12,14 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
 
     val wallet = walletDao.getWallet()
 
+
+    /**
+     * adds coins to wallet, if choosen crypto is already in particular wallet,
+     * its updated with added volume and new total.
+     */
     suspend fun addToWallet(newCoin: Wallet) {
-        val oldCoin = wallet.value?.
-        find {it.coinId == newCoin.coinId && it.walletNo == newCoin.walletNo }
+        val oldCoin =
+            wallet.value?.find { it.coinId == newCoin.coinId && it.walletNo == newCoin.walletNo }
 
         if (oldCoin != null) {
             val newVolume = newCoin.volume + oldCoin.volume
@@ -44,7 +49,12 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
     /**
      * Creates Wallet object, representing particular crypto which user added to one of three wallets.
      */
-    fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int, coins: List<Coin>): Wallet {
+    fun createWalletCoin(
+        coinName: String,
+        coinVolume: Double,
+        walletNo: Int,
+        coins: List<Coin>
+    ): Wallet {
         val price = coins.find { it.name == coinName }?.price ?: 0.0
         val coinId = coins.find { it.name == coinName }?.coinId ?: 1
         val symbol = coins.find { it.name == coinName }?.symbol ?: ""

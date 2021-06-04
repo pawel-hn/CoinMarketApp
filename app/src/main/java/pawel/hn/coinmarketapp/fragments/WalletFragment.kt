@@ -10,6 +10,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -65,6 +66,8 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
             if (walletNo!! < 3) {
                 ItemTouchHelper(swipe).attachToRecyclerView(recyclerViewWallet)
+            } else {
+                btnAddCoin.visibility = View.GONE
             }
 
         }

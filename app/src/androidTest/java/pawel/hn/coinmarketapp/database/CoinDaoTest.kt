@@ -43,7 +43,7 @@ class CoinDaoTest {
     @Test
     fun insertCoin_returnsInsertedCoin() = runBlockingTest {
         val testCoin = Coin(1, "testCoin",
-            "ct", false, 1.0, 0.02)
+            "ct", false, 1.0, 0.02, 0.1, 1)
         coinDao.insert(testCoin)
         val testList = coinDao.getAllCoins("").getOrAwaitValue()
 
@@ -53,11 +53,11 @@ class CoinDaoTest {
     @Test
     fun getCheckedCoins_returnsOnlyFavourite() = runBlockingTest {
         val testCoin1 = Coin(1, "testCoin",
-            "ct", false, 1.0, 0.02)
+            "ct", false, 1.0, 0.02, 0.1, 1)
         val testCoin2 = Coin(2, "testCoin",
-            "ct", true, 1.0, 0.02)
+            "ct", true, 1.0, 0.02, 0.1, 1)
         val testCoin3 = Coin(3, "testCoin",
-            "ct", true, 1.0, 0.02)
+            "ct", true, 1.0, 0.02, 0.1, 1)
         val coinTestListInput = listOf(testCoin1, testCoin2, testCoin3)
         coinDao.insertAll(coinTestListInput)
         val coinTestListOutput = coinDao.getCheckedCoins("").getOrAwaitValue()
