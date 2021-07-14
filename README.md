@@ -1,19 +1,23 @@
 # CoinMarketApp
 
 Simple app which shows current  price for 100 cryptos with highest market cap and simple wallet to calculate holdings.<br>
--prices in USD, EUR, PLN<br>
--create up to three wallets<br>
--Bitcoin price alarm<br>
--news from crypto-world<br>
--widget with latest Bitcoin price and % change<br>
--ver. EN and PL
+* Prices in USD, EUR, PLN<br>
+* Create up to three wallets<br>
+* Bitcoin price alarm<br>
+* News from crypto-world<br>
+* Widget with latest Bitcoin price and % change<br>
+* Ver. EN and PL
+
+### Data Sources:
+
+Rates provided by API from coinmarketcap.com.<br>
+News provided by RSS from cointelegraph.com
+
+### Libraries:
+
+Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
 <br>
-Based on API from coinmarketcap.com.<br>
-News from cointelegraph.com
-<br>
-Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode.<br>
-<br>
-Other libraries:
+Other:<br>
 Glide, MPAndroidChrt, RSS Parser, SpinnerSearchable
 <br>
 
