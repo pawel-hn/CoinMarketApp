@@ -13,9 +13,11 @@ import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
-import pawel.hn.coinmarketapp.util.showLog
 
 
+/**
+ * Fragment which is responsible for answering user interactions with settings.
+ */
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 
@@ -25,15 +27,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.fragment_settings, rootKey)
 
-
-
         val preferenceTheme = findPreference<ListPreference>(
             getString(R.string.settings_theme_key)
         )
         preferenceTheme?.setOnPreferenceChangeListener { _, newValue ->
             when(newValue.toString()) {
                 getString(R.string.dark_theme) -> {
-                    showLog("dark theme")
                     AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
                     true
                 }
@@ -49,19 +48,18 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-
         val preferenceCurrency = findPreference<ListPreference>(
             getString(R.string.settings_currency_key)
         )
         preferenceCurrency?.setOnPreferenceChangeListener { _, newValue ->
-            Toast.makeText(requireContext(), "Currency set to ${newValue.toString()}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(),
+                "${requireContext().getString(R.string.currency_set)} " +
+                    newValue.toString(), Toast.LENGTH_SHORT).show()
             viewModel.refreshData(newValue.toString())
 
             true
         }
     }
-
-
 
     override fun onCreateRecyclerView(
         inflater: LayoutInflater?,

@@ -98,6 +98,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="done_by">App done by Pawel Hnacik</string>
+    <string name="currency_set">Currency set to</string>
 
 
 </resources>

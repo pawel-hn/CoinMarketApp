@@ -87,7 +87,6 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
                 item.isChecked = !item.isChecked
                 applyStarColor(item.isChecked, item)
                 viewModel.showFavourites(item.isChecked)
-                binding.coinsRecyclerView.scrollToPosition(0)
             }
             R.id.menu_uncheck -> {
                 viewModel.unCheckAllFavourites()
