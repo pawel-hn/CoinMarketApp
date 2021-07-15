@@ -20,5 +20,9 @@ Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notif
 Other:<br>
 Glide, MPAndroidChrt, RSS Parser, SpinnerSearchable
 <br>
+<br>
+Functionality:<br>
 
+<br>
+Screenshots:<br>
 ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_list.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_wallet.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_news.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_alarm.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_drawer.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_widget.png)
