@@ -15,7 +15,7 @@ News provided by RSS from cointelegraph.com
 
 ### Libraries:
 
-Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
+Android Architecture components, MVVM, Data Binding, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
 <br>
 Other:<br>
 Glide, MPAndroidChrt, RSS Parser, SpinnerSearchable
