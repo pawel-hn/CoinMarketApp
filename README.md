@@ -15,10 +15,19 @@ News provided by RSS from cointelegraph.com
 
 ### Libraries:
 
-Android Architecture components, MVVM, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
+Android Architecture components, MVVM, Data Binding, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
 <br>
 Other:<br>
 Glide, MPAndroidChrt, RSS Parser, SpinnerSearchable
-<br>
 
-![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_list.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_wallet.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_news.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_alarm.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_drawer.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_widget.png)
+### Functionality:
+
+List and wallet:<br>
+<img src="https://s6.gifyu.com/images/coins1e75be092b9ba7ddd.gif"/><br>
+List, themes, currencies:<br>
+<img src="https://s6.gifyu.com/images/coins21cbe213c09dfc95f.gif"/><br>
+News and Notification:<br>
+<img src="https://s6.gifyu.com/images/coins3.gif"/>
+<br>
+Screenshots:<br>
+![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_list.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_wallet.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_news.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_alarm.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_drawer.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_widget.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_dark.png) ![Screenshoto](https://github.com/pawel-hn/CoinMarketApp/blob/master/screen_about.png)
