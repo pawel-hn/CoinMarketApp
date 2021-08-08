@@ -13,9 +13,7 @@ import pawel.hn.coinmarketapp.databinding.FragmentNewsBinding
 import pawel.hn.coinmarketapp.viewmodels.NewsViewModel
 
 
-/**
- * Fragment displaying list of news from CoinTelegraph
- */
+
 class NewsFragment : Fragment(R.layout.fragment_news) {
 
     private lateinit var newsAdapter: NewsAdapter
@@ -28,8 +26,10 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentNewsBinding.bind(view)
 
-        binding.lifecycleOwner = this
-        binding.newsViewModel = viewModel
+        binding.apply {
+            lifecycleOwner = this@NewsFragment
+            newsViewModel = viewModel
+        }
 
         parser = Parser.Builder().build().also {
             getData(it, requireContext())
@@ -62,9 +62,13 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
         viewModel.fetchFeed(parser, context)
     }
 
-    private fun hideShimmerEffect() = binding.recyclerViewNews.hideShimmer()
+    private fun hideShimmerEffect() {
+        binding.recyclerViewNews.hideShimmer()
+    }
 
-    private fun showShimmerEffect() = binding.recyclerViewNews.showShimmer()
+    private fun showShimmerEffect() {
+        binding.recyclerViewNews.showShimmer()
+    }
 
 
 }

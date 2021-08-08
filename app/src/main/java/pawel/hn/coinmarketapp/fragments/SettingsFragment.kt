@@ -15,9 +15,7 @@ import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
-/**
- * Fragment which is responsible for answering user interactions with settings.
- */
+
 @AndroidEntryPoint
 class SettingsFragment : PreferenceFragmentCompat() {
 

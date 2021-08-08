@@ -9,9 +9,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import pawel.hn.coinmarketapp.R
 
-/**
- * Binding adapters used for showing progress bar and error massages.
- */
+
 
 class BindingAdapter {
 
@@ -21,14 +19,12 @@ class BindingAdapter {
         @JvmStatic
         fun progressBarVisibility(view: View, isVisible: Boolean) {
             if (isVisible) {
-                showLog("proressBard called")
                 when (view) {
                     is RecyclerView -> view.visibility = View.GONE
                     is LinearLayout -> view.visibility = View.GONE
                     is ProgressBar -> view.visibility = View.VISIBLE
                 }
             } else {
-                showLog("proressBard hide")
                 when (view) {
                     is RecyclerView -> view.visibility = View.VISIBLE
                     is LinearLayout -> view.visibility = View.GONE

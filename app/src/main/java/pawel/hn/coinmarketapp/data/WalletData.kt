@@ -5,18 +5,11 @@ import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.database.WalletDao
 import javax.inject.Inject
 
-/**
- * Class responsible for interactions between coins added by user to wallet and presenting them to him.
- */
+
 class WalletData @Inject constructor(private val walletDao: WalletDao) {
 
     val wallet = walletDao.getWallet()
 
-
-    /**
-     * adds coins to wallet, if choosen crypto is already in particular wallet,
-     * its updated with added volume and new total.
-     */
     suspend fun addToWallet(newCoin: Wallet) {
         val oldCoin =
             wallet.value?.find { it.coinId == newCoin.coinId && it.walletNo == newCoin.walletNo }
@@ -32,9 +25,13 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
         }
     }
 
-    suspend fun deleteFromWallet(coin: Wallet) = walletDao.deleteFromWallet(coin)
+    suspend fun deleteFromWallet(coin: Wallet) {
+        walletDao.deleteFromWallet(coin)
 
-    suspend fun deleteAllFromWallets() = walletDao.deleteAllFromWallets()
+    }
+    suspend fun deleteAllFromWallets() {
+        walletDao.deleteAllFromWallets()
+    }
 
     suspend fun updateWallet(coin: Wallet, newPrice: Double) {
         val newTotal = coin.volume * newPrice
@@ -46,9 +43,7 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
         )
     }
 
-    /**
-     * Creates Wallet object, representing particular crypto which user added to one of three wallets.
-     */
+
     fun createWalletCoin(
         coinName: String,
         coinVolume: Double,

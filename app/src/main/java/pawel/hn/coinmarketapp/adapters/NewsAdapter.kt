@@ -18,7 +18,9 @@ class NewsAdapter(val list: List<Article>, val onCLick: (String) -> Unit) : Recy
         return NewsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) = holder.bind(list[position])
+    override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
+        holder.bind(list[position])
+    }
 
     override fun getItemCount(): Int = list.size
 

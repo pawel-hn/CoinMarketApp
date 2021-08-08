@@ -13,20 +13,15 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.activity.MainActivity
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.CoinsRepository
 import pawel.hn.coinmarketapp.util.*
 import javax.inject.Inject
 
-/**
- * WorManager, if price alert is on, this class is responsible for background connection with CoinMarketCap,
- * checking if price alert criteria is met, if yes, worker sends notification and clear notification database,
- * which turns switch OFF.
- */
+
 @HiltWorker
 class NotifyWorker @AssistedInject constructor(
     @Assisted val context: Context,
@@ -34,7 +29,7 @@ class NotifyWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workParams) {
 
     @Inject
-    lateinit var repository: Repository
+    lateinit var coinsRepository: CoinsRepository
 
     private var notificationID = 2
     private val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -47,10 +42,9 @@ class NotifyWorker @AssistedInject constructor(
         val currentPriceAlert = workParams.inputData
             .getDouble(PRICE_ALERT_INPUT, 10000.0)
 
-        showLog("doWork: $currentPriceAlert")
 
         withContext(Dispatchers.IO) {
-            val newPrice = repository.getLatestBitcoinPrice()
+            val newPrice = coinsRepository.getLatestBitcoinPrice()
 
 
             if (newPrice != null && newPrice > currentPriceAlert) {
@@ -61,7 +55,7 @@ class NotifyWorker @AssistedInject constructor(
                             currency)}," +
                             " it's ${formatPriceAndVolForView(newPrice, ValueType.Fiat, currency)}"
                 )
-            repository.coins.deleteNotification()
+            coinsRepository.coins.deleteNotification()
             }
         }
         return Result.success()

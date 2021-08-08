@@ -14,24 +14,26 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.CoinsRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class WalletViewModel @Inject constructor(private val coinsRepository: CoinsRepository) : ViewModel() {
 
-    val walletLiveData = repository.wallet.wallet
-    val coinLiveData = repository.coins.coinsAll
+    val walletLiveData = coinsRepository.wallet.wallet
+    val coinLiveData = coinsRepository.coins.coinsAll
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean>
         get() = _eventProgressBar
 
-    private val _eventErrorResponse = MutableLiveData<Boolean>()
+    private val _eventErrorResponse = MutableLiveData<Boolean>(false)
     val eventErrorResponse: LiveData<Boolean>
         get() = _eventErrorResponse
 
@@ -72,17 +74,21 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
 
 
     fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
-        repository.wallet.deleteFromWallet(coin)
+        coinsRepository.wallet.deleteFromWallet(coin)
     }
 
     /**
      * Calls and api so latest price can be displayed in wallet
      */
-    fun refreshData(ccy: String) = viewModelScope.launch {
+    fun refreshData(ccy: String) {
         _eventProgressBar.value = true
-        repository.getCoinsData(ccy)
-        _eventProgressBar.value = false
-        _eventErrorResponse.value = repository.responseError
+        viewModelScope.launch(Dispatchers.IO) {
+            coinsRepository.getCoinsData(ccy)
+           withContext(Dispatchers.Main) {
+               _eventProgressBar.value = false
+               _eventErrorResponse.value = coinsRepository.responseError
+           }
+        }
     }
 
 
@@ -97,13 +103,13 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         }
         walletLiveData.value!!.forEach { coin ->
             val newPrice = listTemp.filter { it.name == coin.name }[0].price
-            repository.wallet.updateWallet(coin, newPrice)
+            coinsRepository.wallet.updateWallet(coin, newPrice)
         }
     }
 
     fun deleteAll() {
         viewModelScope.launch {
-            repository.wallet.deleteAllFromWallets()
+            coinsRepository.wallet.deleteAllFromWallets()
         }
     }
 

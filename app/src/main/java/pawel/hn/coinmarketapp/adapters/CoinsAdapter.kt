@@ -17,9 +17,7 @@ import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.util.*
 
-/**
- * Adapter for recycler view used in main list in CoinsFragment.
- */
+
 class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 
@@ -39,15 +37,12 @@ class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
         holder.bind(coin)
     }
 
-
     inner class CoinsViewHolder(private val binding: ItemCoinsBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
 
         fun bind(coin: Coin) {
             val change7d = formatPriceChange(coin.change7d)
             val change24h = formatPriceChange(coin.change24h)
-
 
             binding.apply {
                 textViewName.text = coin.name

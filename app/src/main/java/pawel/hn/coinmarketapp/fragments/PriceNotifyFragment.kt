@@ -60,10 +60,7 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
                 }
             }
 
-            /**
-             * When user press save, first validation if proper or any number has been provided.
-             * If yes, current alert text view is updated and also alert value is sent to viewModel.
-             */
+
             btnPriceAlertUpdate.setOnClickListener {
                 var priceAlert: Int? = null
                 if (!editTextPriceToAlert.text.isNullOrEmpty()) {
@@ -108,26 +105,16 @@ class PriceNotifyFragment : Fragment(R.layout.fragment_price_notify) {
 
     private fun subscribeToObservers(binding: FragmentPriceNotifyBinding) {
 
-        /**
-         * Display latest BTC price
-         */
         viewModel.latestPrice.observe(viewLifecycleOwner) {
             latestPrice = it
             binding.tvLatestPrice.text = formatPriceAndVolForView(it, ValueType.Fiat, currency)
         }
 
-        /**
-         * Determinate state of switch and call worker or cancels it.
-         */
         viewModel.notificationOnOff.observe(viewLifecycleOwner) {
             viewModel.notifyWorker(it)
             binding.notificationSwitch.isChecked = it
         }
 
-        /**
-         * If notification was sent, price alert criteria met,
-         * notification table in database is cleared and switch turn OFF
-         */
         viewModel.notifications.observe(viewLifecycleOwner) { list ->
             showLog("notifications obs, list: ${list.size}")
             if (list.isEmpty()) {

@@ -32,54 +32,12 @@
             tools:visibility="visible" />
 
 
-        <LinearLayout
-            android:id="@+id/linear_lay"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:orientation="horizontal"
-            android:paddingTop="8dp"
-            android:background="@color/backGround"
+        <include
+            android:id="@+id/headerLayout"
+            layout="@layout/layout_coins_top_row"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.9"
-                android:text=""
-                android:layout_marginStart="12dp"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                app:drawableLeftCompat="@drawable/ic_star_checked" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/coin"
-                android:textColor="@color/coinsListHeader"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/coin_quote"
-                android:textColor="@color/coinsListHeader"
-                android:textAlignment="center"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/coin_change"
-                android:textColor="@color/coinsListHeader"
-                android:textAlignment="center"
-                android:textStyle="bold" />
-
-        </LinearLayout>
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
         <androidx.recyclerview.widget.RecyclerView
@@ -91,29 +49,23 @@
             android:background="@color/backGround"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/linear_lay"
+            app:layout_constraintTop_toBottomOf="@id/headerLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:listitem="@layout/item_coins" />
 
-        <TextView
-            android:id="@+id/text_view_error_response"
-            errorViewVisibility="@{coinViewModel.eventErrorResponse}"
-            android:layout_width="0dp"
+        <include
+            android:id="@+id/error_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/responseErrorBackground"
-            tools:text="@string/error_occurred"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textAlignment="center"
-            android:textStyle="bold"
             android:layout_margin="4dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:visibility="visible" />
-
+            android:layout_marginBottom="12dp"
+            errorViewVisibility="@{coinViewModel.eventErrorResponse}"
+            layout="@layout/layout_error"
+            tools:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/coins_recycler_view"
+            app:layout_constraintEnd_toEndOf="@+id/headerLayout"
+            app:layout_constraintStart_toStartOf="@+id/headerLayout" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

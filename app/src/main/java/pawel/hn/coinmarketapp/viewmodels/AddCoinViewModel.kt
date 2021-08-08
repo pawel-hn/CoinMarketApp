@@ -5,20 +5,20 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.CoinsRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCoinViewModel @Inject constructor (private val repository: Repository)
+class AddCoinViewModel @Inject constructor (private val coinsRepository: CoinsRepository)
     : ViewModel() {
 
-    val coins = repository.coins.coinsAll
+    val coins = coinsRepository.coins.coinsAll
 
     /**
      * Passing request for creating new item which can be inserted into Wallet.
      */
     fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
-        return repository.wallet.createWalletCoin(coinName, coinVolume, walletNo, coins.value!!)
+        return coinsRepository.wallet.createWalletCoin(coinName, coinVolume, walletNo, coins.value!!)
     }
 
     /**
@@ -26,7 +26,7 @@ class AddCoinViewModel @Inject constructor (private val repository: Repository)
      */
     fun addToWallet(walletCoin: Wallet) {
        viewModelScope.launch {
-           repository.wallet.addToWallet(walletCoin)
+           coinsRepository.wallet.addToWallet(walletCoin)
        }
     }
 
@@ -35,8 +35,8 @@ class AddCoinViewModel @Inject constructor (private val repository: Repository)
      * Presented in spinner through dialog, sorted alphabetically.
      */
     fun coinsNamesList(): Array<String> {
-        val list = Array(repository.coins.coinsAll.value!!.size){
-            repository.coins.coinsAll.value!![it].name
+        val list = Array(coinsRepository.coins.coinsAll.value!!.size){
+            coinsRepository.coins.coinsAll.value!![it].name
         }
         list.sort()
         return list

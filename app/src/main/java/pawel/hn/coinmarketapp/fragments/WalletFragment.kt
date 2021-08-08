@@ -69,14 +69,11 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             } else {
                 btnAddCoin.visibility = View.GONE
             }
-
         }
 
         subscribeToObservers()
-
         setHasOptionsMenu(true)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
@@ -103,7 +100,6 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
         }
         return super.onOptionsItemSelected(item)
     }
-
 
     private fun subscribeToObservers() {
         viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->

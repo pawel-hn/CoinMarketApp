@@ -12,12 +12,11 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.coinmarketcap.Data
+import pawel.hn.coinmarketapp.model.coinmarketcap.CoinData
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -56,7 +55,7 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String):
 }
 
 
-fun Data.apiResponseConvertToCoin(ccy: String): Coin {
+fun CoinData.apiResponseConvertToCoin(ccy: String): Coin {
     val price = when(ccy) {
         CURRENCY_USD -> this.quote.USD.price
         CURRENCY_PLN -> this.quote.PLN.price
@@ -87,16 +86,7 @@ fun Data.apiResponseConvertToCoin(ccy: String): Coin {
     )
 }
 
-inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
-    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String?): Boolean = true
 
-        override fun onQueryTextChange(newText: String?): Boolean {
-            listener(newText.orEmpty())
-            return true
-        }
-    })
-}
 
 fun showSnack(view: View, text: String) {
     Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {

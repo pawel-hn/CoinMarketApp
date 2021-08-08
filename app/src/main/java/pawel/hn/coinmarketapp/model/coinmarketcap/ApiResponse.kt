@@ -1,21 +1,22 @@
 package pawel.hn.coinmarketapp.model.coinmarketcap
 
+import com.google.gson.annotations.SerializedName
 
-/**
- * ApiResponse used for getting single coin data from CoinMarketCap and
- * modeling Json data through Gson converter in Retrofit
- */
+
 data class ApiResponse(
-    val `data`: Map<Int, Data>,
+
+    @SerializedName("data")
+    val coinData: Map<Int, CoinData>,
+
+    @SerializedName("status")
     val status: Status
 )
 
-
-/**
- * ApiResponse used for getting list of coins from CoinMarketCap and
- * modeling Json data through Gson converter in Retrofit
- */
 data class ApiResponseArray(
-    val `data`: List<Data>,
+
+    @SerializedName("data")
+    val coinData: List<CoinData>,
+
+    @SerializedName("status")
     val status: Status
 )

@@ -5,129 +5,84 @@ import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.CoinsRepository
+import pawel.hn.coinmarketapp.util.toMutableLiveData
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinsViewModel @Inject constructor(
-    val repository: Repository,
+    val coinsRepository: CoinsRepository,
     application: Application
 ) : AndroidViewModel(application) {
 
-    /**
-     * Livedata which checks if show favourites is currently checked by user.
-     */
-    private val showFavourites = MutableLiveData(false)
 
-    /**
-     * Livedata which checks current search query entered by user and filtering the list.
-     */
+    val eventErrorResponse: LiveData<Boolean> = MutableLiveData(false)
+    val eventProgressBar: LiveData<Boolean> = MutableLiveData(false)
+
+    private val showFavourites = MutableLiveData(false)
     private val searchQuery = MutableLiveData("")
 
-    /**
-     * Mediator livedata, connects livedata with list of favourite coins,
-     * and livedata with coins
-     */
-    val observableCoinsAllMediator = MediatorLiveData<List<Coin>>()
+    val allCoinsMediator = MediatorLiveData<List<Coin>>()
+    val observableCoinsAll = coinsRepository.coins.coinsAll
 
-    /**
-     *livedata with list of all coins, observed in CoinsFragment with no action, observed so
-     * when refreshing data, database can be checked if there are already coins
-     */
-    val observableCoinsAll = repository.coins.coinsAll
-
-    /**
-     * Error livedata, observed in xml layout through data binding,
-     * trigger by response error in Repository,
-     */
-    private val _eventErrorResponse = MutableLiveData<Boolean>()
-    val eventErrorResponse: LiveData<Boolean>
-        get() = _eventErrorResponse
-
-    /**
-     * Progress bar livedata, observed in xml layout through data binding.
-     */
-    private val _eventProgressBar = MutableLiveData(false)
-    val eventProgressBar: LiveData<Boolean>
-        get() = _eventProgressBar
-
-    /**
-     * Livedata of list of all coins or favourites, if marked by user.
-     */
     private val coinListChecked = Transformations.switchMap(showFavourites) {
         if (it) {
-            repository.coins.coinsFavourite
+            coinsRepository.coins.coinsFavourite
         } else {
-            repository.coins.coinsAll
+            coinsRepository.coins.coinsAll
         }
     }
 
-    /**
-     * Livedata of list of coins filtered with current query entered by user.
-     */
     private val coinListSearchQuery = Transformations.switchMap(searchQuery) { searchQuery ->
-        repository.coins.getCoinsList(searchQuery, showFavourites.value!!)
+        coinsRepository.coins.getCoinsList(searchQuery, showFavourites.value!!)
     }
 
     init {
-        mediatorSource()
+        addAllCoinsSources()
     }
 
-    /**
-     * Function which adds both coins livedata (one base on query, second on favourites)
-     * as sources of main MediatorLiveData
-     */
-    private fun mediatorSource() {
-        observableCoinsAllMediator.addSource(coinListChecked) {
-            observableCoinsAllMediator.postValue(it)
-        }
-        observableCoinsAllMediator.addSource(coinListSearchQuery) {
-            observableCoinsAllMediator.postValue(it)
+    private fun addAllCoinsSources() {
+        allCoinsMediator.apply {
+            addSource(coinListChecked) { allCoinsMediator.postValue(it) }
+            addSource(coinListSearchQuery) { allCoinsMediator.postValue(it) }
         }
     }
 
-    /**
-     * Requests api call and refreshes data
-     */
-    fun refreshData(ccy: String) {
-        viewModelScope.launch {
-            _eventProgressBar.value = true
-            repository.getCoinsData(ccy)
-            _eventProgressBar.value = false
-            _eventErrorResponse.value = repository.responseError
+    fun refreshData(currency: String) {
+        eventProgressBar.toMutableLiveData().value = true
 
-        }
-    }
-
-    /**
-     * Marked coin as favourite when clicked star on the left
-     */
-    fun coinFavouriteClicked(coin: Coin, isChecked: Boolean) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.coins.update(coin, isChecked)
-        }
-    }
-
-    /**
-     * Makes all coins as non-favourite
-     */
-    fun unCheckAllFavourites() {
-        viewModelScope.launch(Dispatchers.IO) {
-            observableCoinsAllMediator.value?.forEach {
-                repository.coins.update(it, false)
+            coinsRepository.getCoinsData(currency)
+            withContext(Dispatchers.Main){
+                eventProgressBar.toMutableLiveData().value = false
+                eventErrorResponse.toMutableLiveData().value = coinsRepository.responseError
             }
         }
     }
 
-    /**
-     * Updates livedata search query value with current input from user.
-     */
+    fun coinFavouriteClicked(coin: Coin, isChecked: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            coinsRepository.coins.update(coin, isChecked)
+        }
+    }
+
+    fun unCheckAllFavourites() {
+        viewModelScope.launch(Dispatchers.IO) {
+            allCoinsMediator.value?.forEach {
+                coinsRepository.coins.update(it, false)
+            }
+        }
+    }
+
     fun searchQuery(query: String) {
         searchQuery.value = query
     }
 
-    fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
+    fun showFavourites(showFav: Boolean) {
+        showFavourites.postValue(showFav)
+    }
 
 }
 

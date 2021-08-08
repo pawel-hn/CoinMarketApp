@@ -10,38 +10,29 @@ import com.prof.rssparser.Parser
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.util.BASE_URL_NEWS
 import pawel.hn.coinmarketapp.util.hasInternetConnection
+import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.toMutableLiveData
 
 class NewsViewModel : ViewModel() {
 
-    /**
-     * Livedata with Channel from RssParser library, observes data from CoinTelegraph.
-     */
-    private val _rssChannel = MutableLiveData<Channel>()
-    val rssChannel: LiveData<Channel>
-        get() = _rssChannel
-
-    /**
-     * Error livedata, observed in xml layout through data binding.
-     */
-    private val _eventError = MutableLiveData<Boolean>()
-    val eventError: LiveData<Boolean>
-        get() = _eventError
-
+    val rssChannel: LiveData<Channel> = MutableLiveData()
+    val eventError: LiveData<Boolean> = MutableLiveData()
 
     fun fetchFeed(parser: Parser, context: Context) {
         if (hasInternetConnection(context)) {
             viewModelScope.launch {
-                try {
-                    val channel = parser.getChannel(BASE_URL_NEWS)
-                    if (channel.articles.isNotEmpty()){
-                        _rssChannel.value = channel
-                        _eventError.value = false
+                runCatching {
+                    parser.getChannel(BASE_URL_NEWS)
+                }.onSuccess {
+                    if (it.articles.isNotEmpty()) {
+                        rssChannel.toMutableLiveData().value = it
+                        eventError.toMutableLiveData().value = false
                     } else {
-                        _eventError.value = true
+                        eventError.toMutableLiveData().value = true
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    _rssChannel.postValue(
+                }.onFailure {
+                    showLog(it.message!!)
+                    rssChannel.toMutableLiveData().postValue(
                         Channel(
                             null,
                             null,
@@ -55,7 +46,7 @@ class NewsViewModel : ViewModel() {
                 }
             }
         } else {
-            _eventError.value = true
+            eventError.toMutableLiveData().value = true
         }
     }
 }

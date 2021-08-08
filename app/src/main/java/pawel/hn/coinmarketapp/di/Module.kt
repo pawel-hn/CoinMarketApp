@@ -13,15 +13,12 @@ import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.database.WalletDao
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.CoinsRepository
 import pawel.hn.coinmarketapp.util.BASE_URL_COINS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-/**
- * Dependency injection instructions
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {
@@ -44,7 +41,7 @@ object Module {
     @Provides
     @Singleton
     fun provideRepository(coinsData: CoinsData, walletData: WalletData, remoteData: RemoteData) =
-        Repository(coinsData, walletData, remoteData)
+        CoinsRepository(coinsData, walletData, remoteData)
 
     @Provides
     @Singleton

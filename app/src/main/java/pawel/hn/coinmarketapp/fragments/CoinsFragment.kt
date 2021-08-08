@@ -14,7 +14,6 @@ import pawel.hn.coinmarketapp.adapters.CoinsAdapter
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
 import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.onQueryTextChanged
-import pawel.hn.coinmarketapp.util.showLog
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
@@ -31,14 +30,11 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        /**
-         * Getting currency to be applied for api request.
-         */
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         currency = sharedPreferences.getString(
             requireContext().getString(R.string.settings_currency_key),
             CURRENCY_USD
-        ) ?: "USD"
+        ) ?: CURRENCY_USD
 
 
         viewModel.refreshData(currency)
@@ -60,8 +56,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
 
 
     private fun subscribeToObservers() {
-        viewModel.observableCoinsAllMediator.observe(viewLifecycleOwner) { list ->
-            showLog("mediator livedata called")
+        viewModel.allCoinsMediator.observe(viewLifecycleOwner) { list ->
             adapter.setCurrency(currency)
             adapter.submitList(list)
         }
