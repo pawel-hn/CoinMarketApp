@@ -1,25 +1,20 @@
 package pawel.hn.coinmarketapp.viewmodels
 
-import android.app.Application
-import androidx.lifecycle.*
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.CoinsRepository
-import pawel.hn.coinmarketapp.util.toMutableLiveData
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinsViewModel @Inject constructor(
     val coinsRepository: CoinsRepository,
-    application: Application
-) : AndroidViewModel(application) {
-
-
-    val eventErrorResponse: LiveData<Boolean> = MutableLiveData(false)
-    val eventProgressBar: LiveData<Boolean> = MutableLiveData(false)
+) : BaseViewModel(coinsRepository) {
 
     private val showFavourites = MutableLiveData(false)
     private val searchQuery = MutableLiveData("")
@@ -47,18 +42,6 @@ class CoinsViewModel @Inject constructor(
         allCoinsMediator.apply {
             addSource(coinListChecked) { allCoinsMediator.postValue(it) }
             addSource(coinListSearchQuery) { allCoinsMediator.postValue(it) }
-        }
-    }
-
-    fun refreshData(currency: String) {
-        eventProgressBar.toMutableLiveData().value = true
-
-        viewModelScope.launch(Dispatchers.IO) {
-            coinsRepository.getCoinsData(currency)
-            withContext(Dispatchers.Main){
-                eventProgressBar.toMutableLiveData().value = false
-                eventErrorResponse.toMutableLiveData().value = coinsRepository.responseError
-            }
         }
     }
 

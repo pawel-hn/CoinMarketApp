@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    >
 
     <data>
 
@@ -60,7 +61,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="4dp"
             android:layout_marginBottom="12dp"
-            errorViewVisibility="@{coinViewModel.eventErrorResponse}"
             layout="@layout/layout_error"
             tools:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="@+id/coins_recycler_view"

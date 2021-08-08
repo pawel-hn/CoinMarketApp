@@ -1,7 +1,6 @@
 package pawel.hn.coinmarketapp.util
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -15,8 +14,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.coinmarketcap.CoinData
 import java.math.RoundingMode
 import java.text.DecimalFormat
 
@@ -24,7 +21,6 @@ enum class ValueType(val pattern: String) {
     Crypto(COIN_PATTERN),
     Fiat(FIAT_PATTERN),
 }
-
 
 fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String): SpannableString {
     val ccySymbol = when (currency) {
@@ -54,40 +50,6 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String):
     }
 }
 
-
-fun CoinData.apiResponseConvertToCoin(ccy: String): Coin {
-    val price = when(ccy) {
-        CURRENCY_USD -> this.quote.USD.price
-        CURRENCY_PLN -> this.quote.PLN.price
-        else -> this.quote.EUR.price
-    }
-
-    val change24h = when(ccy) {
-        CURRENCY_USD -> this.quote.USD.percentChange24h
-        CURRENCY_PLN -> this.quote.PLN.percentChange24h
-        else -> this.quote.EUR.percentChange24h
-    }
-
-    val change7d = when(ccy) {
-        CURRENCY_USD -> this.quote.USD.percentChange7d
-        CURRENCY_PLN -> this.quote.PLN.percentChange7d
-        else -> this.quote.EUR.percentChange7d
-    }
-
-    return Coin(
-        coinId = this.id,
-        name = this.name,
-        symbol = this.symbol,
-        favourite = false,
-        price = price,
-        change24h = change24h,
-        change7d = change7d,
-        cmcRank = this.cmcRank
-    )
-}
-
-
-
 fun showSnack(view: View, text: String) {
     Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
         this.view.apply {
@@ -99,12 +61,6 @@ fun showSnack(view: View, text: String) {
 }
 
 fun showLog(string: String) = Log.d(TAG, string)
-
-fun SharedPreferences.put(action: SharedPreferences.Editor.() -> Unit) {
-    val editor = edit()
-    action(editor)
-    editor.apply()
-}
 
 fun hideKeyboard(view: View) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

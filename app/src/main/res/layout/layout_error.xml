@@ -5,8 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="androidx.lifecycle.ViewModel" />
-
+            type="pawel.hn.coinmarketapp.viewmodels.BaseViewModel" />
     </data>
 
     <TextView
@@ -14,9 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/responseErrorBackground"
-        android:text="@string/error_occurred"
         android:textAlignment="center"
-        android:visibility="@{viewModel.err"
+        errorViewVisibility="@{viewModel.eventErrorResponse}"
         android:textColor="@color/black"
         android:textSize="24sp"
         android:textStyle="bold" />

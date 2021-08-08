@@ -14,26 +14,16 @@ class AddCoinViewModel @Inject constructor (private val coinsRepository: CoinsRe
 
     val coins = coinsRepository.coins.coinsAll
 
-    /**
-     * Passing request for creating new item which can be inserted into Wallet.
-     */
     fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
         return coinsRepository.wallet.createWalletCoin(coinName, coinVolume, walletNo, coins.value!!)
     }
 
-    /**
-     * After Wallet object is created,this method puts it into database.
-     */
     fun addToWallet(walletCoin: Wallet) {
        viewModelScope.launch {
            coinsRepository.wallet.addToWallet(walletCoin)
        }
     }
 
-    /**
-     * Prepares list of names of Coins which can be added to Wallet.
-     * Presented in spinner through dialog, sorted alphabetically.
-     */
     fun coinsNamesList(): Array<String> {
         val list = Array(coinsRepository.coins.coinsAll.value!!.size){
             coinsRepository.coins.coinsAll.value!![it].name

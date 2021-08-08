@@ -4,9 +4,6 @@ package pawel.hn.coinmarketapp.viewmodels
 import android.content.Context
 import android.graphics.Typeface
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.data.PieData
@@ -14,34 +11,23 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.repository.CoinsRepository
+import pawel.hn.coinmarketapp.util.toMutableLiveData
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val coinsRepository: CoinsRepository) : ViewModel() {
+class WalletViewModel @Inject constructor(
+    private val coinsRepository: CoinsRepository) : BaseViewModel(coinsRepository) {
 
     val walletLiveData = coinsRepository.wallet.wallet
     val coinLiveData = coinsRepository.coins.coinsAll
 
-    private val _eventProgressBar = MutableLiveData(false)
-    val eventProgressBar: LiveData<Boolean>
-        get() = _eventProgressBar
-
-    private val _eventErrorResponse = MutableLiveData<Boolean>(false)
-    val eventErrorResponse: LiveData<Boolean>
-        get() = _eventErrorResponse
-
     fun calculateTotalBalance(list: List<Wallet>): Double = list.sumOf { it.total }
 
-    /**
-     * Function which consolidates all three wallets.
-     */
     fun totalWallet(list: List<Wallet>): List<Wallet> {
 
         val totalList = mutableListOf<Wallet>()
@@ -72,25 +58,9 @@ class WalletViewModel @Inject constructor(private val coinsRepository: CoinsRepo
         return totalList.sortedByDescending { it.total }
     }
 
-
     fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
         coinsRepository.wallet.deleteFromWallet(coin)
     }
-
-    /**
-     * Calls and api so latest price can be displayed in wallet
-     */
-    fun refreshData(ccy: String) {
-        _eventProgressBar.value = true
-        viewModelScope.launch(Dispatchers.IO) {
-            coinsRepository.getCoinsData(ccy)
-           withContext(Dispatchers.Main) {
-               _eventProgressBar.value = false
-               _eventErrorResponse.value = coinsRepository.responseError
-           }
-        }
-    }
-
 
     fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
 
@@ -98,7 +68,7 @@ class WalletViewModel @Inject constructor(private val coinsRepository: CoinsRepo
             coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
         }
         if (listTemp.isNullOrEmpty()) {
-            _eventProgressBar.value = false
+            eventProgressBar.toMutableLiveData().value = false
             return@launch
         }
         walletLiveData.value!!.forEach { coin ->

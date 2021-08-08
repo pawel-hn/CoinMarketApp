@@ -10,7 +10,6 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.findNavController
@@ -61,6 +60,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             }
             lifecycleOwner = this@WalletFragment
             walletViewModel = viewModel
+            errorLayout.viewModel = viewModel
             recyclerViewWallet.adapter = adapter
             recyclerViewWallet.itemAnimator = null
 

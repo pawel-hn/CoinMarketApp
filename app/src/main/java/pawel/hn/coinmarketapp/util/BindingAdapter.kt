@@ -44,7 +44,6 @@ class BindingAdapter {
                     }
                     is RecyclerView -> {
                         view.visibility = View.GONE
-                        showLog("errorVisibility called: true, recyclerView")
                         view.isClickable = false
                     }
                 }
@@ -62,7 +61,6 @@ class BindingAdapter {
         @BindingAdapter("visibilityWithinMotionLayout")
         @JvmStatic
         fun visibilityWithinMotionLayout(view: View, isVisible: Boolean) {
-            showLog("visibilityWithinMotionLayout $isVisible")
             if (view.parent is MotionLayout) {
                 val layout = view.parent as MotionLayout
                 val setToVisibility = if(isVisible) View.VISIBLE else View.GONE
