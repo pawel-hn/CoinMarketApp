@@ -13,7 +13,7 @@ Simple app which shows current  price for 100 cryptos with highest market cap an
 Rates provided by API from coinmarketcap.com.<br>
 News provided by RSS from cointelegraph.com
 
-### Libraries:
+### Build with:
 
 Android Architecture components, MVVM, Data Binding, Hilt, Room, Retrofit, Work Manager, Notifications, ViewPager2, Motion Layout, Splash Screen, SwipeToRefresh, ShimmerEffect, Day/Night mode and others.<br>
 <br>
