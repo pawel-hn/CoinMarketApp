@@ -9,13 +9,6 @@ buildscript {
 
     repositories {
         google()
-        mavenCentral(){
-            content {
-                includeModule("com.todkars", "shimmer-recyclerview")
-                includeModule("com.facebook.shimmer", "shimmer")
-                includeModule("com.toptoche.searchablespinner", "searchablespinnerlibrary")
-            }
-        }
         mavenCentral()
         maven { url "https://jitpack.io" }
 
@@ -36,14 +29,8 @@ buildscript {
 allprojects {
     repositories {
         google()
-        mavenCentral(){
-            content {
-                includeModule("com.todkars", "shimmer-recyclerview")
-                includeModule("com.facebook.shimmer", "shimmer")
-                includeModule("com.toptoche.searchablespinner", "searchablespinnerlibrary")
-            }
-        }
         mavenCentral()
+        jcenter()
         maven { url "https://jitpack.io" }
     }
 }
