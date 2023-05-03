@@ -32,7 +32,7 @@ class CoinsViewModel @Inject constructor(
     val eventProgressBar: LiveData<Boolean>
         get() = _eventProgressBar
 
-    private val coinListChecked = Transformations.switchMap(showFavourites) {
+    private val coinListChecked = showFavourites.switchMap {
         if (it) {
             repository.coins.coinsFavourite
         } else {
@@ -41,7 +41,7 @@ class CoinsViewModel @Inject constructor(
     }
 
 
-    private val coinListSearchQuery = Transformations.switchMap(searchQuery) { searchQuery ->
+    private val coinListSearchQuery = searchQuery.switchMap { searchQuery ->
         repository.coins.getCoinsList(searchQuery, showFavourites.value!!)
     }
 

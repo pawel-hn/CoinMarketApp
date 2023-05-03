@@ -25,6 +25,4 @@ interface CoinApi {
     suspend fun getLatestSingleQuote(
         @Query("id") id: String
     ): Response<ApiResponse>
-
-
 }

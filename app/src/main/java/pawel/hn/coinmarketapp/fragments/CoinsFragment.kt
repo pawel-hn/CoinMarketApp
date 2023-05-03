@@ -95,11 +95,11 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
     private fun applyStarColor(isChecked: Boolean, menuItem: MenuItem) {
         if(menuItem.itemId == R.id.menu_favourite) {
             if (isChecked) {
-                menuItem.icon.setTint(
+                menuItem.icon?.setTint(
                     ContextCompat.getColor(requireContext(), R.color.yellow)
                 )
             } else {
-                menuItem.icon.setTint(
+                menuItem.icon?.setTint(
                     ContextCompat.getColor(requireContext(), R.color.white)
                 )
             }
