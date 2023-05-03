@@ -3,9 +3,6 @@ package pawel.hn.coinmarketapp.database
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-/**
- * Data class representing objects hold in database and presented to user via CoinFragment
- */
 @Entity(tableName = "coins_table")
 data class Coin(
     @PrimaryKey val coinId: Int,

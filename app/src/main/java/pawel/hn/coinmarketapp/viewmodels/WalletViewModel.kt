@@ -37,9 +37,6 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
 
     fun calculateTotalBalance(list: List<Wallet>): Double = list.sumOf { it.total }
 
-    /**
-     * Function which consolidates all three wallets.
-     */
     fun totalWallet(list: List<Wallet>): List<Wallet> {
 
         val totalList = mutableListOf<Wallet>()
@@ -75,9 +72,6 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         repository.wallet.deleteFromWallet(coin)
     }
 
-    /**
-     * Calls and api so latest price can be displayed in wallet
-     */
     fun refreshData(ccy: String) = viewModelScope.launch {
         _eventProgressBar.value = true
         repository.getCoinsData(ccy)

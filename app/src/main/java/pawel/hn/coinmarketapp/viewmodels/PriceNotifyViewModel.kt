@@ -19,16 +19,10 @@ class PriceNotifyViewModel @Inject constructor(
     @ApplicationContext context: Context
 ) : ViewModel() {
 
-    /**
-     * Livedata with latest price, presented to the user.
-     */
     private val _latestPrice = MutableLiveData<Double>()
     val latestPrice: LiveData<Double>
         get() = _latestPrice
 
-    /**
-     * Livedata which reflects state of switch in the NotifyFragment.
-     */
     private val _notificationOnOff = MutableLiveData<Boolean>()
     val notificationOnOff: LiveData<Boolean>
         get() = _notificationOnOff
@@ -44,10 +38,6 @@ class PriceNotifyViewModel @Inject constructor(
         setUpWorkManager(context)
     }
 
-    /**
-     * Based on state of switch this functions calls worker to check if price alert criteria is met or
-     * to cancel worker.
-     */
     fun notifyWorker(notificationOnOff: Boolean) {
         if (notificationOnOff) {
             workManager.enqueueUniquePeriodicWork(
@@ -69,10 +59,6 @@ class PriceNotifyViewModel @Inject constructor(
     }
 
 
-    /**
-     * Called from fragment in onCreateView to get previously set alarm and called
-     * when user sets new price alert. If notification switch is ON, Worker is updated.
-     */
     fun setPriceAlert(priceAlert: Int) {
         priceAlertData = priceAlert.toDouble()
         setCurrentPriceAlert(priceAlertData)
@@ -81,9 +67,7 @@ class PriceNotifyViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Called in setPriceAlert() in order to prepare work request for work manager.
-     */
+
     private fun setCurrentPriceAlert(alertPrice: Double) {
         priceAlertData = alertPrice
         workRequest = PeriodicWorkRequestBuilder<NotifyWorker>(10, TimeUnit.MINUTES)
@@ -92,9 +76,6 @@ class PriceNotifyViewModel @Inject constructor(
             .build()
     }
 
-    /**
-     * Called to get latest btc price and display it in the fragment
-     */
     private fun getLatestPrice() {
         viewModelScope.launch {
             val price = repository.getLatestBitcoinPrice()
@@ -104,17 +85,10 @@ class PriceNotifyViewModel @Inject constructor(
         }
     }
 
-    /**
-     * Called when switch is set to ON (true)
-     */
     fun setNotificationOn() {
         _notificationOnOff.postValue(true)
     }
 
-    /**
-     * Called when switch is set to OFF (false)
-     * and when table with notifications is empty
-     */
     fun setNotificationOff() {
         _notificationOnOff.postValue(false)
     }

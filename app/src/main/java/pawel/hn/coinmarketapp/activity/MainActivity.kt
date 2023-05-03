@@ -32,11 +32,6 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout = binding.drawerLayout
 
-
-        /**
-         * adding four main fragments to the top level destinations,
-         * arrow icon in top left will be visible only on settings screen
-         */
         appBarConfiguration = AppBarConfiguration
             .Builder(R.id.coinsFragment,
                 R.id.walletsFragment,
@@ -56,18 +51,12 @@ class MainActivity : AppCompatActivity() {
         createChannelNotification()
     }
 
-    /**
-     * overriding below method, so the "burger" icon can be used, and drawer accessed via it
-     */
     override fun onSupportNavigateUp(): Boolean {
         val navController = this.findNavController(R.id.nav_host_fragment_container)
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp()
     }
 
-    /**
-     * Creating channel for Notification, description is visible for the user, on his phone's settings
-     */
     private fun createChannelNotification() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(

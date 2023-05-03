@@ -12,10 +12,6 @@ import pawel.hn.coinmarketapp.adapters.NewsAdapter
 import pawel.hn.coinmarketapp.databinding.FragmentNewsBinding
 import pawel.hn.coinmarketapp.viewmodels.NewsViewModel
 
-
-/**
- * Fragment displaying list of news from CoinTelegraph
- */
 class NewsFragment : Fragment(R.layout.fragment_news) {
 
     private lateinit var newsAdapter: NewsAdapter

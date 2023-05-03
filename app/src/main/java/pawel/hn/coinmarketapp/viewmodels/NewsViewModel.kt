@@ -13,16 +13,10 @@ import pawel.hn.coinmarketapp.util.hasInternetConnection
 
 class NewsViewModel : ViewModel() {
 
-    /**
-     * Livedata with Channel from RssParser library, observes data from CoinTelegraph.
-     */
     private val _rssChannel = MutableLiveData<Channel>()
     val rssChannel: LiveData<Channel>
         get() = _rssChannel
 
-    /**
-     * Error livedata, observed in xml layout through data binding.
-     */
     private val _eventError = MutableLiveData<Boolean>()
     val eventError: LiveData<Boolean>
         get() = _eventError

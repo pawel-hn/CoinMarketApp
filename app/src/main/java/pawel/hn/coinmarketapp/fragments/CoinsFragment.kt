@@ -31,9 +31,6 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
 
-        /**
-         * Getting currency to be applied for api request.
-         */
         val sharedPreferences: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         currency = sharedPreferences.getString(
             requireContext().getString(R.string.settings_currency_key),

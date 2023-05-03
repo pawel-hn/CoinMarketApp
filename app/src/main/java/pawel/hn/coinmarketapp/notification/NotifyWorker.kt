@@ -22,11 +22,7 @@ import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.*
 import javax.inject.Inject
 
-/**
- * WorManager, if price alert is on, this class is responsible for background connection with CoinMarketCap,
- * checking if price alert criteria is met, if yes, worker sends notification and clear notification database,
- * which turns switch OFF.
- */
+
 @HiltWorker
 class NotifyWorker @AssistedInject constructor(
     @Assisted val context: Context,

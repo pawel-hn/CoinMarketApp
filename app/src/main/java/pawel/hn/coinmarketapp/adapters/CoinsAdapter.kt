@@ -17,9 +17,6 @@ import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.util.*
 
-/**
- * Adapter for recycler view used in main list in CoinsFragment.
- */
 class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
 

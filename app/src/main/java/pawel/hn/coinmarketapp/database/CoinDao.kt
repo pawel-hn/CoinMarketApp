@@ -3,9 +3,6 @@ package pawel.hn.coinmarketapp.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 
-/**
- * Standard Room Dao class to maintain Coins list presented to user in main list and Notifications
- */
 @Dao
 interface CoinDao {
 

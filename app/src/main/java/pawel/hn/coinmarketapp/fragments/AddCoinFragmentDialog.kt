@@ -63,9 +63,7 @@ class AddCoinFragmentDialog : DialogFragment() {
         return binding.root
     }
 
-    /**
-     * Spinner list with built in search field, shows available coins to the user
-     */
+
     private val spinnerCoinSelected = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             coinName = parent?.getItemAtPosition(position).toString()

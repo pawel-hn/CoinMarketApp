@@ -19,9 +19,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
-/**
- * Dependency injection instructions
- */
+
 @Module
 @InstallIn(SingletonComponent::class)
 object Module {

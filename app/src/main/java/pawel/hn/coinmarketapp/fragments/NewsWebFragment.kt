@@ -7,11 +7,6 @@ import androidx.fragment.app.Fragment
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentNewsWebviewBinding
 
-
-
-/**
- * Fragment holder for WebView of selected item from news list.
- */
 class NewsWebFragment : Fragment(R.layout.fragment_news_webview) {
 
     lateinit var binding: FragmentNewsWebviewBinding
