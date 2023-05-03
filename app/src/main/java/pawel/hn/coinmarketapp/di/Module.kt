@@ -6,7 +6,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import pawel.hn.coinmarketapp.api.CoinApi
+import pawel.hn.coinmarketapp.api.HeaderInterceptor
 import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
@@ -14,9 +16,12 @@ import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.database.WalletDao
 import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.util.API_HEADER
+import pawel.hn.coinmarketapp.util.API_KEY
 import pawel.hn.coinmarketapp.util.BASE_URL_COINS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -25,9 +30,19 @@ import javax.inject.Singleton
 object Module {
 
     @Provides
-    fun provideRetrofit(): Retrofit = Retrofit.Builder()
+    @Singleton
+    fun provideOkHttpClient(): OkHttpClient =
+        OkHttpClient.Builder()
+            .connectTimeout(5000, TimeUnit.MILLISECONDS)
+            .readTimeout(5000, TimeUnit.MILLISECONDS)
+            .build()
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit = Retrofit.Builder()
         .baseUrl(BASE_URL_COINS)
         .addConverterFactory(GsonConverterFactory.create())
+        .client(okHttpClient)
         .build()
 
     @Provides
