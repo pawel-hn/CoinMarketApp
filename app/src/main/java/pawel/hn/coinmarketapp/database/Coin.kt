@@ -13,7 +13,4 @@ data class Coin(
     val change24h: Double,
     val change7d: Double,
     val cmcRank: Int
-
 )
-
-

@@ -4,8 +4,8 @@ import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseArray
-import pawel.hn.coinmarketapp.model.coinmarketcap.Data
+import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseCoins
+import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
 import pawel.hn.coinmarketapp.util.*
 import retrofit2.Response
 import javax.inject.Inject
@@ -33,7 +33,7 @@ class Repository @Inject constructor(
         }
     }
 
-    private suspend fun handleApiResponse(response: Response<ApiResponseArray>, currency: String){
+    private suspend fun handleApiResponse(response: Response<ApiResponseCoins>, currency: String){
         when(response.code()) {
             200 -> responseSuccess(response.body(), currency)
             else -> responseFail(response.code())
@@ -49,11 +49,11 @@ class Repository @Inject constructor(
         }
     }
 
-    private suspend fun responseSuccess(response: ApiResponseArray?, currency: String) {
+    private suspend fun responseSuccess(response: ApiResponseCoins?, currency: String) {
         val list = mutableListOf<Coin>()
         response?.let { coinResponse ->
             responseError = false
-            coinResponse.data.forEach {
+            coinResponse.coins.forEach {
                 list.add(it.apiResponseConvertToCoin(currency))
             }
 
@@ -72,7 +72,7 @@ class Repository @Inject constructor(
             val response = remote.getLatestBitcoinPrice(BITCOIN_ID)
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
-                    newPrice = apiResponse.data[1]!!.quote.USD.price
+                    newPrice = apiResponse.coinResponse[1]!!.quote.USD.price
                     showLog("getBtc: $newPrice")
                 }
             }
@@ -84,13 +84,13 @@ class Repository @Inject constructor(
     }
 
 
-    suspend fun getBitcoinData(): Data? {
-       var btc: Data? = null
+    suspend fun getBitcoinData(): CoinResponse? {
+       var btc: CoinResponse? = null
         try {
             val response = remote.getLatestBitcoinPrice(BITCOIN_ID)
             if (response.isSuccessful) {
                 response.body()?.let { apiResponse ->
-                    btc = apiResponse.data[1]
+                    btc = apiResponse.coinResponse[1]
 
                 }
             }
