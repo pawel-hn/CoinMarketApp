@@ -3,7 +3,6 @@ package pawel.hn.coinmarketapp.model.coinmarketcap
 import com.google.gson.annotations.SerializedName
 import pawel.hn.coinmarketapp.database.Coin
 
-
 data class ApiResponse(
     val coinResponse: Map<Int, CoinResponse>,
     val status: Status
@@ -23,9 +22,9 @@ data class CoinResponse(
 )
 
 data class Quote(
-    val USD: USD,
-    val EUR: EUR,
-    val PLN: PLN
+    @SerializedName("USD") val USD: USD,
+    @SerializedName("EUR") val EUR: EUR,
+    @SerializedName("PLN") val PLN: PLN
 )
 
 data class USD(
@@ -51,21 +50,23 @@ data class Status(
     @SerializedName("elapsed") val elapsed: Int,
     @SerializedName("error_code") val errorCode: Int,
     @SerializedName("error_message") val errorMessage: String,
-    @SerializedName("timestamp")val timestamp: String
+    @SerializedName("timestamp") val timestamp: String
 )
 
-fun ApiResponseCoins.toDomain(): List<Coin> = coins.toDomain()
+class ApiResponseMapper : ObjectMapper<ApiResponseCoins, List<Coin>> {
+    override fun convert(value: ApiResponseCoins): List<Coin> = value.coins.toDomain()
 
-fun List<CoinResponse>.toDomain(): List<Coin> = map { it.toDomain() }
+    private fun List<CoinResponse>.toDomain(): List<Coin> = map { it.toDomain() }
 
-fun CoinResponse.toDomain(): Coin =  Coin(
-    name = this.name,
-    symbol = this.symbol,
-    price = this.quote.USD.price,
-    change24h = this.quote.USD.percentChange24h,
-    change7d = this.quote.USD.percentChange7d,
-    cmcRank = this.cmcRank,
-    favourite = false,
-    coinId = 1
-)
+    private fun CoinResponse.toDomain(): Coin = Coin(
+        name = this.name,
+        symbol = this.symbol,
+        price = this.quote.USD.price,
+        change24h = this.quote.USD.percentChange24h,
+        change7d = this.quote.USD.percentChange7d,
+        cmcRank = this.cmcRank,
+        favourite = false,
+        coinId = 1
+    )
+}
 

@@ -25,4 +25,14 @@ interface CoinApi {
     suspend fun getLatestSingleQuote(
         @Query("id") id: String
     ): Response<ApiResponse>
+
+
+    // UPDATE
+    @Headers("$API_HEADER $API_KEY", "Accept: application/json")
+    @GET("v1/cryptocurrency/listings/latest")
+    suspend fun getCoinsFromNetworkNew(
+        @Query("start") start: Int,
+        @Query("limit") limit: Int,
+        @Query("convert") convert: String
+    ): Response<ApiResponseCoins>
 }

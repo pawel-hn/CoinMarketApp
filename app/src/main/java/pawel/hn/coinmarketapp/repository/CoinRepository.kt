@@ -1,12 +1,11 @@
 package pawel.hn.coinmarketapp.repository
 
-import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseCoins
-import retrofit2.Response
+import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.util.Resource
 
 interface CoinRepository {
 
-
-    suspend fun getCoinsListing(): Response<ApiResponseCoins>
+    suspend fun getCoinsListing(): Resource<List<Coin>>
 
 
 }

@@ -3,20 +3,22 @@ package pawel.hn.coinmarketapp.viewmodels
 import android.app.Application
 import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.usecase.GetCoinsListingsUseCase
 import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.showLogN
+import java.net.HttpRetryException
 import javax.inject.Inject
 
 @HiltViewModel
 class CoinsViewModel @Inject constructor(
-    val repository: Repository,
-    val getCoinsListingsUseCase: GetCoinsListingsUseCase,
-    application: Application
-) : AndroidViewModel(application) {
+    private val repository: Repository,
+    private val getCoinsListingsUseCase: GetCoinsListingsUseCase,
+) : ViewModel() {
 
     private val showFavourites = MutableLiveData(false)
 
@@ -29,7 +31,7 @@ class CoinsViewModel @Inject constructor(
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean> = _eventErrorResponse
 
-    private val _coinResult = MutableLiveData<Resource<List<Coin>>>()
+    private val _coinResult = MutableLiveData<Resource<List<Coin>>>(Resource.Loading())
     val coinResult: LiveData<Resource<List<Coin>>> = _coinResult
 
     private val _eventProgressBar = MutableLiveData(false)
@@ -43,26 +45,35 @@ class CoinsViewModel @Inject constructor(
         }
     }
 
-    fun coins() = viewModelScope.launch {
-        _coinResult.postValue(Resource.Loading())
-        val result = getCoinsListingsUseCase()
-        when (result) {
-            is Resource.Error -> TODO()
-            is Resource.Loading -> TODO()
-            is Resource.Success -> {
-                result.data?.let {
+    /**
+     * UDAPTE
+     */
 
-                }
-            }
-        }
+    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.printStackTrace()
+        showLogN("CoroutineExceptionHandler")
+        val data = Resource.Error<List<Coin>>(throwable.message ?: "Unknown error")
+        _coinResult.postValue(data)
     }
+
+    private fun coins() =
+        viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
+            val data = getCoinsListingsUseCase.execute()
+           _coinResult.postValue(data)
+        }
+
+
+    /**
+     *  // UPDATE
+     */
 
     private val coinListSearchQuery = searchQuery.switchMap { searchQuery ->
         repository.coins.getCoinsList(searchQuery, showFavourites.value!!)
     }
 
     init {
-        mediatorSource()
+        coins()
+      //  mediatorSource()
     }
 
     private fun mediatorSource() {
@@ -80,7 +91,6 @@ class CoinsViewModel @Inject constructor(
             repository.getCoinsData(ccy)
             _eventProgressBar.value = false
             _eventErrorResponse.value = repository.responseError
-
         }
     }
 
@@ -106,4 +116,3 @@ class CoinsViewModel @Inject constructor(
     fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
 
 }
-

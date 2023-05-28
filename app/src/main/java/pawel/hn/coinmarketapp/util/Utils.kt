@@ -109,6 +109,7 @@ fun showSnack(view: View, text: String) {
 }
 
 fun showLog(string: String) = Log.d(TAG, string)
+fun showLogN(string: String) = Log.d(TAG1, string)
 
 fun SharedPreferences.put(action: SharedPreferences.Editor.() -> Unit) {
     val editor = edit()

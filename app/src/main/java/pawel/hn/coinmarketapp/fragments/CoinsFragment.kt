@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp.fragments
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
@@ -12,9 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.adapters.CoinsAdapter
 import pawel.hn.coinmarketapp.databinding.FragmentCoinsBinding
-import pawel.hn.coinmarketapp.util.CURRENCY_USD
-import pawel.hn.coinmarketapp.util.onQueryTextChanged
-import pawel.hn.coinmarketapp.util.showLog
+import pawel.hn.coinmarketapp.util.*
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
@@ -38,7 +37,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
         ) ?: "USD"
 
 
-        viewModel.refreshData(currency)
+       // viewModel.refreshData(currency)
         adapter = CoinsAdapter { coin, isChecked ->
             viewModel.coinFavouriteClicked(coin, isChecked)
         }
@@ -58,11 +57,19 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
 
     private fun subscribeToObservers() {
         viewModel.observableCoinsAllMediator.observe(viewLifecycleOwner) { list ->
-            showLog("mediator livedata called")
+
             adapter.setCurrency(currency)
             adapter.submitList(list)
         }
         viewModel.observableCoinsAll.observe(viewLifecycleOwner) {}
+
+        viewModel.coinResult.observe(viewLifecycleOwner) {
+            when(it) {
+                is Resource.Error -> showLogN("error: ${it.message}")
+                is Resource.Loading -> showLogN("loading")
+                is Resource.Success -> showLogN("success: ${it.data?.size}")
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
