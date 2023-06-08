@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.viewmodels
 
 import android.app.Application
+import android.net.Uri
 import androidx.lifecycle.*
 import androidx.room.PrimaryKey
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.database.toPresentation
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.usecase.GetCoinsListingsUseCase
 import pawel.hn.coinmarketapp.util.Resource
@@ -56,7 +58,7 @@ class CoinsViewModel @Inject constructor(
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showLogN("CoroutineExceptionHandler")
-        val data = Resource.Error<List<Coin>>(throwable.message ?: "Unknown error")
+        val data = Resource.Error<List<CoinForView>>(throwable.message ?: "Unknown error")
         _coinResult.value = data
     }
 
@@ -66,11 +68,7 @@ class CoinsViewModel @Inject constructor(
             val data = getCoinsListingsUseCase.execute()
 
             _coinResult.value = Resource.Success(
-                data.map {
-                    CoinForView(
-
-                    )
-                }
+                data.map {coin -> coin.toPresentation()}
             )
         }
     }
@@ -137,5 +135,6 @@ data class CoinForView(
     val price: String,
     val change24h: String,
     val change7d: String,
-    val cmcRank: Int
+    val cmcRank: Int,
+    val imageUri: Uri
 )

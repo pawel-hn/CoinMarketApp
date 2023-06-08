@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.util.*
+import pawel.hn.coinmarketapp.viewmodels.CoinForView
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
@@ -99,7 +100,7 @@ fun ErrorCoins(text: String) {
 @Composable
 fun CoinsList(
     visible: Boolean,
-    coins: List<Coin>, onClick: () -> Unit
+    coins: List<CoinForView>, onClick: () -> Unit
 ) {
 
     AnimatedVisibility(
@@ -127,12 +128,9 @@ fun CoinsList(
 @Composable
 fun CoinItem(
     modifier: Modifier = Modifier,
-    coin: Coin
+    coin: CoinForView
 ) {
-    val imageUri = Uri.parse(LOGO_URL).buildUpon()
-        .appendPath(LOGO_SIZE_PX)
-        .appendPath(coin.coinId.toString() + LOGO_FILE_TYPE)
-        .build()
+    Log.d("PHN", coin.imageUri.toString())
     Row(
         modifier = modifier
             .padding(bottom = 8.dp)
@@ -156,8 +154,7 @@ fun CoinItem(
             }
         }
 
-        val price = formatPriceAndVolForView(coin.price, ValueType.Fiat, CURRENCY_USD)
-        Text(text = price.toString())
+        Text(text = coin.price)
     }
 }
 
