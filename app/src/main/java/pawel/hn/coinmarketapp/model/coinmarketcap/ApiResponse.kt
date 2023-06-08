@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp.model.coinmarketcap
 
 import com.google.gson.annotations.SerializedName
 import pawel.hn.coinmarketapp.database.Coin
+import kotlin.random.Random
 
 data class ApiResponse(
     val coinResponse: Map<Int, CoinResponse>,
@@ -53,20 +54,18 @@ data class Status(
     @SerializedName("timestamp") val timestamp: String
 )
 
-class ApiResponseMapper : ObjectMapper<ApiResponseCoins, List<Coin>> {
-    override fun convert(value: ApiResponseCoins): List<Coin> = value.coins.toDomain()
+fun ApiResponseCoins.toDomain(): List<Coin> = coins.toDomain()
 
-    private fun List<CoinResponse>.toDomain(): List<Coin> = map { it.toDomain() }
+fun List<CoinResponse>.toDomain(): List<Coin> = map { it.toDomain() }
 
-    private fun CoinResponse.toDomain(): Coin = Coin(
-        name = this.name,
-        symbol = this.symbol,
-        price = this.quote.USD.price,
-        change24h = this.quote.USD.percentChange24h,
-        change7d = this.quote.USD.percentChange7d,
-        cmcRank = this.cmcRank,
-        favourite = false,
-        coinId = 1
-    )
-}
+fun CoinResponse.toDomain(): Coin = Coin(
+    name = this.name,
+    symbol = this.symbol,
+    price = this.quote.USD.price,
+    change24h = this.quote.USD.percentChange24h,
+    change7d = this.quote.USD.percentChange7d,
+    cmcRank = this.cmcRank,
+    favourite = false,
+    coinId = Random.nextInt(1,100000)
+)
 

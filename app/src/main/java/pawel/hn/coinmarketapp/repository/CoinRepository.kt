@@ -5,7 +5,7 @@ import pawel.hn.coinmarketapp.util.Resource
 
 interface CoinRepository {
 
-    suspend fun getCoinsListing(): Resource<List<Coin>>
+    suspend fun getCoinsListing(): List<Coin>
 
 
 }

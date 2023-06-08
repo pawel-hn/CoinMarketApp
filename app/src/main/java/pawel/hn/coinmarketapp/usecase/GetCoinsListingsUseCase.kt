@@ -9,7 +9,7 @@ class GetCoinsListingsUseCase @Inject constructor(
     private val coinRepository: CoinRepository
 ) {
 
-    suspend fun execute(): Resource<List<Coin>> {
+    suspend fun execute(): List<Coin> {
        return coinRepository.getCoinsListing()
     }
 

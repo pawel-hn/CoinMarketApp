@@ -34,5 +34,5 @@ interface CoinApi {
         @Query("start") start: Int,
         @Query("limit") limit: Int,
         @Query("convert") convert: String
-    ): Response<ApiResponseCoins>
+    ): Result<ApiResponseCoins>
 }

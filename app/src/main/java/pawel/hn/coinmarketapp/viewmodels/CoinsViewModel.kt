@@ -59,12 +59,13 @@ class CoinsViewModel @Inject constructor(
         _coinResult.value = data
     }
 
-    private fun coins() =
+    private fun coins() {
+        _coinResult.value = Resource.Loading()
         viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
             val data = getCoinsListingsUseCase.execute()
-           _coinResult.value = data
+            _coinResult.value = Resource.Success(data)
         }
-
+    }
 
     /**
      *  // UPDATE
