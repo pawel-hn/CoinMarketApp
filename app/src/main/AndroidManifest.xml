@@ -13,12 +13,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/SplashScreenStyle"
+        android:theme="@style/Theme.MyTheme"
         android:usesCleartextTraffic="true">
 
         <activity
             android:name=".activity.MainActivity"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan"
             android:exported="true">
             <intent-filter>

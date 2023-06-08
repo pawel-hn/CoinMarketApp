@@ -59,7 +59,7 @@ class CoinsViewModel @Inject constructor(
         _coinResult.value = data
     }
 
-    private fun coins() {
+     fun getCoins() {
         _coinResult.value = Resource.Loading()
         viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
             val data = getCoinsListingsUseCase.execute()
@@ -76,7 +76,7 @@ class CoinsViewModel @Inject constructor(
     }
 
     init {
-        coins()
+        getCoins()
       //  mediatorSource()
     }
 
