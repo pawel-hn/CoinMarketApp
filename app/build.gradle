@@ -151,5 +151,6 @@ dependencies {
 
     // Landscapist
     implementation "com.github.skydoves:landscapist-glide:2.2.1"
+    implementation "com.github.skydoves:landscapist-coil:2.2.1"
 
 }

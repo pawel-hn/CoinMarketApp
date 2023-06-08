@@ -66,6 +66,6 @@ fun CoinResponse.toDomain(): Coin = Coin(
     change7d = this.quote.USD.percentChange7d,
     cmcRank = this.cmcRank,
     favourite = false,
-    coinId = Random.nextInt(1,100000)
+    coinId = this.id
 )
 

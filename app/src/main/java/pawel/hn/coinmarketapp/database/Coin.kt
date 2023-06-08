@@ -25,7 +25,9 @@ fun Coin.toPresentation() = CoinForView(
     favourite = false,
     price = formatPriceAndVolForView(this.price, ValueType.Fiat, CURRENCY_USD).toString(),
     change24h = formatPriceChange(this.change24h),
+    isChange24hUp = this.change24h > 0,
     change7d = formatPriceChange(this.change7d),
+    isChange7dUp = this.change7d > 0,
     cmcRank = this.cmcRank,
     imageUri = Uri.parse(LOGO_URL).buildUpon()
         .appendPath(LOGO_SIZE_PX)

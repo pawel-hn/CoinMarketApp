@@ -16,6 +16,7 @@ import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.databinding.ItemCoinsBinding
 import pawel.hn.coinmarketapp.util.*
+import java.net.URL
 
 class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
     ListAdapter<Coin, CoinsAdapter.CoinsViewHolder>(CoinDiffCallback()) {
@@ -77,6 +78,8 @@ class CoinsAdapter(val onClick: (Coin, Boolean) -> Unit) :
                     .appendPath(LOGO_SIZE_PX)
                     .appendPath(coin.coinId.toString() + LOGO_FILE_TYPE)
                     .build()
+
+
 
                 Glide.with(itemView)
                     .load(imageUri)

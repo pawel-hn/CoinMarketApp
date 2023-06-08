@@ -11,7 +11,7 @@ class CoinRepositoryImpl @Inject constructor(
 ) : CoinRepository {
 
     override suspend fun getCoinsListing(): List<Coin> =
-        coinApi.getCoinsFromNetworkNew(1, 8, "USD").fold(
+        coinApi.getCoinsFromNetworkNew(1, 5, "USD").fold(
             onSuccess = { response ->
                response.toDomain()
             },
