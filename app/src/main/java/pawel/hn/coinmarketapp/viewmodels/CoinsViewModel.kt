@@ -5,6 +5,9 @@ import androidx.lifecycle.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.Repository
@@ -31,8 +34,8 @@ class CoinsViewModel @Inject constructor(
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean> = _eventErrorResponse
 
-    private val _coinResult = MutableLiveData<Resource<List<Coin>>>(Resource.Loading())
-    val coinResult: LiveData<Resource<List<Coin>>> = _coinResult
+    private val _coinResult = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
+    val coinResult: StateFlow<Resource<List<Coin>>> = _coinResult.asStateFlow()
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean> = _eventProgressBar
@@ -53,13 +56,13 @@ class CoinsViewModel @Inject constructor(
         throwable.printStackTrace()
         showLogN("CoroutineExceptionHandler")
         val data = Resource.Error<List<Coin>>(throwable.message ?: "Unknown error")
-        _coinResult.postValue(data)
+        _coinResult.value = data
     }
 
     private fun coins() =
         viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
             val data = getCoinsListingsUseCase.execute()
-           _coinResult.postValue(data)
+           _coinResult.value = data
         }
 
 
