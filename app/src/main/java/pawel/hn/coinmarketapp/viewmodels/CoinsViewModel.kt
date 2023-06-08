@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.room.PrimaryKey
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
@@ -34,8 +35,8 @@ class CoinsViewModel @Inject constructor(
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean> = _eventErrorResponse
 
-    private val _coinResult = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
-    val coinResult: StateFlow<Resource<List<Coin>>> = _coinResult.asStateFlow()
+    private val _coinResult = MutableStateFlow<Resource<List<CoinForView>>>(Resource.Loading())
+    val coinResult: StateFlow<Resource<List<CoinForView>>> = _coinResult.asStateFlow()
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean> = _eventProgressBar
@@ -63,7 +64,14 @@ class CoinsViewModel @Inject constructor(
         _coinResult.value = Resource.Loading()
         viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
             val data = getCoinsListingsUseCase.execute()
-            _coinResult.value = Resource.Success(data)
+
+            _coinResult.value = Resource.Success(
+                data.map {
+                    CoinForView(
+
+                    )
+                }
+            )
         }
     }
 
@@ -120,3 +128,14 @@ class CoinsViewModel @Inject constructor(
     fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
 
 }
+
+data class CoinForView(
+    val coinId: Int,
+    val name: String,
+    val symbol: String,
+    val favourite: Boolean,
+    val price: String,
+    val change24h: String,
+    val change7d: String,
+    val cmcRank: Int
+)

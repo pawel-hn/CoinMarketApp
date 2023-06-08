@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.compoe
 
 
+import android.net.Uri
 import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -27,10 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.util.CURRENCY_USD
-import pawel.hn.coinmarketapp.util.Resource
-import pawel.hn.coinmarketapp.util.ValueType
-import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
+import pawel.hn.coinmarketapp.util.*
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 
@@ -131,6 +129,10 @@ fun CoinItem(
     modifier: Modifier = Modifier,
     coin: Coin
 ) {
+    val imageUri = Uri.parse(LOGO_URL).buildUpon()
+        .appendPath(LOGO_SIZE_PX)
+        .appendPath(coin.coinId.toString() + LOGO_FILE_TYPE)
+        .build()
     Row(
         modifier = modifier
             .padding(bottom = 8.dp)
@@ -146,6 +148,7 @@ fun CoinItem(
                 painter = painterResource(id = R.drawable.ic_star_unchecked),
                 contentDescription = ""
             )
+
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(text = coin.name, fontWeight = FontWeight.Normal)
