@@ -12,8 +12,6 @@ import pawel.hn.coinmarketapp.adapters.NewsAdapter
 import pawel.hn.coinmarketapp.databinding.FragmentNewsBinding
 import pawel.hn.coinmarketapp.viewmodels.NewsViewModel
 
-
-
 class NewsFragment : Fragment(R.layout.fragment_news) {
 
     private lateinit var newsAdapter: NewsAdapter
@@ -26,10 +24,8 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
         super.onViewCreated(view, savedInstanceState)
         binding = FragmentNewsBinding.bind(view)
 
-        binding.apply {
-            lifecycleOwner = this@NewsFragment
-            newsViewModel = viewModel
-        }
+        binding.lifecycleOwner = this
+        binding.newsViewModel = viewModel
 
         parser = Parser.Builder().build().also {
             getData(it, requireContext())
@@ -43,13 +39,11 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
                     findNavController().navigate(action)
                 }
 
-                binding.recyclerViewNews.adapter = newsAdapter
                 binding.swipeLayout.isRefreshing = false
                 if (channel.title != null) {
                     activity?.title = channel.title
                 }
             }
-            hideShimmerEffect()
         }
 
         binding.swipeLayout.setOnRefreshListener {
@@ -58,17 +52,7 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
     }
 
     private fun getData(parser: Parser, context: Context) {
-        showShimmerEffect()
+
         viewModel.fetchFeed(parser, context)
     }
-
-    private fun hideShimmerEffect() {
-        binding.recyclerViewNews.hideShimmer()
-    }
-
-    private fun showShimmerEffect() {
-        binding.recyclerViewNews.showShimmer()
-    }
-
-
 }

@@ -8,22 +8,26 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Notifications
 import pawel.hn.coinmarketapp.notification.NotifyWorker
-import pawel.hn.coinmarketapp.repository.CoinsRepository
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 @HiltViewModel
 class PriceNotifyViewModel @Inject constructor(
-    private val coinsRepository: CoinsRepository,
+    private val repository: Repository,
     @ApplicationContext context: Context
 ) : ViewModel() {
 
+    private val _latestPrice = MutableLiveData<Double>()
+    val latestPrice: LiveData<Double>
+        get() = _latestPrice
 
-     val latestPrice: LiveData<Double> = MutableLiveData()
-     val notificationOnOff: LiveData<Boolean> = MutableLiveData()
+    private val _notificationOnOff = MutableLiveData<Boolean>()
+    val notificationOnOff: LiveData<Boolean>
+        get() = _notificationOnOff
 
-    val notifications = coinsRepository.coins.notifications
+    val notifications = repository.coins.notifications
     private var priceAlertData: Double = 0.0
     private lateinit var workManager: WorkManager
     private lateinit var workRequest: PeriodicWorkRequest
@@ -43,7 +47,7 @@ class PriceNotifyViewModel @Inject constructor(
             )
             val notification = Notifications(workRequest.id.toString(), false)
             viewModelScope.launch {
-                coinsRepository.coins.insertNotifications(notification)
+                repository.coins.insertNotifications(notification)
             }
         } else {
             workManager.cancelUniqueWork(PRICE_ALERT)
@@ -54,6 +58,7 @@ class PriceNotifyViewModel @Inject constructor(
         workManager = WorkManager.getInstance(context)
     }
 
+
     fun setPriceAlert(priceAlert: Int) {
         priceAlertData = priceAlert.toDouble()
         setCurrentPriceAlert(priceAlertData)
@@ -61,6 +66,7 @@ class PriceNotifyViewModel @Inject constructor(
             notifyWorker(true)
         }
     }
+
 
     private fun setCurrentPriceAlert(alertPrice: Double) {
         priceAlertData = alertPrice
@@ -72,20 +78,19 @@ class PriceNotifyViewModel @Inject constructor(
 
     private fun getLatestPrice() {
         viewModelScope.launch {
-            val price = coinsRepository.getLatestBitcoinPrice()
+            val price = repository.getLatestBitcoinPrice()
             price?.let {
-                latestPrice.toMutableLiveData().postValue(it)
+                _latestPrice.postValue(it)
             }
         }
     }
 
-
     fun setNotificationOn() {
-        notificationOnOff.toMutableLiveData().postValue(true)
+        _notificationOnOff.postValue(true)
     }
 
     fun setNotificationOff() {
-        notificationOnOff.toMutableLiveData().postValue(false)
+        _notificationOnOff.postValue(false)
     }
 
     private fun setDataForWorker(priceAlert: Double): Data {

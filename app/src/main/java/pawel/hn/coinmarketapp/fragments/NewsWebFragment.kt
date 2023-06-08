@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.databinding.FragmentNewsWebviewBinding
 
-
 class NewsWebFragment : Fragment(R.layout.fragment_news_webview) {
 
     lateinit var binding: FragmentNewsWebviewBinding

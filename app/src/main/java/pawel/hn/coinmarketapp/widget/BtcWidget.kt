@@ -16,8 +16,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.activity.MainActivity
-import pawel.hn.coinmarketapp.model.coinmarketcap.CoinData
-import pawel.hn.coinmarketapp.repository.CoinsRepository
+import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
+import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.*
 import javax.inject.Inject
 
@@ -25,9 +25,9 @@ import javax.inject.Inject
 class BtcWidget : AppWidgetProvider() {
 
     @Inject
-    lateinit var coinsRepository: CoinsRepository
+    lateinit var repository: Repository
 
-    var btc: CoinData? = null
+    var btc: CoinResponse? = null
 
     private val job = SupervisorJob()
     private val coroutineScope = CoroutineScope(Dispatchers.IO + job)
@@ -39,7 +39,7 @@ class BtcWidget : AppWidgetProvider() {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val ids = appWidgetManager.getAppWidgetIds(ComponentName(context!!, BtcWidget::class.java))
         coroutineScope.launch {
-            btc = coinsRepository.getBitcoinData()!!
+            btc = repository.getBitcoinData()!!
             ids.forEach { id ->
                 updateAppWidget(
                     context,

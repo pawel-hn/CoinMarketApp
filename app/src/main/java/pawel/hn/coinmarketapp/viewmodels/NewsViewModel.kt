@@ -10,29 +10,32 @@ import com.prof.rssparser.Parser
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.util.BASE_URL_NEWS
 import pawel.hn.coinmarketapp.util.hasInternetConnection
-import pawel.hn.coinmarketapp.util.showLog
-import pawel.hn.coinmarketapp.util.toMutableLiveData
 
 class NewsViewModel : ViewModel() {
 
-    val rssChannel: LiveData<Channel> = MutableLiveData()
-    val eventError: LiveData<Boolean> = MutableLiveData()
+    private val _rssChannel = MutableLiveData<Channel>()
+    val rssChannel: LiveData<Channel>
+        get() = _rssChannel
+
+    private val _eventError = MutableLiveData<Boolean>()
+    val eventError: LiveData<Boolean>
+        get() = _eventError
+
 
     fun fetchFeed(parser: Parser, context: Context) {
         if (hasInternetConnection(context)) {
             viewModelScope.launch {
-                runCatching {
-                    parser.getChannel(BASE_URL_NEWS)
-                }.onSuccess {
-                    if (it.articles.isNotEmpty()) {
-                        rssChannel.toMutableLiveData().value = it
-                        eventError.toMutableLiveData().value = false
+                try {
+                    val channel = parser.getChannel(BASE_URL_NEWS)
+                    if (channel.articles.isNotEmpty()){
+                        _rssChannel.value = channel
+                        _eventError.value = false
                     } else {
-                        eventError.toMutableLiveData().value = true
+                        _eventError.value = true
                     }
-                }.onFailure {
-                    showLog(it.message!!)
-                    rssChannel.toMutableLiveData().postValue(
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    _rssChannel.postValue(
                         Channel(
                             null,
                             null,
@@ -46,7 +49,7 @@ class NewsViewModel : ViewModel() {
                 }
             }
         } else {
-            eventError.toMutableLiveData().value = true
+            _eventError.value = true
         }
     }
 }

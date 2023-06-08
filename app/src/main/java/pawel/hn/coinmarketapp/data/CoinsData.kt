@@ -6,7 +6,6 @@ import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.Notifications
 import javax.inject.Inject
 
-
 class CoinsData @Inject constructor(private val coinDao: CoinDao) {
 
     fun getCoinsList(searchQuery: String, favourites: Boolean): LiveData<List<Coin>>
@@ -33,10 +32,6 @@ class CoinsData @Inject constructor(private val coinDao: CoinDao) {
         }
     }
 
-    /**
-     * Notifications are inserted into database and observed with livedata, so app knows when to
-     * be ready to send a notification.
-     */
     val notifications = coinDao.getNotifications()
 
     suspend fun insertNotifications(notifications: Notifications) {
