@@ -1,11 +1,6 @@
 package pawel.hn.coinmarketapp.compoe
 
 
-import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,9 +11,9 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,16 +36,7 @@ import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 fun MainScreen(
     coinsViewModel: CoinsViewModel = viewModel()
 ) {
-    Log.d("PHN", "mainscreen")
     val data = coinsViewModel.coinResult.collectAsState()
-
-
-    var isLoadingVisibleRemember by remember { mutableStateOf(data.value is Resource.Loading) }
-
-    LaunchedEffect(data.value) {
-        Log.d("PHN", "LaunchedEffect loading: $isLoadingVisibleRemember")
-        isLoadingVisibleRemember = data.value is Resource.Loading
-    }
 
     Box(
         modifier = Modifier.fillMaxSize(),
@@ -58,14 +44,18 @@ fun MainScreen(
     ) {
         when (data.value) {
             is Resource.Error -> ErrorCoins("Error.....")
-            is Resource.Loading -> LoadingCoins(isLoadingVisibleRemember)
+            is Resource.Loading -> {
+                CoinsList(isLoading = true, coins = emptyList()) {
+
+                }
+            }
             is Resource.Success -> {
                 val coins = data.value.data
                 if (coins.isNullOrEmpty()) {
                     ErrorCoins(text = "No data to display")
                 } else {
                     CoinsList(
-                        visible = !isLoadingVisibleRemember,
+                        isLoading = false,
                         coins = coins
                     ) {
                         coinsViewModel.getCoins()
@@ -73,19 +63,6 @@ fun MainScreen(
                 }
             }
         }
-    }
-}
-
-@Composable
-fun LoadingCoins(
-    visible: Boolean
-) {
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(animationSpec = tween(1000)),
-        exit = fadeOut(animationSpec = tween(1000))
-    ) {
-        CircularProgressIndicator()
     }
 }
 
@@ -101,41 +78,57 @@ fun ErrorCoins(text: String) {
 
 @Composable
 fun CoinsList(
-    visible: Boolean,
-    coins: List<CoinForView>, onClick: () -> Unit
+    isLoading: Boolean,
+    coins: List<CoinForView>,
+    onClick: () -> Unit
 ) {
 
-    AnimatedVisibility(
-        visible = visible,
-        enter = fadeIn(animationSpec = tween(1000)),
-        exit = fadeOut(animationSpec = tween(1000))
+    LazyColumn(
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(8.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        LazyColumn(
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(8.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
+        if (isLoading) {
+            items(5) {
+                ShimmerItem()
+            }
+        } else {
             items(items = coins, key = { it.coinId }) {
                 CoinItem(coin = it)
             }
-            item {
-                Button(onClick = onClick) {
-                    Text(text = "Refresh")
-                }
+        }
+        item {
+            Button(onClick = onClick) {
+                Text(text = "Refresh")
             }
         }
     }
 }
 
+
 @Composable
-fun CoinItem(
-    modifier: Modifier = Modifier,
-    coin: CoinForView
-) {
+fun ShimmerItem() {
     Row(
-        modifier = modifier
+        modifier = Modifier
             .padding(bottom = 8.dp)
             .fillMaxWidth()
+            .height(75.dp)
+            .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(20))
+            .shimmerEffect()
+    ) {
+
+    }
+}
+
+@Composable
+fun CoinItem(
+    coin: CoinForView,
+) {
+    Row(
+        modifier = Modifier
+            .padding(bottom = 8.dp)
+            .fillMaxWidth()
+            .height(75.dp)
             .background(CoinItemColor, RoundedCornerShape(20))
             .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(20))
             .padding(8.dp),
@@ -153,6 +146,7 @@ fun CoinItem(
                 painter = painterResource(id = R.drawable.ic_star_unchecked),
                 contentDescription = ""
             )
+            Spacer(modifier = Modifier.width(8.dp))
             GlideImage(
                 modifier = Modifier
                     .clip(CircleShape)
@@ -162,7 +156,6 @@ fun CoinItem(
                     contentScale = ContentScale.FillBounds
                 )
             )
-
             Spacer(modifier = Modifier.width(8.dp))
             Column {
                 Text(text = coin.name, fontWeight = FontWeight.Normal)
@@ -175,12 +168,11 @@ fun CoinItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.widthIn(),
                 text = coin.price,
                 textAlign = TextAlign.End
             )
+            Spacer(modifier = Modifier.width(8.dp))
             Column(
-
                 horizontalAlignment = Alignment.End
             ) {
                 val color24h = if (coin.isChange24hUp) Color.Blue else Color.Red
