@@ -1,5 +1,9 @@
 package pawel.hn.coinmarketapp.repository
 
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.flowOn
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.model.coinmarketcap.toDomain
@@ -19,4 +23,16 @@ class CoinRepositoryImpl @Inject constructor(
                 throw throwable
             }
         )
+
+
+    override suspend fun getCoinsPaging(page: Int, pageSize: Int): Flow<List<Coin>> {
+        return coinApi.getCoinsFromNetworkNew(page, pageSize, "USD").fold(
+            onSuccess = { response ->
+                flowOf(response.toDomain())
+            },
+            onFailure = { throwable ->
+              throw throwable
+            }
+        )
+    }
 }

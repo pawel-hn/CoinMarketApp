@@ -1,23 +1,23 @@
 package pawel.hn.coinmarketapp.viewmodels
 
-import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.*
-import androidx.room.PrimaryKey
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.database.toPresentation
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.usecase.GetCoinsListingsUseCase
-import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.util.showLogN
-import java.net.HttpRetryException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -26,105 +26,86 @@ class CoinsViewModel @Inject constructor(
     private val getCoinsListingsUseCase: GetCoinsListingsUseCase,
 ) : ViewModel() {
 
-    private val showFavourites = MutableLiveData(false)
+    val coins = mutableStateListOf<CoinForView>()
 
-    private val searchQuery = MutableLiveData("")
-
-    val observableCoinsAllMediator = MediatorLiveData<List<Coin>>()
-
-    val observableCoinsAll = repository.coins.coinsAll
+     var startIndex by mutableStateOf(1)
+    var canPaginate by mutableStateOf(false)
+    var listState by mutableStateOf(ListState.IDLE)
 
     private val _eventErrorResponse = MutableLiveData<Boolean>()
     val eventErrorResponse: LiveData<Boolean> = _eventErrorResponse
 
-    private val _coinResult = MutableStateFlow<Resource<List<CoinForView>>>(Resource.Loading())
-    val coinResult: StateFlow<Resource<List<CoinForView>>> = _coinResult.asStateFlow()
-
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean> = _eventProgressBar
-
-    private val coinListChecked = showFavourites.switchMap {
-        if (it) {
-            repository.coins.coinsFavourite
-        } else {
-            repository.coins.coinsAll
-        }
-    }
-
-    /**
-     * UDAPTE
-     */
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showLogN("CoroutineExceptionHandler")
-        val data = Resource.Error<List<CoinForView>>(throwable.message ?: "Unknown error")
-        _coinResult.value = data
+        listState = ListState.ERROR
     }
 
-     fun getCoins() {
-        _coinResult.value = Resource.Loading()
-        viewModelScope.launch(context = Dispatchers.IO + errorHandler) {
-            val data = getCoinsListingsUseCase.execute()
+//    fun getNoPaging() = viewModelScope.launch(Dispatchers.IO + errorHandler) {
+//        val data = getCoinsListingsUseCase.execute().map { it.toPresentation() }
+//        coins.addAll(data)
+//    }
 
-            _coinResult.value = Resource.Success(
-                data.map {coin -> coin.toPresentation()}
-            )
+    fun getNews() = viewModelScope.launch {
+        val shouldLoadData =
+            startIndex == 1 ||
+                    (startIndex != 1 && canPaginate) && listState == ListState.IDLE
+
+        if (shouldLoadData) {
+            listState = if (startIndex == 1) ListState.LOADING else ListState.PAGINATING
+
+            getCoinsListingsUseCase.executePaging(startIndex, 20)
+                .catch { listState = ListState.ERROR }
+                .collect { result ->
+                    canPaginate = startIndex < 201
+                    val list = result.map { it.toPresentation() }
+
+                    if (startIndex == 1) {
+                        coins.clear()
+                        coins.addAll(list)
+                    } else {
+                        coins.addAll(list)
+                    }
+
+                    listState = ListState.IDLE
+
+                    if (canPaginate) {
+                        startIndex += 20
+                    }
+                }
         }
+    }
+
+    fun resetPaging() {
+        startIndex = 1
+        listState = ListState.IDLE
+        canPaginate = false
+    }
+
+    override fun onCleared() {
+        resetPaging()
+        super.onCleared()
     }
 
     /**
      *  // UPDATE
      */
 
-    private val coinListSearchQuery = searchQuery.switchMap { searchQuery ->
-        repository.coins.getCoinsList(searchQuery, showFavourites.value!!)
-    }
-
     init {
-        getCoins()
-      //  mediatorSource()
+        getNews()
+        //getNoPaging()
     }
+}
 
-    private fun mediatorSource() {
-        observableCoinsAllMediator.addSource(coinListChecked) {
-            observableCoinsAllMediator.postValue(it)
-        }
-        observableCoinsAllMediator.addSource(coinListSearchQuery) {
-            observableCoinsAllMediator.postValue(it)
-        }
-    }
-
-    fun refreshData(ccy: String) {
-        viewModelScope.launch {
-            _eventProgressBar.value = true
-            repository.getCoinsData(ccy)
-            _eventProgressBar.value = false
-            _eventErrorResponse.value = repository.responseError
-        }
-    }
-
-
-    fun coinFavouriteClicked(coin: Coin, isChecked: Boolean) {
-        viewModelScope.launch(Dispatchers.IO) {
-            repository.coins.update(coin, isChecked)
-        }
-    }
-
-    fun unCheckAllFavourites() {
-        viewModelScope.launch(Dispatchers.IO) {
-            observableCoinsAllMediator.value?.forEach {
-                repository.coins.update(it, false)
-            }
-        }
-    }
-
-    fun searchQuery(query: String) {
-        searchQuery.value = query
-    }
-
-    fun showFavourites(showFav: Boolean) = showFavourites.postValue(showFav)
-
+enum class ListState {
+    IDLE,
+    LOADING,
+    PAGINATING,
+    ERROR,
+    PAGINATION_EXHAUST,
 }
 
 data class CoinForView(

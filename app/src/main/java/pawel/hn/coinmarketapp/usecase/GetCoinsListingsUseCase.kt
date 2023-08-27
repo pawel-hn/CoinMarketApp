@@ -1,8 +1,8 @@
 package pawel.hn.coinmarketapp.usecase
 
+import kotlinx.coroutines.flow.Flow
 import pawel.hn.coinmarketapp.database.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
-import pawel.hn.coinmarketapp.util.Resource
 import javax.inject.Inject
 
 class GetCoinsListingsUseCase @Inject constructor(
@@ -10,8 +10,11 @@ class GetCoinsListingsUseCase @Inject constructor(
 ) {
 
     suspend fun execute(): List<Coin> {
-       return coinRepository.getCoinsListing()
+        return coinRepository.getCoinsListing()
     }
+
+    suspend fun executePaging(page: Int, pageSize: Int): Flow<List<Coin>> =
+        coinRepository.getCoinsPaging(page, pageSize)
 
 }
 

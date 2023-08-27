@@ -45,7 +45,7 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
 
        // viewModel.refreshData(currency)
         adapter = CoinsAdapter { coin, isChecked ->
-            viewModel.coinFavouriteClicked(coin, isChecked)
+
         }
         binding = FragmentCoinsBinding.inflate(inflater, container, false)
 
@@ -55,30 +55,9 @@ class CoinsFragment : Fragment(R.layout.fragment_coins) {
             coinsRecyclerView.adapter = adapter
             coinsRecyclerView.itemAnimator = null
         }
-        subscribeToObservers()
+
         setHasOptionsMenu(true)
         return binding.root
-    }
-
-
-    private fun subscribeToObservers() {
-        viewModel.observableCoinsAllMediator.observe(viewLifecycleOwner) { list ->
-
-            adapter.setCurrency(currency)
-            adapter.submitList(list)
-        }
-        viewModel.observableCoinsAll.observe(viewLifecycleOwner) {}
-
-        lifecycleScope.launch {
-            viewModel.coinResult.collectLatest {
-                when(it) {
-                    is Resource.Error -> showLogN("error: ${it.message}")
-                    is Resource.Loading -> showLogN("loading")
-                    is Resource.Success -> showLogN("success: ${it.data?.size}")
-                }
-            }
-        }
-
     }
 
 }

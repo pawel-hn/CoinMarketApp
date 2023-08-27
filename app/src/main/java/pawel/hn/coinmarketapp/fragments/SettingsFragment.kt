@@ -53,7 +53,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
             Toast.makeText(requireContext(),
                 "${requireContext().getString(R.string.currency_set)} " +
                     newValue.toString(), Toast.LENGTH_SHORT).show()
-            viewModel.refreshData(newValue.toString())
+           // viewModel.refreshData(newValue.toString())
 
             true
         }
