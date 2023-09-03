@@ -7,8 +7,6 @@ import pawel.hn.coinmarketapp.util.Resource
 
 interface CoinRepository {
 
-    suspend fun getCoinsListing(): List<Coin>
-
     suspend fun getCoinsPaging(page: Int, pageSize: Int): Flow<List<Coin>>
 
 }

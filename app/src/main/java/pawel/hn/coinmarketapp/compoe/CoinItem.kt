@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.compoe
 
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -101,9 +102,11 @@ fun Body(
 }
 
 @Composable
-fun ErrorCoins(text: String) {
+fun ErrorCoins(
+    modifier: Modifier,
+    text: String) {
     Box(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(text = text)
@@ -119,7 +122,7 @@ fun CoinsList(
     loadData: () -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().animateContentSize(),
         contentPadding = PaddingValues(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         state = lazyColumnState
@@ -136,7 +139,9 @@ fun CoinsList(
                 ListState.IDLE -> {}
                 ListState.LOADING -> { ShimmerLoading() }
                 ListState.PAGINATING -> { PagingLoadingRow() }
-                ListState.ERROR -> { ErrorCoins(text = "Lololo....") }
+                ListState.ERROR -> { ErrorCoins(
+                    modifier = Modifier.fillParentMaxSize(),
+                    text = "Lololo....") }
                 ListState.PAGINATION_EXHAUST -> {}
             }
         }

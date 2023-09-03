@@ -5,38 +5,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.toPresentation
-import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.usecase.GetCoinsListingsUseCase
 import pawel.hn.coinmarketapp.util.showLogN
 import javax.inject.Inject
 
+const val PAGE_SIZE = 20
+const val START_INDEX = 1
+
 @HiltViewModel
 class CoinsViewModel @Inject constructor(
-    private val repository: Repository,
-    private val getCoinsListingsUseCase: GetCoinsListingsUseCase,
+    private val getCoinsListingsUseCase: GetCoinsListingsUseCase
 ) : ViewModel() {
 
     val coins = mutableStateListOf<CoinForView>()
 
-     var startIndex by mutableStateOf(1)
+    private var startIndex by mutableStateOf(1)
     var canPaginate by mutableStateOf(false)
     var listState by mutableStateOf(ListState.IDLE)
-
-    private val _eventErrorResponse = MutableLiveData<Boolean>()
-    val eventErrorResponse: LiveData<Boolean> = _eventErrorResponse
-
-    private val _eventProgressBar = MutableLiveData(false)
-    val eventProgressBar: LiveData<Boolean> = _eventProgressBar
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
@@ -44,15 +36,10 @@ class CoinsViewModel @Inject constructor(
         listState = ListState.ERROR
     }
 
-//    fun getNoPaging() = viewModelScope.launch(Dispatchers.IO + errorHandler) {
-//        val data = getCoinsListingsUseCase.execute().map { it.toPresentation() }
-//        coins.addAll(data)
-//    }
-
-    fun getNews() = viewModelScope.launch {
+    fun getNews() = viewModelScope.launch(errorHandler) {
         val shouldLoadData =
-            startIndex == 1 ||
-                    (startIndex != 1 && canPaginate) && listState == ListState.IDLE
+            startIndex == START_INDEX ||
+                    (startIndex != START_INDEX && canPaginate) && listState == ListState.IDLE
 
         if (shouldLoadData) {
             listState = if (startIndex == 1) ListState.LOADING else ListState.PAGINATING
@@ -63,7 +50,7 @@ class CoinsViewModel @Inject constructor(
                     canPaginate = startIndex < 201
                     val list = result.map { it.toPresentation() }
 
-                    if (startIndex == 1) {
+                    if (startIndex == START_INDEX) {
                         coins.clear()
                         coins.addAll(list)
                     } else {
@@ -73,7 +60,7 @@ class CoinsViewModel @Inject constructor(
                     listState = ListState.IDLE
 
                     if (canPaginate) {
-                        startIndex += 20
+                        startIndex += PAGE_SIZE
                     }
                 }
         }
@@ -90,13 +77,8 @@ class CoinsViewModel @Inject constructor(
         super.onCleared()
     }
 
-    /**
-     *  // UPDATE
-     */
-
     init {
         getNews()
-        //getNoPaging()
     }
 }
 

@@ -7,7 +7,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.data.CoinsData
@@ -19,6 +21,8 @@ import pawel.hn.coinmarketapp.database.WalletDao
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.CoinRepositoryImpl
 import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.util.API_HEADER
+import pawel.hn.coinmarketapp.util.API_KEY
 import pawel.hn.coinmarketapp.util.BASE_URL_COINS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
