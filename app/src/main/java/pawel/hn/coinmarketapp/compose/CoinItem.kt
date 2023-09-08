@@ -1,11 +1,10 @@
-package pawel.hn.coinmarketapp.compoe
+package pawel.hn.coinmarketapp.compose
 
 
 import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
+import androidx.compose.animation.core.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -21,11 +20,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skydoves.landscapist.ImageOptions
@@ -42,11 +47,10 @@ fun MainScreen() {
         containerColor = Color(0xFFEEEEEE),
         topBar = { TopBar() }
     ) { paddingValues ->
-
-        Body(
-            modifier = Modifier
-                .padding(top = paddingValues.calculateTopPadding())
-        )
+        Column(Modifier.padding(paddingValues)) {
+            TopRow()
+            Body()
+        }
     }
 }
 
@@ -72,7 +76,6 @@ fun TopBar() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Body(
-    modifier: Modifier,
     coinsViewModel: CoinsViewModel = viewModel()
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
@@ -85,26 +88,22 @@ fun Body(
     val coins = coinsViewModel.coins
     val canPaginate = coinsViewModel.canPaginate
 
-    Box(
-        modifier = modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+    CoinsList(
+        state = coinsViewModel.listState,
+        coins = coins,
+        lazyColumnState = lazyColumnListState,
+        canPaginate = canPaginate
     ) {
-        CoinsList(
-            state = coinsViewModel.listState,
-            coins = coins,
-            lazyColumnState = lazyColumnListState,
-            canPaginate = canPaginate
-        ) {
-            coinsViewModel.getNews()
-        }
-
+        coinsViewModel.getNews()
     }
+
 }
 
 @Composable
 fun ErrorCoins(
     modifier: Modifier,
-    text: String) {
+    text: String
+) {
     Box(
         modifier = modifier,
         contentAlignment = Alignment.Center
@@ -122,8 +121,10 @@ fun CoinsList(
     loadData: () -> Unit
 ) {
     LazyColumn(
-        modifier = Modifier.fillMaxSize().animateContentSize(),
-        contentPadding = PaddingValues(8.dp),
+        modifier = Modifier
+            .fillMaxSize()
+            .animateContentSize(),
+        contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
         state = lazyColumnState
     ) {
@@ -137,11 +138,18 @@ fun CoinsList(
         item(key = state) {
             when (state) {
                 ListState.IDLE -> {}
-                ListState.LOADING -> { ShimmerLoading() }
-                ListState.PAGINATING -> { PagingLoadingRow() }
-                ListState.ERROR -> { ErrorCoins(
-                    modifier = Modifier.fillParentMaxSize(),
-                    text = "Lololo....") }
+                ListState.LOADING -> {
+                    ShimmerLoading()
+                }
+                ListState.PAGINATING -> {
+                    PagingLoadingRow()
+                }
+                ListState.ERROR -> {
+                    ErrorCoins(
+                        modifier = Modifier.fillParentMaxSize(),
+                        text = "Lololo...."
+                    )
+                }
                 ListState.PAGINATION_EXHAUST -> {}
             }
         }
@@ -202,13 +210,7 @@ fun CoinItem(
             modifier = Modifier.weight(0.5f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                modifier = Modifier
-                    .background(color = Color.Gray, shape = CircleShape)
-                    .size(24.dp),
-                painter = painterResource(id = R.drawable.ic_star_unchecked),
-                contentDescription = ""
-            )
+            StarButtonAnimated()
             Spacer(modifier = Modifier.width(8.dp))
             GlideImage(
                 modifier = Modifier
@@ -234,7 +236,7 @@ fun CoinItem(
                 text = coin.price,
                 textAlign = TextAlign.End
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(32.dp))
             Column(
                 horizontalAlignment = Alignment.End
             ) {
@@ -248,5 +250,98 @@ fun CoinItem(
     }
 }
 
+@Preview
+@Composable
+fun TopRow() {
+    Row(
+        modifier = Modifier
+            .padding(8.dp)
+            .fillMaxWidth()
+            .background(CoinItemColor, RoundedCornerShape(20))
+            .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(20))
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier.weight(0.5f),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Spacer(modifier = Modifier.width(61.dp))
+            Text(text = "Coin", color = Color.Black)
+
+        }
+        Row(
+            modifier = Modifier.weight(0.5f),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Price", color = Color.Black
+            )
+            Spacer(modifier = Modifier.width(48.dp))
+            Text(
+                text = "24h/7d", color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
+fun StarButtonAnimated(
+    favourite: Boolean = true
+) {
+    var isFavourite by remember { mutableStateOf(favourite) }
+    var buttonState by remember { mutableStateOf(ButtonState.Idle) }
+
+
+    val ty by animateDpAsState(
+        targetValue = if (buttonState == ButtonState.Pressed) (-10).dp else 0.dp,
+        animationSpec = tween(durationMillis = 150, easing = LinearEasing)
+    ) {
+        buttonState = ButtonState.Idle
+    }
+
+    Box(
+        modifier = Modifier.size(36.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier
+                .absoluteOffset { IntOffset(x = 0, y = ty.roundToPx()) }
+                .background(color = Color.Gray, shape = CircleShape)
+                .size(24.dp)
+                .drawBehind {
+                    if (isFavourite){
+                        drawCircle(
+                            brush = Brush.radialGradient(
+                                colors = listOf(ColorStar, Color.Transparent),
+                                radius = 100F
+                            ),
+                            radius = 100F,
+                            alpha = 0.3F
+                        )
+                    }
+                }
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null,
+                    onClick = {
+                        isFavourite = !isFavourite
+                        buttonState = ButtonState.Pressed
+                    }
+                ),
+            painter = painterResource(id = R.drawable.ic_star_unchecked),
+            colorFilter = ColorFilter.tint(if (isFavourite) ColorStar else Color.White),
+            contentDescription = ""
+        )
+    }
+
+}
+
+enum class ButtonState { Idle, Pressed }
+
 
 val CoinItemColor = Color(0xFCFFFFFF)
+val ColorStar = Color(0xFFCFFDB6)
+

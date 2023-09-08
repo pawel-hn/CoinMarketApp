@@ -1,4 +1,4 @@
-package pawel.hn.coinmarketapp.compoe
+package pawel.hn.coinmarketapp.compose
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
