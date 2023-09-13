@@ -7,7 +7,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -36,9 +36,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.viewmodels.CoinForView
+import pawel.hn.coinmarketapp.domain.Coin
+import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
-import pawel.hn.coinmarketapp.viewmodels.ListState
 
 @Composable
 fun MainScreen() {
@@ -53,7 +53,6 @@ fun MainScreen() {
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -78,25 +77,19 @@ fun TopBar() {
 fun Body(
     coinsViewModel: CoinsViewModel = viewModel()
 ) {
+
     var isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
         onRefresh = { coinsViewModel.resetPaging() }
     )
-    val lazyColumnListState = rememberLazyListState()
 
-    val coins = coinsViewModel.coins
-    val canPaginate = coinsViewModel.canPaginate
+    val coins by coinsViewModel.coinResult.collectAsState()
 
     CoinsList(
-        state = coinsViewModel.listState,
         coins = coins,
-        lazyColumnState = lazyColumnListState,
-        canPaginate = canPaginate
-    ) {
-        coinsViewModel.getNews()
-    }
-
+        favouriteClick = { id, fav -> coinsViewModel.favouriteClick(id, fav) }
+    )
 }
 
 @Composable
@@ -114,11 +107,28 @@ fun ErrorCoins(
 
 @Composable
 fun CoinsList(
-    state: ListState,
-    coins: List<CoinForView> = emptyList(),
-    lazyColumnState: LazyListState,
-    canPaginate: Boolean,
-    loadData: () -> Unit
+    coins: Resource<List<Coin>>,
+    favouriteClick: (Int, Boolean) -> Unit
+) {
+    when (coins) {
+        is Resource.Error -> {
+            ErrorCoins(
+                modifier = Modifier.fillMaxSize(),
+                text = "Lololo...."
+            )
+        }
+        is Resource.Loading -> { ShimmerLoading() }
+        is Resource.Success -> {
+            CoinsList(coins = coins.data ?: emptyList()) { id, fav -> favouriteClick(id, fav) }
+        }
+    }
+
+}
+
+@Composable
+fun CoinsList(
+    coins: List<Coin>,
+    starClick: (Int, Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
@@ -126,47 +136,11 @@ fun CoinsList(
             .animateContentSize(),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
-        state = lazyColumnState
+        state = rememberLazyListState()
     ) {
-        items(coins.size) { i ->
-            val coin = coins[i]
-            if (i >= coins.size - 1 && canPaginate && state == ListState.IDLE) {
-                loadData()
-            }
-            CoinItem(coin = coin)
+        items(items = coins, key = {it.coinId}) { coin ->
+            CoinItem(coin = coin, onStarClick = { id, fav -> starClick(id, fav) })
         }
-        item(key = state) {
-            when (state) {
-                ListState.IDLE -> {}
-                ListState.LOADING -> {
-                    ShimmerLoading()
-                }
-                ListState.PAGINATING -> {
-                    PagingLoadingRow()
-                }
-                ListState.ERROR -> {
-                    ErrorCoins(
-                        modifier = Modifier.fillParentMaxSize(),
-                        text = "Lololo...."
-                    )
-                }
-                ListState.PAGINATION_EXHAUST -> {}
-            }
-        }
-    }
-}
-
-@Composable
-fun PagingLoadingRow() {
-    Column(
-        modifier = Modifier
-            .fillMaxWidth(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(text = "Pagination Loading")
-
-        CircularProgressIndicator(color = Color.Black)
     }
 }
 
@@ -193,8 +167,10 @@ fun ShimmerItem() {
 
 @Composable
 fun CoinItem(
-    coin: CoinForView,
+    coin: Coin,
+    onStarClick: (Int, Boolean) -> Unit
 ) {
+    var isFavourite by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .padding(bottom = 8.dp)
@@ -210,7 +186,10 @@ fun CoinItem(
             modifier = Modifier.weight(0.5f),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            StarButtonAnimated()
+            StarButtonAnimated(isFavourite) { fav ->
+                onStarClick(coin.coinId, fav)
+                isFavourite = fav
+            }
             Spacer(modifier = Modifier.width(8.dp))
             GlideImage(
                 modifier = Modifier
@@ -289,11 +268,10 @@ fun TopRow() {
 
 @Composable
 fun StarButtonAnimated(
-    favourite: Boolean = true
+    favourite: Boolean,
+    starClick: (Boolean) -> Unit
 ) {
-    var isFavourite by remember { mutableStateOf(favourite) }
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
-
 
     val ty by animateDpAsState(
         targetValue = if (buttonState == ButtonState.Pressed) (-10).dp else 0.dp,
@@ -312,7 +290,7 @@ fun StarButtonAnimated(
                 .background(color = Color.Gray, shape = CircleShape)
                 .size(24.dp)
                 .drawBehind {
-                    if (isFavourite){
+                    if (favourite) {
                         drawCircle(
                             brush = Brush.radialGradient(
                                 colors = listOf(ColorStar, Color.Transparent),
@@ -327,12 +305,12 @@ fun StarButtonAnimated(
                     interactionSource = remember { MutableInteractionSource() },
                     indication = null,
                     onClick = {
-                        isFavourite = !isFavourite
+                        starClick(!favourite)
                         buttonState = ButtonState.Pressed
                     }
                 ),
             painter = painterResource(id = R.drawable.ic_star_unchecked),
-            colorFilter = ColorFilter.tint(if (isFavourite) ColorStar else Color.White),
+            colorFilter = ColorFilter.tint(if (favourite) ColorStar else Color.White),
             contentDescription = ""
         )
     }

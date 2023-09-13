@@ -2,24 +2,22 @@ package pawel.hn.coinmarketapp.database
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CoinDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Coin::class)
-    suspend fun insertAll(list: List<Coin>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = CoinEntity::class)
+    suspend fun insertAll(list: List<CoinEntity>)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Coin::class)
-    suspend fun insert(coin: Coin)
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = CoinEntity::class)
+    suspend fun insert(coinEntity: CoinEntity)
 
-    @Update(entity = Coin::class)
-    suspend fun update(coin: Coin)
+    @Update(entity = CoinEntity::class)
+    suspend fun update(coinEntity: CoinEntity)
 
     @Query("SELECT * FROM coins_table WHERE name LIKE '%' || :searchQuery || '%' ORDER BY cmcRank ASC")
-    fun getAllCoins(searchQuery: String): LiveData<List<Coin>>
-
-    @Query("SELECT * FROM coins_table WHERE favourite = 1 AND name LIKE '%' || :searchQuery || '%'")
-    fun getCheckedCoins(searchQuery: String): LiveData<List<Coin>>
+    fun getAllCoins(searchQuery: String): Flow<List<CoinEntity>>
 
     @Query("SELECT * FROM notifications_table")
     fun getNotifications(): LiveData<List<Notifications>>

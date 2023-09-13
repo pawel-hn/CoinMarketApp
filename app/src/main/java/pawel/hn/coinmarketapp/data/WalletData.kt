@@ -1,6 +1,6 @@
 package pawel.hn.coinmarketapp.data
 
-import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.database.WalletDao
 import javax.inject.Inject
@@ -45,11 +45,11 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
         coinName: String,
         coinVolume: Double,
         walletNo: Int,
-        coins: List<Coin>
+        coinEntities: List<CoinEntity>
     ): Wallet {
-        val price = coins.find { it.name == coinName }?.price ?: 0.0
-        val coinId = coins.find { it.name == coinName }?.coinId ?: 1
-        val symbol = coins.find { it.name == coinName }?.symbol ?: ""
+        val price = coinEntities.find { it.name == coinName }?.price ?: 0.0
+        val coinId = coinEntities.find { it.name == coinName }?.coinId ?: 1
+        val symbol = coinEntities.find { it.name == coinName }?.symbol ?: ""
         val total = price * coinVolume
 
         return Wallet(

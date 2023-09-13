@@ -17,7 +17,9 @@ import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
+import pawel.hn.coinmarketapp.database.FavouriteCoinDao
 import pawel.hn.coinmarketapp.database.WalletDao
+import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.CoinRepositoryImpl
 import pawel.hn.coinmarketapp.repository.Repository
@@ -76,8 +78,15 @@ object Module {
     @Singleton
     fun provideWalletDao(database: CoinDatabase): WalletDao = database.walletDao
 
+    @Provides
+    @Singleton
+    fun provideFavouriteDao(database: CoinDatabase): FavouriteCoinDao = database.favouriteCoinDao
 
     @Provides
-    fun provideCoinRepository(coinApi: CoinApi): CoinRepository = CoinRepositoryImpl(coinApi)
+    fun provideCoinRepository(
+        coinApi: CoinApi,
+        coinDao: CoinDao,
+        favouriteCoinDao: FavouriteCoinDao
+    ): CoinRepository = CoinRepositoryImpl(coinApi, coinDao,favouriteCoinDao)
 
 }

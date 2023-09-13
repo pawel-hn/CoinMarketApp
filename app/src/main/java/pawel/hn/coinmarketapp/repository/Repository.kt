@@ -3,7 +3,7 @@ package pawel.hn.coinmarketapp.repository
 import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.data.WalletData
-import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseCoins
 import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
 import pawel.hn.coinmarketapp.util.*
@@ -50,18 +50,14 @@ class Repository @Inject constructor(
     }
 
     private suspend fun responseSuccess(response: ApiResponseCoins?, currency: String) {
-        val list = mutableListOf<Coin>()
+        val list = mutableListOf<CoinEntity>()
         response?.let { coinResponse ->
             responseError = false
             coinResponse.coins.forEach {
                 list.add(it.apiResponseConvertToCoin(currency))
             }
 
-            if (coins.coinsAll.value.isNullOrEmpty()) {
-                coins.insertCoins(list)
-            } else {
-                coins.updateCoins(list)
-            }
+
         }
 
     }

@@ -123,9 +123,7 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
             adapter.submitList(specificWalletList)
         }
 
-        viewModel.coinLiveData.observe(viewLifecycleOwner) {
-            viewModel.walletRefresh(it)
-        }
+
     }
 
 

@@ -16,7 +16,7 @@ import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.repository.Repository
 import javax.inject.Inject
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
 
     val walletLiveData = repository.wallet.wallet
-    val coinLiveData = repository.coins.coinsAll
+
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean>
@@ -80,7 +80,7 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
     }
 
 
-    fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
+    fun walletRefresh(list: List<CoinEntity>) = viewModelScope.launch {
 
         val listTemp = list.filter { coin ->
             coin.name == walletLiveData.value?.find { it.name == coin.name }?.name

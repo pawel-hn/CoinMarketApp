@@ -12,11 +12,8 @@ import javax.inject.Inject
 class AddCoinViewModel @Inject constructor (private val repository: Repository)
     : ViewModel() {
 
-    val coins = repository.coins.coinsAll
-
-
     fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
-        return repository.wallet.createWalletCoin(coinName, coinVolume, walletNo, coins.value!!)
+        return repository.wallet.createWalletCoin(coinName, coinVolume, walletNo, emptyList())
     }
 
 
@@ -27,10 +24,7 @@ class AddCoinViewModel @Inject constructor (private val repository: Repository)
     }
 
     fun coinsNamesList(): Array<String> {
-        val list = Array(repository.coins.coinsAll.value!!.size){
-            repository.coins.coinsAll.value!![it].name
-        }
-        list.sort()
-        return list
+
+        return arrayOf("a","b")
     }
 }
