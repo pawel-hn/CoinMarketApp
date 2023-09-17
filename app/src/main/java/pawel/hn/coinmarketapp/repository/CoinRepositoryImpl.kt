@@ -1,6 +1,10 @@
 package pawel.hn.coinmarketapp.repository
 
+import android.util.Log
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.*
@@ -26,16 +30,15 @@ class CoinRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getCoinsFromDatabase(searchQuery: String): Flow<List<Coin>> =
-        coinDao.getAllCoins(searchQuery).map { coinsEntity ->
-            coinsEntity.map { coin ->
-                val isFavourite = favouriteCoinDao.checkIfFavourite(coin.coinId) ?: false
-                coin.toDomain(isFavourite)
-            }
-        }
+        coinDao.getAllCoins(searchQuery).map { it.toDomain() }
 
     override suspend fun saveFavouriteCoinId(id: Int) =
         favouriteCoinDao.saveFavourite(FavouriteCoinEntity(id))
 
     override suspend fun deleteFavouriteCoinId(id: Int) =
         favouriteCoinDao.deleteFavourite(id)
+
+    override suspend fun getFavourites(): Flow<List<Int>> =
+        favouriteCoinDao.getFavourites().map { it.toDomain() }
+
 }

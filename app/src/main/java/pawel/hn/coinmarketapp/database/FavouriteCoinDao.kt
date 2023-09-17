@@ -1,6 +1,7 @@
 package pawel.hn.coinmarketapp.database
 
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavouriteCoinDao {
@@ -13,4 +14,7 @@ interface FavouriteCoinDao {
 
     @Query("SELECT * from favourite_coin WHERE id = :id IS NOT NULL")
     suspend fun checkIfFavourite(id: Int): Boolean?
+
+    @Query("SELECT * from favourite_coin")
+    fun getFavourites(): Flow<List<FavouriteCoinEntity>>
 }

@@ -7,3 +7,5 @@ import androidx.room.PrimaryKey
 data class FavouriteCoinEntity(
     @PrimaryKey val id: Int
 )
+
+fun List<FavouriteCoinEntity>.toDomain() = map { it.id }

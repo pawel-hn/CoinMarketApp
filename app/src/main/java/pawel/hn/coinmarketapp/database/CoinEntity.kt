@@ -17,7 +17,7 @@ data class CoinEntity(
     val cmcRank: Int
 )
 
-fun CoinEntity.toDomain(isFavourite: Boolean) = Coin(
+fun CoinEntity.toDomain(isFavourite: Boolean = false) = Coin(
     coinId = this.coinId,
     name = this.name,
     symbol = this.symbol,
@@ -33,3 +33,6 @@ fun CoinEntity.toDomain(isFavourite: Boolean) = Coin(
         .appendPath(this.coinId.toString() + LOGO_FILE_TYPE)
         .build()
 )
+
+
+fun List<CoinEntity>.toDomain() = map { it.toDomain() }

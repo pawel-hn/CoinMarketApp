@@ -12,8 +12,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -41,30 +41,46 @@ import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 @Composable
-fun MainScreen() {
+fun MainScreen(
+    coinsViewModel: CoinsViewModel = viewModel()
+) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFFEEEEEE),
-        topBar = { TopBar() }
+        topBar = { TopBar { coinsViewModel.showFavouritesClick(it) } }
     ) { paddingValues ->
         Column(Modifier.padding(paddingValues)) {
             TopRow()
-            Body()
+            Body(coinsViewModel)
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar() {
+fun TopBar(
+    favouritesToggle: (Boolean) -> Unit
+) {
+    var favourite by remember { mutableStateOf(false) }
+
     TopAppBar(
         title = {
             Text(text = "Coins")
         },
         actions = {
-            IconButton(onClick = { }) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = null)
-            }
+            Image(
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .background(color = Color.Gray, shape = CircleShape)
+                    .clip(CircleShape)
+                    .clickable {
+                        favourite = !favourite
+                        favouritesToggle(favourite)
+                    },
+                painter = painterResource(id = R.drawable.ic_star_unchecked),
+                colorFilter = ColorFilter.tint(if (favourite) ColorStar else Color.White),
+                contentDescription = ""
+            )
         },
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = Color(0xFFEEEEEE)
@@ -75,21 +91,33 @@ fun TopBar() {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Body(
-    coinsViewModel: CoinsViewModel = viewModel()
+    coinsViewModel: CoinsViewModel
 ) {
-
     var isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
         refreshing = isRefreshing,
-        onRefresh = { coinsViewModel.resetPaging() }
+        onRefresh = { coinsViewModel.getCoins()}
     )
 
-    val coins by coinsViewModel.coinResult.collectAsState()
+    val coins by coinsViewModel.coinResult.collectAsState(Resource.Loading())
 
-    CoinsList(
-        coins = coins,
-        favouriteClick = { id, fav -> coinsViewModel.favouriteClick(id, fav) }
-    )
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .pullRefresh(pullRefreshState),
+        contentAlignment = Alignment.Center
+    ) {
+        isRefreshing = coins is Resource.Loading
+
+        ConinsState(
+            coins = coins,
+            favouriteClick = { id, fav -> coinsViewModel.favouriteClick(id, fav) }
+        )
+        PullRefreshIndicator(
+            refreshing = isRefreshing,
+            state = pullRefreshState,
+            modifier = Modifier.align(Alignment.TopCenter)
+        )
+    }
 }
 
 @Composable
@@ -106,7 +134,7 @@ fun ErrorCoins(
 }
 
 @Composable
-fun CoinsList(
+fun ConinsState(
     coins: Resource<List<Coin>>,
     favouriteClick: (Int, Boolean) -> Unit
 ) {
@@ -117,28 +145,32 @@ fun CoinsList(
                 text = "Lololo...."
             )
         }
-        is Resource.Loading -> { ShimmerLoading() }
+        is Resource.Loading -> {
+            ShimmerLoading()
+        }
         is Resource.Success -> {
-            CoinsList(coins = coins.data ?: emptyList()) { id, fav -> favouriteClick(id, fav) }
+            ConinsState(coins = coins.data ?: emptyList()) { id, fav -> favouriteClick(id, fav) }
         }
     }
 
 }
 
 @Composable
-fun CoinsList(
+fun ConinsState(
     coins: List<Coin>,
     starClick: (Int, Boolean) -> Unit
 ) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .animateContentSize(),
+            .animateContentSize(
+                animationSpec = tween(1000)
+            ),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
         state = rememberLazyListState()
     ) {
-        items(items = coins, key = {it.coinId}) { coin ->
+        items(items = coins, key = { it.coinId }) { coin ->
             CoinItem(coin = coin, onStarClick = { id, fav -> starClick(id, fav) })
         }
     }
@@ -170,7 +202,7 @@ fun CoinItem(
     coin: Coin,
     onStarClick: (Int, Boolean) -> Unit
 ) {
-    var isFavourite by remember { mutableStateOf(false) }
+    var isFavourite by remember { mutableStateOf(coin.favourite) }
     Row(
         modifier = Modifier
             .padding(bottom = 8.dp)

@@ -16,4 +16,6 @@ interface CoinRepository {
     suspend fun saveFavouriteCoinId(id: Int)
 
     suspend fun deleteFavouriteCoinId(id: Int)
+
+    suspend fun getFavourites(): Flow<List<Int>>
 }

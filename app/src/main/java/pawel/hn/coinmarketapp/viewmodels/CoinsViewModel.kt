@@ -1,16 +1,11 @@
 package pawel.hn.coinmarketapp.viewmodels
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
@@ -24,65 +19,77 @@ class CoinsViewModel @Inject constructor(
     private val coinRepository: CoinRepository
 ) : ViewModel() {
 
-    val coins = mutableStateListOf<Coin>()
+    private val coins = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
+    private val favouriteIds = MutableStateFlow<List<Int>>(emptyList())
+    private val showFavourites = MutableStateFlow(false)
 
-
-    private val _coinResult = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
-    val coinResult: StateFlow<Resource<List<Coin>>> = _coinResult.asStateFlow()
-
+    val coinResult: StateFlow<Resource<List<Coin>>> = combine(
+        coins,
+        favouriteIds,
+        showFavourites
+    ) { coins, ids, showFavourites ->
+        when (coins) {
+            is Resource.Error -> coins
+            is Resource.Loading -> coins
+            is Resource.Success -> {
+                val data = (coins.data ?: emptyList()).map { coin ->
+                    coin.copy(favourite = ids.any { it == coin.coinId })
+                }
+                val forView = if (showFavourites)
+                    data.filter { it.favourite } else data
+                Resource.Success(forView)
+            }
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        Resource.Loading()
+    )
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showLogN("CoroutineExceptionHandler")
-        _coinResult.value = Resource.Error("corotuine error")
+        coins.value = Resource.Error("corotuine error")
     }
 
     init {
         getCoins()
     }
 
-    private fun getCoins() =
+    fun getCoins() =
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
+            coins.value = Resource.Loading()
             coinRepository.getCoinsPagingFromApi().runCatching {
                 observeCoins("")
+                observeFavourites()
             }.onFailure {
-                _coinResult.value = Resource.Error("corotuine error")
+                coins.value = Resource.Error("corotuine error")
             }
         }
 
-    fun observeCoins(query: String) =
+    private fun observeCoins(query: String) =
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
-            coinRepository.getCoinsFromDatabase(query).collectLatest {
-                _coinResult.value = Resource.Success(it)
+            coinRepository.getCoinsFromDatabase(query).collect {
+                coins.value = Resource.Success(it)
             }
         }
 
-    fun getNews() = viewModelScope.launch(errorHandler) {
-        coinRepository.getCoinsFromDatabase("")
-    }
+    private fun observeFavourites() =
+        viewModelScope.launch(Dispatchers.IO + errorHandler) {
+            coinRepository.getFavourites().collect {
+                favouriteIds.value = it
+            }
+        }
 
     fun favouriteClick(id: Int, isFavourite: Boolean) = viewModelScope.launch {
         if (isFavourite) {
-            coinRepository.deleteFavouriteCoinId(id)
-        } else {
             coinRepository.saveFavouriteCoinId(id)
+        } else {
+            coinRepository.deleteFavouriteCoinId(id)
         }
     }
 
-    fun resetPaging() {
-
+    fun showFavouritesClick(onlyFavourites: Boolean) {
+        showFavourites.value = onlyFavourites
     }
-
-    override fun onCleared() {
-        resetPaging()
-        super.onCleared()
-    }
-}
-
-
-fun CoroutineScope.launchWithSuccessAndError(
-    onError: (Throwable) -> Unit,
-    onSuccess: () -> Unit = {}
-) = run {
-
 }
