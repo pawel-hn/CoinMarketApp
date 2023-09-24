@@ -18,4 +18,6 @@ interface CoinRepository {
     suspend fun deleteFavouriteCoinId(id: Int)
 
     suspend fun getFavourites(): Flow<List<Int>>
+
+    suspend fun observeCoins(): Flow<List<Coin>>
 }

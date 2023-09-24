@@ -3,6 +3,7 @@ package pawel.hn.coinmarketapp.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface CoinDao {

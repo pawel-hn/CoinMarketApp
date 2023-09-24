@@ -2,6 +2,7 @@ package pawel.hn.coinmarketapp.database
 
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface FavouriteCoinDao {

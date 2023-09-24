@@ -5,7 +5,9 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
@@ -20,31 +22,24 @@ class CoinsViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val coins = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
-    private val favouriteIds = MutableStateFlow<List<Int>>(emptyList())
+
     private val showFavourites = MutableStateFlow(false)
 
-    val coinResult: StateFlow<Resource<List<Coin>>> = combine(
+    val coinResult: Flow<Resource<List<Coin>>> = combine(
         coins,
-        favouriteIds,
         showFavourites
-    ) { coins, ids, showFavourites ->
+    ) { coins, showFavourites ->
         when (coins) {
             is Resource.Error -> coins
             is Resource.Loading -> coins
             is Resource.Success -> {
-                val data = (coins.data ?: emptyList()).map { coin ->
-                    coin.copy(favourite = ids.any { it == coin.coinId })
-                }
+                val data = coins.data ?: emptyList()
                 val forView = if (showFavourites)
                     data.filter { it.favourite } else data
                 Resource.Success(forView)
             }
         }
-    }.stateIn(
-        viewModelScope,
-        SharingStarted.WhileSubscribed(5000),
-        Resource.Loading()
-    )
+    }
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
@@ -56,28 +51,19 @@ class CoinsViewModel @Inject constructor(
         getCoins()
     }
 
+    private fun observeCoins() = viewModelScope.launch(Dispatchers.IO + errorHandler) {
+        coinRepository.observeCoins().collect {
+            coins.value = Resource.Success(it)
+        }
+    }
+
     fun getCoins() =
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
             coins.value = Resource.Loading()
             coinRepository.getCoinsPagingFromApi().runCatching {
-                observeCoins("")
-                observeFavourites()
+                observeCoins()
             }.onFailure {
                 coins.value = Resource.Error("corotuine error")
-            }
-        }
-
-    private fun observeCoins(query: String) =
-        viewModelScope.launch(Dispatchers.IO + errorHandler) {
-            coinRepository.getCoinsFromDatabase(query).collect {
-                coins.value = Resource.Success(it)
-            }
-        }
-
-    private fun observeFavourites() =
-        viewModelScope.launch(Dispatchers.IO + errorHandler) {
-            coinRepository.getFavourites().collect {
-                favouriteIds.value = it
             }
         }
 
