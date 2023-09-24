@@ -39,9 +39,9 @@ class CoinRepositoryImpl @Inject constructor(
     override suspend fun getFavourites(): Flow<List<Int>> =
         favouriteCoinDao.getFavourites().map { it.toDomain() }
 
-    override suspend fun observeCoins(): Flow<List<Coin>> =
+    override suspend fun observeCoins(query: String): Flow<List<Coin>> =
         withContext(Dispatchers.IO) {
-            coinDao.getAllCoins("").combine(getFavourites()) { coins, ids ->
+            coinDao.getAllCoins(query).combine(getFavourites()) { coins, ids ->
                 coins
                     .toDomain()
                     .map { coin -> coin.copy(favourite = ids.any { it == coin.coinId }) }

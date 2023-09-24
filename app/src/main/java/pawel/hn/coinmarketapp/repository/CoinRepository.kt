@@ -19,5 +19,5 @@ interface CoinRepository {
 
     suspend fun getFavourites(): Flow<List<Int>>
 
-    suspend fun observeCoins(): Flow<List<Coin>>
+    suspend fun observeCoins(query: String): Flow<List<Coin>>
 }

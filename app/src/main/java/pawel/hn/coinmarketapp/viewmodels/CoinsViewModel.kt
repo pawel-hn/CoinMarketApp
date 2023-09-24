@@ -51,8 +51,8 @@ class CoinsViewModel @Inject constructor(
         getCoins()
     }
 
-    private fun observeCoins() = viewModelScope.launch(Dispatchers.IO + errorHandler) {
-        coinRepository.observeCoins().collect {
+    fun observeCoins(query: String) = viewModelScope.launch(Dispatchers.IO + errorHandler) {
+        coinRepository.observeCoins(query).collect {
             coins.value = Resource.Success(it)
         }
     }
@@ -61,7 +61,7 @@ class CoinsViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
             coins.value = Resource.Loading()
             coinRepository.getCoinsPagingFromApi().runCatching {
-                observeCoins()
+                observeCoins("")
             }.onFailure {
                 coins.value = Resource.Error("corotuine error")
             }
