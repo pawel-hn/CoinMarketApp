@@ -36,54 +36,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
-import kotlinx.serialization.descriptors.PrimitiveKind
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 @Composable
-fun MainScreen(coinsViewModel: CoinsViewModel = viewModel()) {
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        containerColor = Color(0xFFEEEEEE),
-        topBar = {
-            TopBar(
-                favouritesToggle = { isFav -> coinsViewModel.showFavouritesClick(isFav) },
-                searchQuery = { query -> coinsViewModel.observeCoins(query) }
-            )
-        }
-    ) { paddingValues ->
-        Column(Modifier.padding(paddingValues)) {
-            TopRow()
-            Body(coinsViewModel)
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TopBar(
-    favouritesToggle: (Boolean) -> Unit,
-    searchQuery: (String) -> Unit
+fun CoinsBody(paddingValues: PaddingValues,
+              coinsViewModel: CoinsViewModel
 ) {
-    TopAppBar(
-        title = {
-            Text(text = "Coins")
-        },
-        actions = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                SearchCoinBar(searchQuery = { searchQuery(it) })
-                ToggleFavourites(favouritesToggle = { favouritesToggle(it) })
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFEEEEEE)
-        )
-    )
+    Column(Modifier.padding(paddingValues)) {
+        TopRow()
+        Body(coinsViewModel)
+    }
 }
 
 @Composable
@@ -359,9 +326,9 @@ fun StarButtonAnimated(
 ) {
     var buttonState by remember { mutableStateOf(ButtonState.Idle) }
 
-    val ty by animateDpAsState(
+    val animatedVertical by animateDpAsState(
         targetValue = if (buttonState == ButtonState.Pressed) (-10).dp else 0.dp,
-        animationSpec = tween(durationMillis = 150, easing = LinearEasing)
+        animationSpec = tween(durationMillis = 150, easing = LinearEasing), label = ""
     ) {
         buttonState = ButtonState.Idle
     }
@@ -372,7 +339,7 @@ fun StarButtonAnimated(
     ) {
         Image(
             modifier = Modifier
-                .absoluteOffset { IntOffset(x = 0, y = ty.roundToPx()) }
+                .absoluteOffset { IntOffset(x = 0, y = animatedVertical.roundToPx()) }
                 .background(color = Color.Gray, shape = CircleShape)
                 .size(24.dp)
                 .drawBehind {
