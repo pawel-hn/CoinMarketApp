@@ -11,22 +11,16 @@ import androidx.compose.ui.graphics.Color
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopBar(
-    favouritesToggle: (Boolean) -> Unit,
-    searchQuery: (String) -> Unit
+fun TopCoinBar(
+    title: String,
+    content: @Composable () -> Unit = {}
 ) {
     TopAppBar(
         title = {
-            Text(text = "Coins")
+            Text(text = title)
         },
         actions = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                SearchCoinBar(searchQuery = { searchQuery(it) })
-                ToggleFavourites(favouritesToggle = { favouritesToggle(it) })
-            }
+            content()
         },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFEEEEEE)
-        )
     )
 }

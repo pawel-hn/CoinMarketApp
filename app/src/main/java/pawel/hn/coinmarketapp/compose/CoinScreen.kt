@@ -1,19 +1,24 @@
 package pawel.hn.coinmarketapp.compose
 
 
+import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -36,20 +41,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
+import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 @Composable
-fun CoinsBody(paddingValues: PaddingValues,
-              coinsViewModel: CoinsViewModel
-) {
+fun CoinsBody(paddingValues: PaddingValues, ) {
+    var showFavourites by remember { mutableStateOf(false) }
+    val coinsViewModel: CoinsViewModel = hiltViewModel()
+
     Column(Modifier.padding(paddingValues)) {
+        TopCoinBar(
+            title = "Coins",
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                SearchCoinBar(searchQuery = { coinsViewModel.observeCoins(it) })
+                ToggleFavourites(favouritesToggle = {
+                    coinsViewModel.showFavouritesClick(it)
+                    showFavourites = it
+                })
+            }
+        }
         TopRow()
-        Body(coinsViewModel)
+        Body(coinsViewModel, showFavourites)
     }
 }
 
@@ -85,8 +105,8 @@ fun SearchCoinBar(searchQuery: (String) -> Unit) {
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,
-            focusedIndicatorColor =  Color.Transparent,
-            unfocusedIndicatorColor =  Color.Transparent
+            focusedIndicatorColor = Color.Transparent,
+            unfocusedIndicatorColor = Color.Transparent
         )
     )
 }
@@ -112,7 +132,8 @@ fun ToggleFavourites(favouritesToggle: (Boolean) -> Unit) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun Body(
-    coinsViewModel: CoinsViewModel
+    coinsViewModel: CoinsViewModel,
+    favouritesToggle: Boolean
 ) {
     var isRefreshing by remember { mutableStateOf(false) }
     val pullRefreshState = rememberPullRefreshState(
@@ -121,7 +142,15 @@ fun Body(
     )
 
     val coins by coinsViewModel.coinResult.collectAsState(Resource.Loading())
+    val lazyColumnState = rememberLazyListState()
+    val scrollToFirstVisible by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0} }
+    val coroutineScope = rememberCoroutineScope()
 
+    LaunchedEffect(favouritesToggle) {
+        if (!favouritesToggle) {
+            coroutineScope.launch { lazyColumnState.animateScrollToItem(0) }
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -132,13 +161,33 @@ fun Body(
 
         CoinsState(
             coins = coins,
-            favouriteClick = { id, fav -> coinsViewModel.favouriteClick(id, fav) }
+            state = lazyColumnState,
+            favouriteClick = { id, fav ->
+                if (!fav) {
+                    coroutineScope.launch {
+                        lazyColumnState.animateScrollToItem(0)
+                    }
+                }
+                coinsViewModel.favouriteClick(id, fav)
+            }
         )
         PullRefreshIndicator(
             refreshing = isRefreshing,
             state = pullRefreshState,
             modifier = Modifier.align(Alignment.TopCenter)
         )
+        AnimatedVisibility(
+            modifier = Modifier.align(Alignment.BottomEnd)
+                .padding(32.dp),
+            visible = scrollToFirstVisible) {
+            FloatingActionButton(
+                onClick = {
+                coroutineScope.launch {
+                    lazyColumnState.animateScrollToItem(0) }
+            }) {
+                Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "scroll up")
+            }
+        }
     }
 }
 
@@ -158,6 +207,7 @@ fun ErrorCoins(
 @Composable
 fun CoinsState(
     coins: Resource<List<Coin>>,
+    state: LazyListState,
     favouriteClick: (Int, Boolean) -> Unit
 ) {
     when (coins) {
@@ -167,11 +217,15 @@ fun CoinsState(
                 text = "Lololo...."
             )
         }
+
         is Resource.Loading -> {
             ShimmerLoading()
         }
+
         is Resource.Success -> {
-            CoinsList(coins = coins.data ?: emptyList()) { id, fav -> favouriteClick(id, fav) }
+            CoinsList(coins = coins.data ?: emptyList(), state = state) { id, fav ->
+                favouriteClick(id, fav)
+            }
         }
     }
 
@@ -180,6 +234,7 @@ fun CoinsState(
 @Composable
 fun CoinsList(
     coins: List<Coin>,
+    state: LazyListState,
     starClick: (Int, Boolean) -> Unit
 ) {
     LazyColumn(
@@ -190,6 +245,7 @@ fun CoinsList(
             ),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
+        state = state
     ) {
         items(items = coins, key = { it.coinId }) { coin ->
             CoinItem(coin = coin, onStarClick = { id, fav -> starClick(id, fav) })
@@ -214,6 +270,7 @@ fun ShimmerItem() {
             .fillMaxWidth()
             .height(75.dp)
             .border(BorderStroke(1.dp, Color.Gray), RoundedCornerShape(20))
+            .clip(RoundedCornerShape(20))
             .shimmerEffect()
     )
 }

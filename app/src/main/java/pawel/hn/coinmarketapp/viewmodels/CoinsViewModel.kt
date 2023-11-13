@@ -1,5 +1,6 @@
 package pawel.hn.coinmarketapp.viewmodels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -7,7 +8,10 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
@@ -25,7 +29,7 @@ class CoinsViewModel @Inject constructor(
 
     private val showFavourites = MutableStateFlow(false)
 
-    val coinResult: Flow<Resource<List<Coin>>> = combine(
+    val coinResult: StateFlow<Resource<List<Coin>>> = combine(
         coins,
         showFavourites
     ) { coins, showFavourites ->
@@ -39,15 +43,16 @@ class CoinsViewModel @Inject constructor(
                 Resource.Success(forView)
             }
         }
-    }
+    }.stateIn(viewModelScope, SharingStarted.Eagerly, Resource.Loading())
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
         showLogN("CoroutineExceptionHandler")
-        coins.value = Resource.Error("corotuine error")
+        coins.value = Resource.Error("coroutine errorHandler error")
     }
 
     init {
+        Log.d("PHN", "CoinsViewModel init")
         getCoins()
     }
 
@@ -63,7 +68,7 @@ class CoinsViewModel @Inject constructor(
             coinRepository.getCoinsPagingFromApi().runCatching {
                 observeCoins("")
             }.onFailure {
-                coins.value = Resource.Error("corotuine error")
+                coins.value = Resource.Error("getCoins error")
             }
         }
 

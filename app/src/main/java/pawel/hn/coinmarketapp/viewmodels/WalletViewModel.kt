@@ -14,17 +14,29 @@ import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.domain.Coin
+import pawel.hn.coinmarketapp.repository.CoinRepository
+import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.showLogN
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class WalletViewModel @Inject constructor(private val coinRepository: CoinRepository) :
+    ViewModel() {
 
-    val walletLiveData = repository.wallet.wallet
 
 
     private val _eventProgressBar = MutableLiveData(false)
@@ -48,7 +60,7 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             } else {
                 listOfCoinIds.add(coinLoop.coinId)
                 val tempList = list.filter { it.coinId == coinLoop.coinId }
-                val newVolume = tempList.sumOf{ it.volume }
+                val newVolume = tempList.sumOf { it.volume }
                 val newTotal = tempList.sumOf { it.total }
                 totalList.add(
                     Wallet(
@@ -67,37 +79,34 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
         return totalList.sortedByDescending { it.total }
     }
 
-
     fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
-        repository.wallet.deleteFromWallet(coin)
+        //   repository.wallet.deleteFromWallet(coin)
     }
 
     fun refreshData(ccy: String) = viewModelScope.launch {
         _eventProgressBar.value = true
-        repository.getCoinsData(ccy)
+        //   repository.getCoinsData(ccy)
         _eventProgressBar.value = false
-        _eventErrorResponse.value = repository.responseError
+        //   _eventErrorResponse.value = repository.responseError
     }
 
 
     fun walletRefresh(list: List<CoinEntity>) = viewModelScope.launch {
 
         val listTemp = list.filter { coin ->
-            coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
+            //coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
+            true
         }
         if (listTemp.isNullOrEmpty()) {
             _eventProgressBar.value = false
             return@launch
         }
-        walletLiveData.value!!.forEach { coin ->
-            val newPrice = listTemp.filter { it.name == coin.name }[0].price
-            repository.wallet.updateWallet(coin, newPrice)
-        }
+
     }
 
     fun deleteAll() {
         viewModelScope.launch {
-            repository.wallet.deleteAllFromWallets()
+            //    repository.wallet.deleteAllFromWallets()
         }
     }
 

@@ -9,7 +9,8 @@ class GetCoinsListingsUseCase @Inject constructor(
     private val coinRepository: CoinRepository
 ) {
     suspend fun execute(searchQuery: String): Flow<List<Coin>> =
-        coinRepository.getCoinsFromDatabase(searchQuery)
+        coinRepository.observeCoins(searchQuery)
+
 }
 
 

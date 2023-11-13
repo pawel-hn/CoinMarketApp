@@ -12,9 +12,7 @@ import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarDefaults
 import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemColors
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,27 +33,21 @@ import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 @Composable
 fun MainScreen() {
-    val coinsViewModel: CoinsViewModel = viewModel()
     val navController = rememberNavController()
+
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         containerColor = Color(0xFFEEEEEE),
-        topBar = {
-            TopBar(
-                favouritesToggle = { isFav -> coinsViewModel.showFavouritesClick(isFav) },
-                searchQuery = { query -> coinsViewModel.observeCoins(query) }
-            )
-        },
         bottomBar = {
             BottomBar(navController = navController)
-        }
+        },
     ) { paddingValues ->
         NavHost(navController = navController, startDestination = BottomNavigationItem.Home.title) {
             composable(route = BottomNavigationItem.Home.title) {
-                CoinsBody(paddingValues = paddingValues, coinsViewModel)
+                CoinsBody(paddingValues)
             }
             composable(route = BottomNavigationItem.Wallet.title) {
-                Wallet()
+                WalletScreen(paddingValues)
             }
             composable(route = BottomNavigationItem.News.title) {
                 News()
@@ -74,9 +66,7 @@ fun BottomBar(navController: NavController) {
         BottomNavigationItem.News,
     )
 
-    NavigationBar(
-        containerColor = Color(0xFFEEEEEE)
-    ) {
+    NavigationBar {
         items.forEach { item ->
             val isSelected = currentDestination == item.title
             NavigationBarItem(
@@ -100,7 +90,7 @@ fun BottomBar(navController: NavController) {
                     Text(text = item.title)
                 },
                 colors = NavigationBarItemDefaults.colors(
-                    indicatorColor = Color.LightGray
+                  indicatorColor = Color.Gray
                 )
             )
         }

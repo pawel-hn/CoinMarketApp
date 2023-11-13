@@ -106,22 +106,22 @@ class WalletFragment : Fragment(R.layout.fragment_wallet) {
 
 
     private fun subscribeToObservers() {
-        viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->
-
-            adapter.setCurrency(currency)
-
-            val specificWalletList = if (walletNo == 3) {
-                viewModel.totalWallet(allWallets)
-            } else {
-                allWallets.filter { it.walletNo == walletNo }
-            }
-
-
-            val total = viewModel.calculateTotalBalance(specificWalletList)
-            viewModel.setChart(specificWalletList, binding.chart, requireContext())
-            binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat, currency)
-            adapter.submitList(specificWalletList)
-        }
+//        viewModel.walletLiveData.observe(viewLifecycleOwner) { allWallets ->
+//
+//            adapter.setCurrency(currency)
+//
+//            val specificWalletList = if (walletNo == 3) {
+//                viewModel.totalWallet(allWallets)
+//            } else {
+//                allWallets.filter { it.walletNo == walletNo }
+//            }
+//
+//
+//            val total = viewModel.calculateTotalBalance(specificWalletList)
+//            viewModel.setChart(specificWalletList, binding.chart, requireContext())
+//            binding.textViewBalance.text = formatPriceAndVolForView(total, ValueType.Fiat, currency)
+//            adapter.submitList(specificWalletList)
+//        }
 
 
     }
