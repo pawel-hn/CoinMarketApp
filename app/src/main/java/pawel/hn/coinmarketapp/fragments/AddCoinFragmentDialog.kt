@@ -39,26 +39,7 @@ class AddCoinFragmentDialog : DialogFragment() {
 
         binding.apply {
 
-            spinnerDialogSearch.apply {
-                adapter = spinnerAdapter
-                onItemSelectedListener = spinnerCoinSelected
-            }
 
-            btnDialogCancel.setOnClickListener {
-                dismiss()
-            }
-
-            btnDialogSave.setOnClickListener {
-                if (editTextVolume.text!!.isBlank()) {
-                    Toast.makeText(requireContext(), R.string.dialog_error, Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    coinVolume = editTextVolume.text.toString().toDouble()
-                    val coinWallet = viewModel.createWalletCoin(coinName, coinVolume, walletNo)
-                    viewModel.addToWallet(coinWallet)
-                    dismiss()
-                }
-            }
         }
         return binding.root
     }

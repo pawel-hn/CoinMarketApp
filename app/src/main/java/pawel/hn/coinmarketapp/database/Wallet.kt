@@ -22,3 +22,10 @@ data class Wallet(
 
 
 
+data class WalletCoin(
+    val coinId: Int,
+    val name: String,
+    val symbol: String,
+    val volume: Double,
+    val walletNo: Int
+)

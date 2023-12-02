@@ -8,6 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
@@ -15,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.domain.Coin
+import pawel.hn.coinmarketapp.domain.toWalletCoin
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.Resource
@@ -22,22 +24,24 @@ import pawel.hn.coinmarketapp.util.showLogN
 import javax.inject.Inject
 
 @HiltViewModel
-class AddCoinViewModel @Inject constructor (
+class AddCoinViewModel @Inject constructor(
     private val repository: Repository,
     private val coinRepository: CoinRepository
-    )
-    : ViewModel() {
+) : ViewModel() {
 
     private val _coinList = MutableStateFlow<List<Coin>>(emptyList())
-    val coinList: StateFlow<Resource<List<String>>> = _coinList
-        .map { coins ->
-            val names = coins.map { it.name }
-            Resource.Loading<List<String>>()
-        }
+    val coinList: StateFlow<Resource<List<Coin>>> = _coinList
+        .map { coins -> Resource.Success(coins) }
         .catch { Resource.Error<List<Coin>>(it.message ?: "some Error") }
         .stateIn(
             viewModelScope, SharingStarted.WhileSubscribed(2000), Resource.Loading()
         )
+
+    private val _isAddButtonEnabled = MutableStateFlow(false)
+    val isAddButtonEnabled = _isAddButtonEnabled.asStateFlow()
+
+    private var selectedCoin: Coin? = null
+    private var amount: Double = 0.0
 
     private val errorHandler = CoroutineExceptionHandler { _, throwable ->
         throwable.printStackTrace()
@@ -48,7 +52,7 @@ class AddCoinViewModel @Inject constructor (
         getCoinsList("")
     }
 
-    fun getCoinsList(search: String) {
+    private fun getCoinsList(search: String) {
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
             coinRepository.observeCoins(search).collectLatest {
                 _coinList.value = it
@@ -56,19 +60,40 @@ class AddCoinViewModel @Inject constructor (
         }
     }
 
-    fun createWalletCoin(coinName: String, coinVolume: Double, walletNo: Int): Wallet {
-        return repository.wallet.createWalletCoin(coinName, coinVolume, walletNo, emptyList())
+    fun selectedCoin(coin: Coin) {
+        selectedCoin = coin
+        validateAddButton()
     }
 
+    fun searchCoin(search: String) {
 
-    fun addToWallet(walletCoin: Wallet) {
-       viewModelScope.launch {
-           repository.wallet.addToWallet(walletCoin)
-       }
+    }
+
+    fun inputAmount(input: String) {
+        runCatching { input.toDouble() }
+            .onSuccess {
+                amount = it
+                validateAddButton()
+            }
+            .onFailure {
+                it.printStackTrace()
+            }
+    }
+
+    private fun validateAddButton() {
+        _isAddButtonEnabled.value = selectedCoin != null && amount > 0
+    }
+
+    fun addToWallet() {
+        val coin = selectedCoin ?: return
+
+        viewModelScope.launch {
+            repository.wallet.addToWallet(coin.toWalletCoin(amount))
+        }
     }
 
     fun coinsNamesList(): Array<String> {
-
-        return arrayOf("a","b")
+        // do wywalenia
+        return arrayOf("a", "b")
     }
 }

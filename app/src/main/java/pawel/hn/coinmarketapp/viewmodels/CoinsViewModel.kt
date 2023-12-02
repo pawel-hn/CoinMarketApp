@@ -52,7 +52,6 @@ class CoinsViewModel @Inject constructor(
     }
 
     init {
-        Log.d("PHN", "CoinsViewModel init")
         getCoins()
     }
 

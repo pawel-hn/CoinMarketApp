@@ -38,30 +38,4 @@ class WalletData @Inject constructor(private val walletDao: WalletDao) {
         )
     }
 
-    /**
-     * Creates Wallet object, representing particular crypto which user added to one of three wallets.
-     */
-    fun createWalletCoin(
-        coinName: String,
-        coinVolume: Double,
-        walletNo: Int,
-        coinEntities: List<CoinEntity>
-    ): Wallet {
-        val price = coinEntities.find { it.name == coinName }?.price ?: 0.0
-        val coinId = coinEntities.find { it.name == coinName }?.coinId ?: 1
-        val symbol = coinEntities.find { it.name == coinName }?.symbol ?: ""
-        val total = price * coinVolume
-
-        return Wallet(
-            coinId = coinId,
-            name = coinName,
-            symbol = symbol,
-            volume = coinVolume,
-            price = price,
-            total = total,
-            walletNo = walletNo
-        )
-    }
-
-
 }

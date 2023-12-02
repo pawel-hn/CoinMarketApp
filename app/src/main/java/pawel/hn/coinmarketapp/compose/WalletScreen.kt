@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,8 +21,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
@@ -43,15 +46,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.google.android.material.progressindicator.CircularProgressIndicator
 import pawel.hn.coinmarketapp.R
+import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.viewmodels.AddCoinViewModel
 
@@ -82,6 +86,7 @@ fun MainContent(
 ) {
     var items by remember { mutableIntStateOf(3) }
     var isChartVisible by remember { mutableStateOf(true) }
+
     Column(
         modifier = Modifier.padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -185,8 +190,9 @@ fun AddItemDialog(
 ) {
 
     val viewModel: AddCoinViewModel = hiltViewModel()
-
     val coins by viewModel.coinList.collectAsState()
+    var amount by remember { mutableStateOf("") }
+    val isAddButtonEnabled by viewModel.isAddButtonEnabled.collectAsState()
 
     Dialog(onDismissRequest = { onDismiss() }) {
         Card(
@@ -197,11 +203,41 @@ fun AddItemDialog(
         ) {
             Column(Modifier.padding(16.dp)) {
                 Text(text = "Choose coin:")
-                Spacer(modifier = Modifier.height(8.dp))
-                when(coins) {
+                when (coins) {
                     is Resource.Error -> Text(text = "No data")
-                    is Resource.Loading -> ShimmerItem()
-                    is Resource.Success -> CoinsDropDown(coins = coins.data!!)
+                    is Resource.Loading -> Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .shimmerEffect()
+                    )
+
+                    is Resource.Success -> CoinsDropDown(
+                        coins = coins.data ?: emptyList(),
+                        onCoinSelected = { viewModel.selectedCoin(it) },
+                        searchInput = {  }
+                        )
+                }
+                Spacer(modifier = Modifier.height(32.dp))
+                Text(text = "How many:")
+                TextField(
+                    value = amount,
+                    onValueChange = {
+                       amount = it
+                        viewModel.inputAmount(it)
+                    },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
+                )
+                Row {
+                    Button(onClick = { onDismiss() }) {
+                        Text(text = "Cance;")
+                    }
+                    Button(
+                        onClick = { viewModel.addToWallet() },
+                        enabled =  isAddButtonEnabled
+                    ) {
+                        Text(text = "Add")
+                    }
                 }
             }
         }
@@ -211,10 +247,14 @@ fun AddItemDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CoinsDropDown(
-    coins: List<String>,
+    coins: List<Coin>,
+    onCoinSelected: (Coin) -> Unit,
+    searchInput: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var selectedText by remember { mutableStateOf("select....") }
+
+
     ExposedDropdownMenuBox(
         expanded = expanded,
         onExpandedChange = {
@@ -233,11 +273,12 @@ fun CoinsDropDown(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }
             ) {
-                coins.forEach { item ->
+                coins.forEach { coin ->
                     DropdownMenuItem(
-                        text = { Text(text = item) },
+                        text = { Text(text = coin.name) },
                         onClick = {
-                            selectedText = item
+                            onCoinSelected(coin)
+                            selectedText = coin.name
                             expanded = false
                         }
                     )
