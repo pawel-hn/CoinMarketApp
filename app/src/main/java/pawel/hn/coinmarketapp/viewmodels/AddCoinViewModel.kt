@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import pawel.hn.coinmarketapp.database.Wallet
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.domain.toWalletCoin
 import pawel.hn.coinmarketapp.repository.CoinRepository
@@ -49,10 +48,10 @@ class AddCoinViewModel @Inject constructor(
     }
 
     init {
-        getCoinsList("")
+        observeCoins("")
     }
 
-    private fun getCoinsList(search: String) {
+    fun observeCoins(search: String) {
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
             coinRepository.observeCoins(search).collectLatest {
                 _coinList.value = it
@@ -63,10 +62,6 @@ class AddCoinViewModel @Inject constructor(
     fun selectedCoin(coin: Coin) {
         selectedCoin = coin
         validateAddButton()
-    }
-
-    fun searchCoin(search: String) {
-
     }
 
     fun inputAmount(input: String) {

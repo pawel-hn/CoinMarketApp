@@ -6,13 +6,13 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
@@ -46,13 +47,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.domain.Coin
@@ -194,11 +197,13 @@ fun AddItemDialog(
     var amount by remember { mutableStateOf("") }
     val isAddButtonEnabled by viewModel.isAddButtonEnabled.collectAsState()
 
-    Dialog(onDismissRequest = { onDismiss() }) {
+    Dialog(
+        onDismissRequest = { onDismiss() },
+        properties = DialogProperties(dismissOnClickOutside = false)
+    ) {
         Card(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(300.dp),
+                .fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
         ) {
             Column(Modifier.padding(16.dp)) {
@@ -214,27 +219,34 @@ fun AddItemDialog(
                     is Resource.Success -> CoinsDropDown(
                         coins = coins.data ?: emptyList(),
                         onCoinSelected = { viewModel.selectedCoin(it) },
-                        searchInput = {  }
-                        )
+                        searchInput = { viewModel.observeCoins(it) }
+                    )
                 }
                 Spacer(modifier = Modifier.height(32.dp))
                 Text(text = "How many:")
                 TextField(
                     value = amount,
                     onValueChange = {
-                       amount = it
+                        amount = it
                         viewModel.inputAmount(it)
                     },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
                 )
-                Row {
-                    Button(onClick = { onDismiss() }) {
-                        Text(text = "Cance;")
+                Spacer(modifier = Modifier.height(32.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Button(
+                        onClick = { onDismiss() }
+                    ) {
+                        Text(text = "Cancel")
                     }
                     Button(
-                        onClick = { viewModel.addToWallet() },
-                        enabled =  isAddButtonEnabled
+
+                        onClick = { },
+                        enabled = isAddButtonEnabled
                     ) {
                         Text(text = "Add")
                     }
@@ -252,8 +264,8 @@ fun CoinsDropDown(
     searchInput: (String) -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    var selectedText by remember { mutableStateOf("select....") }
-
+    var selectedText by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
 
     ExposedDropdownMenuBox(
         expanded = expanded,
@@ -263,15 +275,20 @@ fun CoinsDropDown(
         Column {
             TextField(
                 modifier = Modifier.menuAnchor(),
-                readOnly = true,
                 value = selectedText,
-                onValueChange = {},
+                onValueChange = {
+                    searchInput(it)
+                    selectedText = it
+                },
+                keyboardActions = KeyboardActions(onAny = { focusManager.clearFocus() }),
+                singleLine = true,
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
                 colors = ExposedDropdownMenuDefaults.textFieldColors(),
             )
             ExposedDropdownMenu(
                 expanded = expanded,
-                onDismissRequest = { expanded = false }
+                modifier = Modifier.height(200.dp),
+                onDismissRequest = {  }
             ) {
                 coins.forEach { coin ->
                     DropdownMenuItem(
@@ -279,6 +296,7 @@ fun CoinsDropDown(
                         onClick = {
                             onCoinSelected(coin)
                             selectedText = coin.name
+                            focusManager.clearFocus()
                             expanded = false
                         }
                     )
