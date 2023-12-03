@@ -11,8 +11,6 @@ interface CoinRepository {
 
     suspend fun saveCoinsToDatabase(coins: List<CoinEntity>)
 
-    suspend fun getCoinsFromDatabase(searchQuery: String): Flow<List<Coin>>
-
     suspend fun saveFavouriteCoinId(id: Int)
 
     suspend fun deleteFavouriteCoinId(id: Int)
@@ -20,4 +18,6 @@ interface CoinRepository {
     suspend fun getFavourites(): Flow<List<Int>>
 
     suspend fun observeCoins(query: String): Flow<List<Coin>>
+
+    suspend fun getCoins(): List<Coin>
 }

@@ -22,7 +22,7 @@ fun CoinEntity.toDomain(isFavourite: Boolean = false) = Coin(
     name = this.name,
     symbol = this.symbol,
     favourite = isFavourite,
-    price = formatPriceAndVolForView(this.price, ValueType.Fiat, CURRENCY_USD).toString(),
+    price = this.price,
     change24h = formatPriceChange(this.change24h),
     isChange24hUp = this.change24h > 0,
     change7d = formatPriceChange(this.change7d),

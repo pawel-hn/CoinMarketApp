@@ -3,7 +3,6 @@ package pawel.hn.coinmarketapp.viewmodels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,16 +14,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
-import pawel.hn.coinmarketapp.domain.toWalletCoin
+import pawel.hn.coinmarketapp.domain.toWalletDatabase
 import pawel.hn.coinmarketapp.repository.CoinRepository
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.WalletRepository
 import pawel.hn.coinmarketapp.util.Resource
-import pawel.hn.coinmarketapp.util.showLogN
+import pawel.hn.coinmarketapp.util.errorHandler
 import javax.inject.Inject
 
 @HiltViewModel
 class AddCoinViewModel @Inject constructor(
-    private val repository: Repository,
+    private val walletRepository: WalletRepository,
     private val coinRepository: CoinRepository
 ) : ViewModel() {
 
@@ -41,11 +40,6 @@ class AddCoinViewModel @Inject constructor(
 
     private var selectedCoin: Coin? = null
     private var amount: Double = 0.0
-
-    private val errorHandler = CoroutineExceptionHandler { _, throwable ->
-        throwable.printStackTrace()
-        showLogN("CoroutineExceptionHandler")
-    }
 
     init {
         observeCoins("")
@@ -83,7 +77,7 @@ class AddCoinViewModel @Inject constructor(
         val coin = selectedCoin ?: return
 
         viewModelScope.launch {
-            repository.wallet.addToWallet(coin.toWalletCoin(amount))
+           walletRepository.saveCoinToWallet(coin, amount)
         }
     }
 

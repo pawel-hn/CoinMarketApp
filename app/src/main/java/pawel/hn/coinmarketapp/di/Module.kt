@@ -7,14 +7,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
-import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.database.FavouriteCoinDao
@@ -23,6 +20,9 @@ import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.CoinRepositoryImpl
 import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.WalletRepository
+import pawel.hn.coinmarketapp.repository.WalletRepositoryImpl
+import pawel.hn.coinmarketapp.usecase.ObserveWalletUseCase
 import pawel.hn.coinmarketapp.util.API_HEADER
 import pawel.hn.coinmarketapp.util.API_KEY
 import pawel.hn.coinmarketapp.util.BASE_URL_COINS
@@ -67,8 +67,8 @@ object Module {
 
     @Provides
     @Singleton
-    fun provideRepository(coinsData: CoinsData, walletData: WalletData, remoteData: RemoteData) =
-        Repository(coinsData, walletData, remoteData)
+    fun provideRepository(coinsData: CoinsData, remoteData: RemoteData) =
+        Repository(coinsData, remoteData)
 
     @Provides
     @Singleton
@@ -83,10 +83,23 @@ object Module {
     fun provideFavouriteDao(database: CoinDatabase): FavouriteCoinDao = database.favouriteCoinDao
 
     @Provides
+    @Singleton
     fun provideCoinRepository(
         coinApi: CoinApi,
         coinDao: CoinDao,
         favouriteCoinDao: FavouriteCoinDao
     ): CoinRepository = CoinRepositoryImpl(coinApi, coinDao,favouriteCoinDao)
 
+    @Provides
+    @Singleton
+    fun provideWalletRepository(
+        walletDao: WalletDao,
+    ): WalletRepository = WalletRepositoryImpl(walletDao)
+
+
+    @Provides
+    fun provideObserveWalletUseCase(
+        coinRepository: CoinRepository,
+        walletRepository: WalletRepository,
+    ) = ObserveWalletUseCase(coinRepository, walletRepository)
 }

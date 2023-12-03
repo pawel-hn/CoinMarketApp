@@ -1,15 +1,14 @@
 package pawel.hn.coinmarketapp.domain
 
 import android.net.Uri
-import pawel.hn.coinmarketapp.compose.WalletMain
-import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.database.WalletEntity
 
 data class Coin(
     val coinId: Int,
     val name: String,
     val symbol: String,
     val favourite: Boolean,
-    val price: String,
+    val price: Double,
     val change24h: String,
     val isChange24hUp: Boolean,
     val change7d: String,
@@ -19,13 +18,8 @@ data class Coin(
 )
 
 
-fun Coin.toWalletCoin(volume: Double) = Wallet(
-    id = coinId,
+fun Coin.toWalletDatabase(volume: Double) = WalletEntity(
     coinId = coinId,
-    name = name,
-    symbol = symbol,
     volume = volume,
-    price = 1000.0,
-    total = 500.0,
     walletNo = 0,
 )

@@ -26,10 +26,6 @@ class CoinRepositoryImpl @Inject constructor(
 
     override suspend fun saveCoinsToDatabase(coins: List<CoinEntity>) = coinDao.insertAll(coins)
 
-
-    override suspend fun getCoinsFromDatabase(searchQuery: String): Flow<List<Coin>> =
-        coinDao.getAllCoins(searchQuery).map { it.toDomain() }
-
     override suspend fun saveFavouriteCoinId(id: Int) =
         favouriteCoinDao.saveFavourite(FavouriteCoinEntity(id))
 
@@ -41,10 +37,14 @@ class CoinRepositoryImpl @Inject constructor(
 
     override suspend fun observeCoins(query: String): Flow<List<Coin>> =
         withContext(Dispatchers.IO) {
-            coinDao.getAllCoins(query).combine(getFavourites()) { coins, ids ->
+            coinDao.observeCoins(query).combine(getFavourites()) { coins, ids ->
                 coins
                     .toDomain()
                     .map { coin -> coin.copy(favourite = ids.any { it == coin.coinId }) }
             }
         }
+
+    override suspend fun getCoins(): List<Coin> =
+        coinDao.getSavedCoins()
+            .map { it.toDomain() }
 }

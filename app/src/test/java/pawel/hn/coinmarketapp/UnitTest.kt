@@ -2,7 +2,7 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.mockkClass
 import org.junit.Before
 import org.junit.Test
-import pawel.hn.coinmarketapp.database.Wallet
+import pawel.hn.coinmarketapp.database.WalletEntity
 import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.util.formatPriceChange
 import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
@@ -10,24 +10,24 @@ import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 
 class UnitTest {
 
-    private val walletCoin1 = Wallet(1,1,"Bitcoin",
+    private val walletEntityCoin1 = WalletEntity(1,1,"Bitcoin",
         "BTC",1.0, 2.0, 2.0, 0 )
 
-    private val walletCoin2 = Wallet(2,1,"Bitcoin",
+    private val walletEntityCoin2 = WalletEntity(2,1,"Bitcoin",
         "BTC",1.0, 2.0, 2.0, 1 )
 
-    private val walletCoin3 = Wallet(3,1,"Bitcoin",
+    private val walletEntityCoin3 = WalletEntity(3,1,"Bitcoin",
         "BTC",1.0, 2.0, 2.0, 2 )
 
-    private val walletCoin4 = Wallet(3,2,"Ethereum",
+    private val walletEntityCoin4 = WalletEntity(3,2,"Ethereum",
         "ETH",1.0, 2.0, 2.0, 2 )
 
-    private val walletCoin5 = Wallet(3,2,"Ethereum",
+    private val walletEntityCoin5 = WalletEntity(3,2,"Ethereum",
         "ETH",1.0, 2.0, 2.0, 2 )
 
-    private val list = listOf(walletCoin1, walletCoin2, walletCoin3, walletCoin4, walletCoin5)
+    private val list = listOf(walletEntityCoin1, walletEntityCoin2, walletEntityCoin3, walletEntityCoin4, walletEntityCoin5)
 
-    private lateinit var totalList: List<Wallet>
+    private lateinit var totalList: List<WalletEntity>
 
     private lateinit var repo: Repository
     private lateinit var walletViewModel: WalletViewModel

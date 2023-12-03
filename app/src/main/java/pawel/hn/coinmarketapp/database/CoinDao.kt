@@ -3,7 +3,6 @@ package pawel.hn.coinmarketapp.database
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
 
 @Dao
 interface CoinDao {
@@ -18,7 +17,10 @@ interface CoinDao {
     suspend fun update(coinEntity: CoinEntity)
 
     @Query("SELECT * FROM coins_table WHERE name LIKE '%' || :searchQuery || '%' ORDER BY cmcRank ASC")
-    fun getAllCoins(searchQuery: String): Flow<List<CoinEntity>>
+    fun observeCoins(searchQuery: String): Flow<List<CoinEntity>>
+
+    @Query("SELECT * FROM coins_table")
+    fun getSavedCoins(): List<CoinEntity>
 
     @Query("SELECT * FROM notifications_table")
     fun getNotifications(): LiveData<List<Notifications>>
@@ -31,6 +33,4 @@ interface CoinDao {
 
     @Query("DELETE FROM notifications_table")
     suspend fun deleteNotification()
-
-
 }

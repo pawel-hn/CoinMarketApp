@@ -45,7 +45,7 @@ class CoinEntityDaoTest {
         val testCoinEntity = CoinEntity(1, "testCoin",
             "ct", false, 1.0, 0.02, 0.1, 1)
         coinDao.insert(testCoinEntity)
-        val testList = coinDao.getAllCoins("").getOrAwaitValue()
+        val testList = coinDao.observeCoins("").getOrAwaitValue()
 
         assertThat(testList).contains(testCoinEntity)
     }

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import pawel.hn.coinmarketapp.util.DATABASE_NAME
 
-@Database(entities = [CoinEntity::class, Wallet::class, Notifications::class, FavouriteCoinEntity::class], version = 1)
+@Database(entities = [CoinEntity::class, WalletEntity::class, Notifications::class, FavouriteCoinEntity::class], version = 1)
 abstract class CoinDatabase : RoomDatabase() {
     abstract val coinDao: CoinDao
     abstract val walletDao: WalletDao

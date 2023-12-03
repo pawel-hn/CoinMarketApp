@@ -1,7 +1,6 @@
 package pawel.hn.coinmarketapp.compose
 
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.*
@@ -42,17 +41,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.domain.Coin
+import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.ValueType
+import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
 import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
 
 @Composable
-fun CoinsBody(paddingValues: PaddingValues, ) {
+fun CoinsBody(paddingValues: PaddingValues) {
     var showFavourites by remember { mutableStateOf(false) }
     val coinsViewModel: CoinsViewModel = hiltViewModel()
 
@@ -177,14 +178,17 @@ fun Body(
             modifier = Modifier.align(Alignment.TopCenter)
         )
         AnimatedVisibility(
-            modifier = Modifier.align(Alignment.BottomEnd)
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
                 .padding(32.dp),
-            visible = scrollToFirstVisible) {
+            visible = scrollToFirstVisible
+        ) {
             FloatingActionButton(
                 onClick = {
-                coroutineScope.launch {
-                    lazyColumnState.animateScrollToItem(0) }
-            }) {
+                    coroutineScope.launch {
+                        lazyColumnState.animateScrollToItem(0)
+                    }
+                }) {
                 Icon(imageVector = Icons.Filled.KeyboardArrowUp, contentDescription = "scroll up")
             }
         }
@@ -245,6 +249,7 @@ fun CoinsList(
             ),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement  = Arrangement.spacedBy(8.dp),
         state = state
     ) {
         items(items = coins, key = { it.coinId }) { coin ->
@@ -254,9 +259,9 @@ fun CoinsList(
 }
 
 @Composable
-fun ShimmerLoading() {
+fun ShimmerLoading(repeat: Int = 5) {
     Column(modifier = Modifier.fillMaxSize()) {
-        repeat(5) {
+        repeat(repeat) {
             ShimmerItem()
         }
     }
@@ -283,7 +288,6 @@ fun CoinItem(
     var isFavourite by remember { mutableStateOf(coin.favourite) }
     Row(
         modifier = Modifier
-            .padding(bottom = 8.dp)
             .fillMaxWidth()
             .height(75.dp)
             .background(CoinItemColor, RoundedCornerShape(20))
@@ -322,7 +326,11 @@ fun CoinItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = coin.price,
+                text = formatPriceAndVolForView(
+                    coin.price,
+                    ValueType.Fiat,
+                    CURRENCY_USD
+                ).toString(),
                 textAlign = TextAlign.End
             )
             Spacer(modifier = Modifier.width(32.dp))

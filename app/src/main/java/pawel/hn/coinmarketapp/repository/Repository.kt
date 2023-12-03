@@ -2,7 +2,6 @@ package pawel.hn.coinmarketapp.repository
 
 import pawel.hn.coinmarketapp.data.CoinsData
 import pawel.hn.coinmarketapp.data.RemoteData
-import pawel.hn.coinmarketapp.data.WalletData
 import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.model.coinmarketcap.ApiResponseCoins
 import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
@@ -12,7 +11,6 @@ import javax.inject.Inject
 
 class Repository @Inject constructor(
     val coins: CoinsData,
-    val wallet: WalletData,
     private val remote: RemoteData
 ) {
     var responseError = true

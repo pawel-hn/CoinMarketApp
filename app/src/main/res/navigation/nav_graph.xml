@@ -5,12 +5,6 @@
     android:id="@+id/nav_graph"
     >
 
-
-    <fragment
-        android:id="@+id/walletFragment"
-        android:name="pawel.hn.coinmarketapp.fragments.WalletFragment"
-        android:label="Wallet"
-        tools:layout="@layout/fragment_wallet"/>
     <dialog
         android:id="@+id/addCoinFragmentDialog"
         android:name="pawel.hn.coinmarketapp.fragments.AddCoinFragmentDialog"
@@ -23,10 +17,6 @@
         android:id="@+id/priceNotifyFragment"
         android:name="pawel.hn.coinmarketapp.fragments.PriceNotifyFragment"
         android:label="@string/notification" />
-    <fragment
-        android:id="@+id/walletsFragment"
-        android:name="pawel.hn.coinmarketapp.fragments.WalletPagerFragment"
-        android:label="@string/wallet" />
 
     <action android:id="@+id/action_global_addCoinFragmentDialog"
         app:destination="@id/addCoinFragmentDialog" />
