@@ -16,15 +16,6 @@
         android:layout_height="match_parent"
         tools:context=".fragments.NewsFragment">
 
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/swipe_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-
-
-
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         <TextView
             android:id="@+id/text_view_error_response"
