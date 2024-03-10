@@ -3,18 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/coinsFragment">
+    >
 
-    <fragment
-        android:id="@+id/coinsFragment"
-        android:name="pawel.hn.coinmarketapp.fragments.CoinsFragment"
-        android:label="@string/app_name"
-        tools:layout="@layout/fragment_coins" />
-    <fragment
-        android:id="@+id/walletFragment"
-        android:name="pawel.hn.coinmarketapp.fragments.WalletFragment"
-        android:label="Wallet"
-        tools:layout="@layout/fragment_wallet"/>
     <dialog
         android:id="@+id/addCoinFragmentDialog"
         android:name="pawel.hn.coinmarketapp.fragments.AddCoinFragmentDialog"
@@ -27,10 +17,6 @@
         android:id="@+id/priceNotifyFragment"
         android:name="pawel.hn.coinmarketapp.fragments.PriceNotifyFragment"
         android:label="@string/notification" />
-    <fragment
-        android:id="@+id/walletsFragment"
-        android:name="pawel.hn.coinmarketapp.fragments.WalletPagerFragment"
-        android:label="@string/wallet" />
 
     <action android:id="@+id/action_global_addCoinFragmentDialog"
         app:destination="@id/addCoinFragmentDialog" />

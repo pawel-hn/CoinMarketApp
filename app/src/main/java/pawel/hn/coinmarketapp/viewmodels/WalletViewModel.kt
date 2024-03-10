@@ -1,31 +1,45 @@
 package pawel.hn.coinmarketapp.viewmodels
 
 
-import android.content.Context
-import android.graphics.Typeface
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.PercentFormatter
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.database.Coin
-import pawel.hn.coinmarketapp.database.Wallet
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.database.CoinEntity
+import pawel.hn.coinmarketapp.database.WalletEntity
+import pawel.hn.coinmarketapp.domain.WalletCoin
+import pawel.hn.coinmarketapp.usecase.ObserveWalletUseCase
+import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.errorHandler
 import javax.inject.Inject
 
 @HiltViewModel
-class WalletViewModel @Inject constructor(private val repository: Repository) : ViewModel() {
+class WalletViewModel @Inject constructor(private val observeWalletUseCase: ObserveWalletUseCase) :
+    ViewModel() {
 
-    val walletLiveData = repository.wallet.wallet
-    val coinLiveData = repository.coins.coinsAll
+    private val _walletCoins = MutableStateFlow<List<WalletCoin>>(emptyList())
+    val walletCoins = _walletCoins
+        .map { Resource.Success(it) }
+        .catch { Resource.Error<List<WalletCoin>>("wallet error") }
+        .stateIn(
+            viewModelScope, SharingStarted.WhileSubscribed(2000), Resource.Loading()
+        )
+
+
+    init {
+        observeWallet()
+    }
+
 
     private val _eventProgressBar = MutableLiveData(false)
     val eventProgressBar: LiveData<Boolean>
@@ -35,84 +49,47 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
     val eventErrorResponse: LiveData<Boolean>
         get() = _eventErrorResponse
 
-    fun calculateTotalBalance(list: List<Wallet>): Double = list.sumOf { it.total }
+    fun calculateTotalBalance(list: List<WalletEntity>): Double = 100.0
 
-    fun totalWallet(list: List<Wallet>): List<Wallet> {
 
-        val totalList = mutableListOf<Wallet>()
-        val listOfCoinIds = mutableListOf<Int>()
+    fun totalWallet(list: List<WalletEntity>): List<WalletEntity> {
 
-        for (coinLoop in list) {
-            if (listOfCoinIds.contains(coinLoop.coinId)) {
-                continue
-            } else {
-                listOfCoinIds.add(coinLoop.coinId)
-                val tempList = list.filter { it.coinId == coinLoop.coinId }
-                val newVolume = tempList.sumOf{ it.volume }
-                val newTotal = tempList.sumOf { it.total }
-                totalList.add(
-                    Wallet(
-                        coinId = coinLoop.coinId,
-                        name = coinLoop.name,
-                        symbol = coinLoop.symbol,
-                        volume = newVolume,
-                        price = coinLoop.price,
-                        total = newTotal,
-                        walletNo = 3
-                    )
-                )
-            }
+        return emptyList()
+    }
+
+    fun observeWallet() = viewModelScope.launch(Dispatchers.IO + errorHandler) {
+        observeWalletUseCase.build().collectLatest {
+            _walletCoins.value = it
         }
+    }
 
-        return totalList.sortedByDescending { it.total }
+    fun onTaskSwiped(coin: WalletEntity) = viewModelScope.launch {
+        //   repository.wallet.deleteFromWallet(coin)
     }
 
 
-    fun onTaskSwiped(coin: Wallet) = viewModelScope.launch {
-        repository.wallet.deleteFromWallet(coin)
-    }
-
-    fun refreshData(ccy: String) = viewModelScope.launch {
-        _eventProgressBar.value = true
-        repository.getCoinsData(ccy)
-        _eventProgressBar.value = false
-        _eventErrorResponse.value = repository.responseError
-    }
-
-
-    fun walletRefresh(list: List<Coin>) = viewModelScope.launch {
+    fun walletRefresh(list: List<CoinEntity>) = viewModelScope.launch {
 
         val listTemp = list.filter { coin ->
-            coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
+            //coin.name == walletLiveData.value?.find { it.name == coin.name }?.name
+            true
         }
         if (listTemp.isNullOrEmpty()) {
             _eventProgressBar.value = false
             return@launch
         }
-        walletLiveData.value!!.forEach { coin ->
-            val newPrice = listTemp.filter { it.name == coin.name }[0].price
-            repository.wallet.updateWallet(coin, newPrice)
-        }
+
     }
 
     fun deleteAll() {
         viewModelScope.launch {
-            repository.wallet.deleteAllFromWallets()
+            //    repository.wallet.deleteAllFromWallets()
         }
     }
 
 
-    fun setChart(list: List<Wallet>, pieChart: PieChart, context: Context) {
-        val entries = ArrayList<PieEntry>()
-        if (!list.isNullOrEmpty()) {
-            list.forEach {
-                entries.add(
-                    PieEntry(it.total.toFloat(), it.symbol)
-                )
-            }
-        }
+    fun setChart() {
 
-        val setData = PieDataSet(entries, "Wallet")
         val colorIds = listOf(
             R.color.chartColor1,
             R.color.chartColor2,
@@ -124,36 +101,5 @@ class WalletViewModel @Inject constructor(private val repository: Repository) : 
             R.color.chartColor8,
             R.color.chartColor9
         )
-        val colorList = colorIds.map {
-            ContextCompat.getColor(context, it)
-        }
-
-        setData.apply {
-            colors = colorList
-            sliceSpace = 2f
-            yValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-            xValuePosition = PieDataSet.ValuePosition.OUTSIDE_SLICE
-            valueTextColor = R.color.coinsListHeader
-            valueTextSize = 12f
-            valueFormatter = PercentFormatter(pieChart)
-            valueLinePart1OffsetPercentage = 80f
-            valueLinePart1Length = 0.3f
-            valueLinePart2Length = 0.4f
-        }
-
-        val dataPie = PieData(setData)
-        dataPie.setDrawValues(true)
-        pieChart.apply {
-            data = dataPie
-            setUsePercentValues(true)
-            description.isEnabled = false
-            legend.isEnabled = false
-            setEntryLabelTextSize(14f)
-            setEntryLabelTypeface(Typeface.MONOSPACE)
-            isDrawHoleEnabled = true
-            setEntryLabelColor(R.color.coinsListHeader)
-            setNoDataText("Empty wallet")
-            invalidate()
-        }
     }
 }

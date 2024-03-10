@@ -28,7 +28,7 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
         binding.newsViewModel = viewModel
 
         parser = Parser.Builder().build().also {
-            getData(it, requireContext())
+
         }
 
         viewModel.rssChannel.observe(viewLifecycleOwner) { channel ->
@@ -39,20 +39,9 @@ class NewsFragment : Fragment(R.layout.fragment_news) {
                     findNavController().navigate(action)
                 }
 
-                binding.swipeLayout.isRefreshing = false
-                if (channel.title != null) {
-                    activity?.title = channel.title
-                }
             }
         }
 
-        binding.swipeLayout.setOnRefreshListener {
-            getData(parser, requireContext())
-        }
     }
 
-    private fun getData(parser: Parser, context: Context) {
-
-        viewModel.fetchFeed(parser, context)
-    }
 }

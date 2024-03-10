@@ -17,7 +17,7 @@ import org.junit.runner.RunWith
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 @SmallTest
-class CoinDaoTest {
+class CoinEntityDaoTest {
 
     @get:Rule
     var instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -42,27 +42,27 @@ class CoinDaoTest {
 
     @Test
     fun insertCoin_returnsInsertedCoin() = runBlockingTest {
-        val testCoin = Coin(1, "testCoin",
+        val testCoinEntity = CoinEntity(1, "testCoin",
             "ct", false, 1.0, 0.02, 0.1, 1)
-        coinDao.insert(testCoin)
-        val testList = coinDao.getAllCoins("").getOrAwaitValue()
+        coinDao.insert(testCoinEntity)
+        val testList = coinDao.observeCoins("").getOrAwaitValue()
 
-        assertThat(testList).contains(testCoin)
+        assertThat(testList).contains(testCoinEntity)
     }
 
     @Test
     fun getCheckedCoins_returnsOnlyFavourite() = runBlockingTest {
-        val testCoin1 = Coin(1, "testCoin",
+        val testCoin1Entity = CoinEntity(1, "testCoin",
             "ct", false, 1.0, 0.02, 0.1, 1)
-        val testCoin2 = Coin(2, "testCoin",
+        val testCoin2Entity = CoinEntity(2, "testCoin",
             "ct", true, 1.0, 0.02, 0.1, 1)
-        val testCoin3 = Coin(3, "testCoin",
+        val testCoin3Entity = CoinEntity(3, "testCoin",
             "ct", true, 1.0, 0.02, 0.1, 1)
-        val coinTestListInput = listOf(testCoin1, testCoin2, testCoin3)
+        val coinTestListInput = listOf(testCoin1Entity, testCoin2Entity, testCoin3Entity)
         coinDao.insertAll(coinTestListInput)
         val coinTestListOutput = coinDao.getCheckedCoins("").getOrAwaitValue()
 
-        assertThat(coinTestListOutput).containsExactly(testCoin2, testCoin3)
+        assertThat(coinTestListOutput).containsExactly(testCoin2Entity, testCoin3Entity)
     }
 
 }

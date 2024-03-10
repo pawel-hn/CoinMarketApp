@@ -1,0 +1,40 @@
+{
+  ConstrainSets: {
+    start: {
+      chart: {
+        witdth: 100,
+        height: 100,
+        start: ["parent", "start"],
+        end: ["parent", "end"],
+        top: ["top_bar", "top"]
+      },
+      box: {
+        witdth: "spread",
+        height: "spread",
+        start: ["parent", "start"],
+        end: ["parent", "end"],
+        top: ["parent", "top"],
+        bottom: ["parent", "bottom "]
+      }
+    },
+    end: {
+      chart: {
+        witdth: 0,
+        height: 0,
+        alpha: 0,
+        start: ["parent", "start"],
+        end: ["parent", "end"],
+        top: ["top_bar", "top"]
+      },
+      box: {
+        witdth: 0,
+        height: 0,
+        start: ["parent", "start"],
+        end: ["parent", "end"],
+        top: ["parent", "top"],
+        bottom: ["parent", "bottom "]
+      }
+    }
+  },
+
+}

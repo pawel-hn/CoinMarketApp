@@ -1,24 +1,23 @@
 package pawel.hn.coinmarketapp.database
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WalletDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
-    suspend fun insertIntoWallet(coin: Wallet)
+    @Insert(onConflict = OnConflictStrategy.REPLACE, entity = WalletEntity::class)
+    suspend fun insert(coin: WalletEntity)
 
-    @Query("SELECT * FROM wallet_table ORDER BY total DESC")
-    fun getWallet(): LiveData<List<Wallet>>
+    @Query("SELECT * FROM wallet_table")
+    fun observeWallet(): Flow<List<WalletEntity>>
 
-    @Delete(entity = Wallet::class)
-    suspend fun deleteFromWallet(coin: Wallet)
+    @Delete(entity = WalletEntity::class)
+    suspend fun deleteFromWallet(coin: WalletEntity)
 
     @Query("DELETE FROM wallet_table")
     suspend fun deleteAllFromWallets()
 
-    @Update(onConflict = OnConflictStrategy.REPLACE, entity = Wallet::class)
-    suspend fun updateWallet(coin: Wallet)
-
+    @Update(onConflict = OnConflictStrategy.REPLACE, entity = WalletEntity::class)
+    suspend fun updateWallet(coin: WalletEntity)
 }

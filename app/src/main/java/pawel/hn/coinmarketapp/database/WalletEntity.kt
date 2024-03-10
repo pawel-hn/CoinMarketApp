@@ -8,17 +8,8 @@ import kotlinx.parcelize.Parcelize
 
 @Entity(tableName = "wallet_table")
 @Parcelize
-data class Wallet(
-    @PrimaryKey(autoGenerate = true) var id: Int = 0,
-    val coinId: Int,
-    val name: String,
-    val symbol: String,
+data class WalletEntity(
+    @PrimaryKey val coinId: Int,
     val volume: Double,
-    val price: Double,
-    val total: Double,
     val walletNo: Int
 ) : Parcelable
-
-
-
-

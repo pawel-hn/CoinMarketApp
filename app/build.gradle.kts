@@ -7,98 +7,111 @@ plugins {
     id("kotlin-parcelize")
 }
 
-android{
-    compileSdkVersion(30)
-    buildToolsVersion("30.0.3")
+android {
+    compileSdk = 34
+    buildToolsVersion =  "33.0.2"
 
-    defaultConfig{
+    defaultConfig {
         applicationId = "pawel.hn.coinmarketapp"
-        minSdkVersion(AppConfig.minSdkVersion)
-        targetSdkVersion(AppConfig.targetSdkVersion)
-        versionCode = AppConfig.versionCode
-        versionName = AppConfig.versionName
-
+        minSdk = 26
+        targetSdk = 34
+        versionCode = 1
+        versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
-        getByName("release") {
+        release {
             isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
+            proguardFiles(getDefaultProguardFile(
+                    "proguard-android-optimize.txt"),
+                    "proguard-rules.pro")
         }
     }
+
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_18
+        targetCompatibility = JavaVersion.VERSION_18
     }
+
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "18"
     }
     buildFeatures {
         dataBinding = true
         viewBinding = true
+        compose = true
     }
 
-    testOptions {
-        unitTests.apply {
-            isReturnDefaultValues = true
-        }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.6"
     }
 
-    packagingOptions {
-        exclude ("**/attach_hotspot_windows.dll")
-        exclude ("META-INF/licenses/**")
-        exclude( "META-INF/AL2.0")
-        exclude ("META-INF/LGPL2.1")
-    }
+    namespace = "pawel.hn.coinmarketapp"
+
 }
 
 dependencies {
+    implementation(libs.kotlin.android)
+    implementation(libs.androidx.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.android.material)
+    implementation(libs.androidx.constraintlayout)
 
-    implementation(Dependencies.kotlinCore)
-    implementation(Dependencies.kotlinKtx)
-    implementation(Dependencies.appCompat)
-    implementation(Dependencies.googleMaterial)
-    implementation(Dependencies.constraintLayout)
-    implementation(Dependencies.swipeToRefresh)
-    implementation(Dependencies.navigationFragmentKtx)
-    implementation(Dependencies.navigationUiKtx)
-    implementation(Dependencies.retrofit)
-    implementation(Dependencies.retrofitGsonConverter)
-    implementation(Dependencies.roomCore)
-    kapt(Dependencies.roomKapt)
-    implementation(Dependencies.roomKtx)
-    implementation(Dependencies.liveData)
-    implementation(Dependencies.coroutinesCore)
-    implementation(Dependencies.coroutinesAndroid)
-    implementation(Dependencies.hiltCore)
-    kapt (Dependencies.hiltKapt)
-    implementation(Dependencies.hiltWorkManager)
-    kapt(Dependencies.hiltKaptAndroidx)
-    implementation(Dependencies.workManager)
-    implementation(Dependencies.glideCore)
-    kapt(Dependencies.glideKapt)
-    implementation(Dependencies.settings)
-    implementation(Dependencies.charts)
-    implementation(Dependencies.rssParser)
-    implementation(Dependencies.shimmer)
-    implementation(Dependencies.shimmerRecyclerView)
-    implementation(Dependencies.searchableSpinner)
+    //Navigation Component
+    implementation(libs.androidx.navigation)
+    implementation(libs.androidx.navigation.ui)
 
-    testImplementation(Dependencies.coroutinesTest)
-    testImplementation(Dependencies.junitTest)
-    testImplementation(Dependencies.espressoCore)
-    testImplementation(Dependencies.googleTruth)
-    testImplementation(Dependencies.coreTesting)
-    testImplementation(Dependencies.mockk)
-    androidTestImplementation(Dependencies.coroutinesTest)
-    androidTestImplementation(Dependencies.junitTest)
-    androidTestImplementation(Dependencies.espressoCore)
-    androidTestImplementation(Dependencies.googleTruth)
-    androidTestImplementation(Dependencies.coreTesting)
-    androidTestImplementation(Dependencies.workManagerTesting)
+    //Retrofit
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
+
+    // Room
+    implementation(libs.androidx.room)
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
+    implementation(libs.androidx.lifecycle.livedata)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+
+    // Dagger Hilt
+    implementation(libs.google.hilt.android)
+    kapt(libs.google.hilt.android.compiler)
+
+    // Unit Testing
+    testImplementation(libs.bundles.testing)
+    testImplementation(libs.androidx.lifecycle.runtime.testing)
+    androidTestImplementation(libs.bundles.testing)
+    androidTestImplementation(libs.androidx.lifecycle.runtime.testing)
+
+    // Glide
+    implementation(libs.glie)
+    kapt (libs.glie.compiler)
+
+    //Settings
+    implementation (libs.androidx.preference)
+
+    //Rss Parser
+    implementation(libs.rss)
+
+    // Http logging
+    implementation(libs.httpLog)
+
+    // Compose
+    implementation(platform(libs.androidx.compose.bom))
+    implementation (libs.androidx.compose.material3)
+    implementation (libs.androidx.compose.material)
+    implementation (libs.androidx.activity.compose)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.google.hilt.navigation.compose)
+
+    implementation(libs.bundles.ui.core)
+
+    // Landscapist
+    implementation (libs.landscapist)
+
+    implementation (libs.retrofit.result.adapter)
+
 
 }

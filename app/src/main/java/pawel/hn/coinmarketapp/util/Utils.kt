@@ -16,7 +16,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import com.google.android.material.snackbar.Snackbar
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.database.Coin
+import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -56,7 +56,7 @@ fun formatPriceAndVolForView(volume: Double, type: ValueType, currency: String):
 }
 
 
-fun CoinResponse.apiResponseConvertToCoin(ccy: String): Coin {
+fun CoinResponse.apiResponseConvertToCoin(ccy: String): CoinEntity {
     val price = when(ccy) {
         CURRENCY_USD -> this.quote.USD.price
         CURRENCY_PLN -> this.quote.PLN.price
@@ -75,11 +75,10 @@ fun CoinResponse.apiResponseConvertToCoin(ccy: String): Coin {
         else -> this.quote.EUR.percentChange7d
     }
 
-    return Coin(
+    return CoinEntity(
         coinId = this.id,
         name = this.name,
         symbol = this.symbol,
-        favourite = false,
         price = price,
         change24h = change24h,
         change7d = change7d,
