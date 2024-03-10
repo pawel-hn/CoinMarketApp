@@ -41,7 +41,6 @@ mockitoCoreVersion = "5.3.1"
 robolectricVersion = "4.7.3"
 mockK = "1.13.8"
 
-
 [libraries]
 #android
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
@@ -59,6 +58,8 @@ material-v1100 = { module = "com.google.android.material:material", version.ref 
 androidx-preference = { group = "androidx.preference", name = "preference-ktx", version.ref = "settings"  }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+
+kotlin-android = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 
 #google
 google-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "google-hilt" }
@@ -88,7 +89,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 #retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
-retrofit-result-adapter ={ group = "ccom.github.skydoves", name = "retrofit-adapters-result", version.ref = "resultAdapter" }
+retrofit-result-adapter ={ group = "com.github.skydoves", name = "retrofit-adapters-result", version.ref = "resultAdapter" }
 
 #navigation
 androidx-navigation = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation" }

@@ -52,7 +52,7 @@ android {
 }
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.20")
+    implementation(libs.kotlin.android)
     implementation(libs.androidx.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.android.material)
@@ -111,7 +111,7 @@ dependencies {
     // Landscapist
     implementation (libs.landscapist)
 
-    implementation ("com.github.skydoves:retrofit-adapters-result:1.0.6")
+    implementation (libs.retrofit.result.adapter)
 
 
 }
