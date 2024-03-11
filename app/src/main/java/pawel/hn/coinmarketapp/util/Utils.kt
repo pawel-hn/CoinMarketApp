@@ -86,16 +86,6 @@ fun CoinResponse.apiResponseConvertToCoin(ccy: String): CoinEntity {
     )
 }
 
-inline fun SearchView.onQueryTextChanged(crossinline listener: (String) -> Unit) {
-    this.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-        override fun onQueryTextSubmit(query: String?): Boolean = true
-
-        override fun onQueryTextChange(newText: String?): Boolean {
-            listener(newText.orEmpty())
-            return true
-        }
-    })
-}
 
 fun showSnack(view: View, text: String) {
     Snackbar.make(view, text, Snackbar.LENGTH_SHORT).apply {
@@ -110,11 +100,7 @@ fun showSnack(view: View, text: String) {
 fun showLog(string: String) = Log.d(TAG, string)
 fun showLogN(string: String) = Log.d(TAG1, string)
 
-fun SharedPreferences.put(action: SharedPreferences.Editor.() -> Unit) {
-    val editor = edit()
-    action(editor)
-    editor.apply()
-}
+
 
 fun hideKeyboard(view: View) {
     val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
