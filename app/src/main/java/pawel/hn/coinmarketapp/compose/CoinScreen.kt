@@ -50,12 +50,22 @@ import pawel.hn.coinmarketapp.util.CURRENCY_USD
 import pawel.hn.coinmarketapp.util.Resource
 import pawel.hn.coinmarketapp.util.ValueType
 import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
-import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
+import pawel.hn.coinmarketapp.coinsList.CoinsViewModel
 
 @Composable
-fun CoinsBody(paddingValues: PaddingValues) {
+fun CoinsRoute(paddingValues: PaddingValues) {
+
+
+
+    CoinScreen(paddingValues)
+
+}
+
+@Composable
+fun CoinScreen(paddingValues: PaddingValues) {
     var showFavourites by remember { mutableStateOf(false) }
     val coinsViewModel: CoinsViewModel = hiltViewModel()
+
 
     Column(Modifier.padding(paddingValues)) {
         TopCoinBar(
@@ -142,7 +152,7 @@ fun Body(
         onRefresh = { coinsViewModel.getCoins() }
     )
 
-    val coins by coinsViewModel.coinResult.collectAsState(Resource.Loading())
+    val coins by coinsViewModel.state.collectAsState(Resource.Loading())
     val lazyColumnState = rememberLazyListState()
     val scrollToFirstVisible by remember { derivedStateOf { lazyColumnState.firstVisibleItemIndex > 0} }
     val coroutineScope = rememberCoroutineScope()
@@ -218,7 +228,7 @@ fun CoinsState(
         is Resource.Error -> {
             ErrorCoins(
                 modifier = Modifier.fillMaxSize(),
-                text = "Lololo...."
+                text = coins.message ?: "ffs"
             )
         }
 

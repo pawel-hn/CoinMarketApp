@@ -70,7 +70,7 @@ import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 
 
 @Composable
-fun WalletScreen(paddingValues: PaddingValues) {
+fun WalletRoute(paddingValues: PaddingValues) {
 
     var showDialog by remember { mutableStateOf(false) }
 

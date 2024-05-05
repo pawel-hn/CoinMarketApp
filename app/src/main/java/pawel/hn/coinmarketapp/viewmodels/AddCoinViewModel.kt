@@ -47,9 +47,7 @@ class AddCoinViewModel @Inject constructor(
 
     fun observeCoins(search: String) {
         viewModelScope.launch(Dispatchers.IO + errorHandler) {
-            coinRepository.observeCoins(search).collectLatest {
-                _coinList.value = it
-            }
+
         }
     }
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import pawel.hn.coinmarketapp.R
-import pawel.hn.coinmarketapp.viewmodels.CoinsViewModel
+import pawel.hn.coinmarketapp.coinsList.CoinsViewModel
 
 
 

@@ -42,10 +42,10 @@ fun MainScreen() {
     ) { paddingValues ->
         NavHost(navController = navController, startDestination = BottomNavigationItem.Home.title) {
             composable(route = BottomNavigationItem.Home.title) {
-                CoinsBody(paddingValues)
+                CoinsRoute(paddingValues)
             }
             composable(route = BottomNavigationItem.Wallet.title) {
-                WalletScreen(paddingValues)
+                WalletRoute(paddingValues)
             }
             composable(route = BottomNavigationItem.News.title) {
                 News()
@@ -117,17 +117,6 @@ sealed class BottomNavigationItem(
         selectedIcon = Icons.Filled.DateRange,
         unSelectedIcon = Icons.Outlined.DateRange
     )
-}
-
-@Composable
-fun WalletMain() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Gray), contentAlignment = Alignment.Center
-    ) {
-        Text(text = "Wallet")
-    }
 }
 
 @Composable

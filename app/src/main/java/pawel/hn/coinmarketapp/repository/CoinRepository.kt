@@ -7,6 +7,8 @@ import pawel.hn.coinmarketapp.domain.Coin
 
 interface CoinRepository {
 
+    val state: Flow<Result<List<Coin>>>
+
     suspend fun getCoinsPagingFromApi()
 
     suspend fun saveCoinsToDatabase(coins: List<CoinEntity>)
