@@ -2,12 +2,13 @@ package pawel.hn.coinmarketapp.repository
 
 
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.StateFlow
 import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.domain.Coin
 
 interface CoinRepository {
 
-    val state: Flow<Result<List<Coin>>>
+    val coins: StateFlow<List<Coin>>
 
     suspend fun getCoinsPagingFromApi()
 
@@ -17,9 +18,7 @@ interface CoinRepository {
 
     suspend fun deleteFavouriteCoinId(id: Int)
 
-    suspend fun getFavourites(): Flow<List<Int>>
-
-    suspend fun observeCoins(query: String): Flow<List<Coin>>
+    suspend fun observeCoins(query: String, isFavourite: Boolean): Flow<List<Coin>>
 
     suspend fun getCoins(): List<Coin>
 }

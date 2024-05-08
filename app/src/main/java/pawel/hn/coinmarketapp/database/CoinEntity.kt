@@ -14,7 +14,7 @@ data class CoinEntity(
     val price: Double,
     val change24h: Double,
     val change7d: Double,
-    val cmcRank: Int
+    val cmcRank: Int,
 )
 
 fun CoinEntity.toDomain(isFavourite: Boolean = false) = Coin(
@@ -36,3 +36,4 @@ fun CoinEntity.toDomain(isFavourite: Boolean = false) = Coin(
 
 
 fun List<CoinEntity>.toDomain() = map { it.toDomain() }
+
