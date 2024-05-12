@@ -16,8 +16,6 @@ interface CoinDao {
     @Update(entity = CoinEntity::class)
     suspend fun update(coinEntity: CoinEntity)
 
-    @Query("SELECT * FROM coins_table WHERE name LIKE '%' || :searchQuery || '%' ORDER BY cmcRank ASC")
-    fun observeCoins(searchQuery: String): Flow<List<CoinEntity>>
 
     @Query("SELECT * FROM coins_table")
     fun getSavedCoins(): List<CoinEntity>

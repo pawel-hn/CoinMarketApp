@@ -1,12 +1,15 @@
 package pawel.hn.coinmarketapp.repository
 
-import android.net.Uri
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinEntity
@@ -16,11 +19,6 @@ import pawel.hn.coinmarketapp.database.FavouriteCoinEntity
 import pawel.hn.coinmarketapp.database.toDomain
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.model.coinmarketcap.toEntity
-import pawel.hn.coinmarketapp.util.LOGO_FILE_TYPE
-import pawel.hn.coinmarketapp.util.LOGO_SIZE_PX
-import pawel.hn.coinmarketapp.util.LOGO_URL
-import pawel.hn.coinmarketapp.util.formatPriceChange
-import pawel.hn.coinmarketapp.util.showLogN
 import javax.inject.Inject
 
 class CoinRepositoryImpl @Inject constructor(
@@ -29,8 +27,6 @@ class CoinRepositoryImpl @Inject constructor(
     private val coinWithFavouriteDao: CoinWithFavouriteDao,
     private val favouriteCoinDao: FavouriteCoinDao
 ) : CoinRepository {
-
-    private val favIds = favouriteCoinDao.getFavourites().map { it.toDomain() }
 
     private val _coins = MutableStateFlow<List<Coin>>(emptyList())
     override val coins: StateFlow<List<Coin>> = _coins.asStateFlow()

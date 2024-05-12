@@ -62,6 +62,10 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import pawel.hn.coinmarketapp.R
+import pawel.hn.coinmarketapp.coinsList.compose.CoinItemColor
+import pawel.hn.coinmarketapp.coinsList.compose.ErrorCoins
+import pawel.hn.coinmarketapp.coinsList.compose.ShimmerLoading
+import pawel.hn.coinmarketapp.coinsList.compose.TopRow
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.domain.WalletCoin
 import pawel.hn.coinmarketapp.util.Resource
