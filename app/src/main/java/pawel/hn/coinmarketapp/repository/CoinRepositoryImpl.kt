@@ -1,15 +1,11 @@
 package pawel.hn.coinmarketapp.repository
 
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.debounce
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinEntity
@@ -52,9 +48,14 @@ class CoinRepositoryImpl @Inject constructor(
     override suspend fun deleteFavouriteCoinId(id: Int) =
         favouriteCoinDao.deleteFavourite(id)
 
-    override suspend fun observeCoins(query: String, isFavourite: Boolean): Flow<List<Coin>> =
-        coinWithFavouriteDao.getCoinsWithFavourites(isFavourite,query).map {it.toDomain() }
-
+    @OptIn(FlowPreview::class)
+    override suspend fun observeCoins(query: String, isFavourite: Boolean) {
+        coinWithFavouriteDao.getCoinsWithFavourites(isFavourite, query)
+            .debounce(200)
+            .collectLatest {
+                _coins.value = it.toDomain()
+            }
+    }
 
     override suspend fun getCoins(): List<Coin> =
         coinDao.getSavedCoins().map { it.toDomain() }

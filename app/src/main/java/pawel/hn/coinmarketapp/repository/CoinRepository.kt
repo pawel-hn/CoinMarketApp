@@ -18,7 +18,7 @@ interface CoinRepository {
 
     suspend fun deleteFavouriteCoinId(id: Int)
 
-    suspend fun observeCoins(query: String, isFavourite: Boolean): Flow<List<Coin>>
+    suspend fun observeCoins(query: String, isFavourite: Boolean)
 
     suspend fun getCoins(): List<Coin>
 }
