@@ -3,7 +3,7 @@ import io.mockk.mockkClass
 import org.junit.Before
 import org.junit.Test
 import pawel.hn.coinmarketapp.database.WalletEntity
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.OLDRepository
 import pawel.hn.coinmarketapp.util.formatPriceChange
 import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 
@@ -29,12 +29,12 @@ class UnitTest {
 
     private lateinit var totalList: List<WalletEntity>
 
-    private lateinit var repo: Repository
+    private lateinit var repo: OLDRepository
     private lateinit var walletViewModel: WalletViewModel
 
     @Before
     fun setUp() {
-        repo = mockkClass(Repository::class, relaxed = true)
+        repo = mockkClass(OLDRepository::class, relaxed = true)
         walletViewModel = WalletViewModel(repo)
         totalList = walletViewModel.totalWallet(list)
     }

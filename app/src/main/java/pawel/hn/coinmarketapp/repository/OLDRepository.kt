@@ -9,7 +9,7 @@ import pawel.hn.coinmarketapp.util.*
 import retrofit2.Response
 import javax.inject.Inject
 
-class Repository @Inject constructor(
+class OLDRepository @Inject constructor(
     val coins: CoinsData,
     private val remote: RemoteData
 ) {

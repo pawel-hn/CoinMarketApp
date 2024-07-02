@@ -1,6 +1,5 @@
 package pawel.hn.coinmarketapp.coinsList
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +13,6 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
@@ -37,22 +35,26 @@ class CoinsViewModel @Inject constructor(
     private val search = combine(
         _query,
         _showFavourites
-    ) { q, s ->
-        Log.d("PHN", "combine, search: * $q *, $s")
-        Pair(q, s)
+    ) { query, search ->
+        Pair(query, search)
     }
-        .stateIn(viewModelScope, SharingStarted.Eagerly, Pair("", false))
+        .catch { _state.value = Resource.Error("combine") }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), Pair("", false))
 
     private val _state = MutableStateFlow<Resource<List<Coin>>>(Resource.Loading())
-    val state: StateFlow<Resource<List<Coin>>> = coinRepository.coins.map {
-        Resource.Success(it)
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), Resource.Loading())
+    val state: StateFlow<Resource<List<Coin>>> = _state.asStateFlow()
 
     init {
         getCoins()
         update()
-    }
 
+        viewModelScope.launch {
+            coinRepository.coins
+                .collectLatest {
+                _state.value = Resource.Success(it)
+            }
+        }
+    }
 
     fun getCoins() {
         viewModelScope.launch {

@@ -176,9 +176,7 @@ fun CoinsList(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .animateContentSize(
-                animationSpec = tween(1000)
-            ),
+            .animateContentSize(),
         contentPadding = PaddingValues(dimensionResource(id = R.dimen.small_margin)),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp),

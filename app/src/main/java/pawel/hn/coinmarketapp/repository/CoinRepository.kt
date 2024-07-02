@@ -1,7 +1,6 @@
 package pawel.hn.coinmarketapp.repository
 
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.domain.Coin

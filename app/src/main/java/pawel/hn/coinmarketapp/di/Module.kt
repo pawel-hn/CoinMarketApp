@@ -10,22 +10,16 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import pawel.hn.coinmarketapp.api.CoinApi
-import pawel.hn.coinmarketapp.data.CoinsData
-import pawel.hn.coinmarketapp.data.RemoteData
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinDatabase
 import pawel.hn.coinmarketapp.database.CoinWithFavouriteDao
 import pawel.hn.coinmarketapp.database.FavouriteCoinDao
 import pawel.hn.coinmarketapp.database.WalletDao
-import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.CoinRepositoryImpl
-import pawel.hn.coinmarketapp.repository.Repository
 import pawel.hn.coinmarketapp.repository.WalletRepository
 import pawel.hn.coinmarketapp.repository.WalletRepositoryImpl
 import pawel.hn.coinmarketapp.usecase.ObserveWalletUseCase
-import pawel.hn.coinmarketapp.util.API_HEADER
-import pawel.hn.coinmarketapp.util.API_KEY
 import pawel.hn.coinmarketapp.util.BASE_URL_COINS
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -65,11 +59,6 @@ object Module {
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context): CoinDatabase =
         CoinDatabase.getDataBase(context)
-
-    @Provides
-    @Singleton
-    fun provideRepository(coinsData: CoinsData, remoteData: RemoteData) =
-        Repository(coinsData, remoteData)
 
     @Provides
     @Singleton

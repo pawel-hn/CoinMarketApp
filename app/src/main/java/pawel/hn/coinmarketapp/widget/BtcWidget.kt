@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.activity.MainActivity
 import pawel.hn.coinmarketapp.model.coinmarketcap.CoinResponse
-import pawel.hn.coinmarketapp.repository.Repository
+import pawel.hn.coinmarketapp.repository.OLDRepository
 import pawel.hn.coinmarketapp.util.*
 import javax.inject.Inject
 
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class BtcWidget : AppWidgetProvider() {
 
     @Inject
-    lateinit var repository: Repository
+    lateinit var OLDRepository: OLDRepository
 
     var btc: CoinResponse? = null
 
@@ -39,7 +39,7 @@ class BtcWidget : AppWidgetProvider() {
         val appWidgetManager = AppWidgetManager.getInstance(context)
         val ids = appWidgetManager.getAppWidgetIds(ComponentName(context!!, BtcWidget::class.java))
         coroutineScope.launch {
-            btc = repository.getBitcoinData()!!
+            btc = OLDRepository.getBitcoinData()!!
             ids.forEach { id ->
                 updateAppWidget(
                     context,
