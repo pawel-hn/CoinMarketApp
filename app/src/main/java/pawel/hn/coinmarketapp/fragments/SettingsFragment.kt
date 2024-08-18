@@ -60,8 +60,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreateRecyclerView(
-        inflater: LayoutInflater?,
-        parent: ViewGroup?,
+        inflater: LayoutInflater,
+        parent: ViewGroup,
         savedInstanceState: Bundle?
     ): RecyclerView {
         val recyclerView =  super.onCreateRecyclerView(inflater, parent, savedInstanceState)

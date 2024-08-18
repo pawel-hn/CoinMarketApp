@@ -9,15 +9,13 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
-import pawel.hn.coinmarketapp.domain.toWalletDatabase
 import pawel.hn.coinmarketapp.repository.CoinRepository
 import pawel.hn.coinmarketapp.repository.WalletRepository
-import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.UIState
 import pawel.hn.coinmarketapp.util.errorHandler
 import javax.inject.Inject
 
@@ -28,11 +26,11 @@ class AddCoinViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val _coinList = MutableStateFlow<List<Coin>>(emptyList())
-    val coinList: StateFlow<Resource<List<Coin>>> = _coinList
-        .map { coins -> Resource.Success(coins) }
-        .catch { Resource.Error<List<Coin>>(it.message ?: "some Error") }
+    val coinList: StateFlow<UIState<List<Coin>>> = _coinList
+        .map { coins -> UIState.Loaded(coins) }
+        .catch { UIState.Error<List<Coin>>(it.message ?: "some Error") }
         .stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(2000), Resource.Loading()
+            viewModelScope, SharingStarted.WhileSubscribed(2000), UIState.Loading()
         )
 
     private val _isAddButtonEnabled = MutableStateFlow(false)

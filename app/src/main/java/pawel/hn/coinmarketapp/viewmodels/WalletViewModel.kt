@@ -19,7 +19,7 @@ import pawel.hn.coinmarketapp.database.CoinEntity
 import pawel.hn.coinmarketapp.database.WalletEntity
 import pawel.hn.coinmarketapp.domain.WalletCoin
 import pawel.hn.coinmarketapp.usecase.ObserveWalletUseCase
-import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.UIState
 import pawel.hn.coinmarketapp.util.errorHandler
 import javax.inject.Inject
 
@@ -29,10 +29,10 @@ class WalletViewModel @Inject constructor(private val observeWalletUseCase: Obse
 
     private val _walletCoins = MutableStateFlow<List<WalletCoin>>(emptyList())
     val walletCoins = _walletCoins
-        .map { Resource.Success(it) }
-        .catch { Resource.Error<List<WalletCoin>>("wallet error") }
+        .map { UIState.Loaded(it) }
+        .catch { UIState.Error<List<WalletCoin>>("wallet error") }
         .stateIn(
-            viewModelScope, SharingStarted.WhileSubscribed(2000), Resource.Loading()
+            viewModelScope, SharingStarted.WhileSubscribed(2000), UIState.Loading()
         )
 
 

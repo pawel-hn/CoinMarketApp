@@ -48,10 +48,8 @@ class CoinRepositoryImpl @Inject constructor(
     override suspend fun deleteFavouriteCoinId(id: Int) =
         favouriteCoinDao.deleteFavourite(id)
 
-    @OptIn(FlowPreview::class)
     override suspend fun observeCoins(query: String, isFavourite: Boolean) {
         coinWithFavouriteDao.getCoinsWithFavourites(isFavourite, query)
-            .debounce(200)
             .collectLatest {
                 _coins.value = it.toDomain()
             }

@@ -68,7 +68,7 @@ import pawel.hn.coinmarketapp.coinsList.compose.ShimmerLoading
 import pawel.hn.coinmarketapp.coinsList.compose.TopRow
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.domain.WalletCoin
-import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.UIState
 import pawel.hn.coinmarketapp.viewmodels.AddCoinViewModel
 import pawel.hn.coinmarketapp.viewmodels.WalletViewModel
 
@@ -162,18 +162,18 @@ fun WalletState() {
     val lazyColumnState = rememberLazyListState()
 
     when (walletState) {
-        is Resource.Error -> {
+        is UIState.Error -> {
             ErrorCoins(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Wallet error...."
             )
         }
 
-        is Resource.Loading -> {
+        is UIState.Loading -> {
             ShimmerLoading(3)
         }
 
-        is Resource.Success -> {
+        is UIState.Loaded -> {
             val coins = walletState.data
             if (coins.isNullOrEmpty()) {
                 Box(
@@ -272,14 +272,14 @@ fun AddItemDialog(
             Column(Modifier.padding(16.dp)) {
                 Text(text = "Choose coin:")
                 when (coins) {
-                    is Resource.Error -> Text(text = "No data")
-                    is Resource.Loading -> Box(
+                    is UIState.Error -> Text(text = "No data")
+                    is UIState.Loading -> Box(
                         modifier = Modifier
                             .fillMaxSize()
                             .shimmerEffect()
                     )
 
-                    is Resource.Success -> CoinsDropDown(
+                    is UIState.Loaded -> CoinsDropDown(
                         coins = coins.data ?: emptyList(),
                         onCoinSelected = { viewModel.selectedCoin(it) },
                         searchInput = { viewModel.observeCoins(it) }

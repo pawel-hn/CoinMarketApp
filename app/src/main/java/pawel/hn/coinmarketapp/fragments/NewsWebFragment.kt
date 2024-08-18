@@ -15,11 +15,9 @@ class NewsWebFragment : Fragment(R.layout.fragment_news_webview) {
         super.onViewCreated(view, savedInstanceState)
 
         binding = FragmentNewsWebviewBinding.bind(view)
-        val url = NewsWebFragmentArgs.fromBundle(requireArguments()).url
 
         binding.apply {
             newsWebView.webViewClient = WebViewClient()
-            newsWebView.loadUrl(url)
         }
     }
 }

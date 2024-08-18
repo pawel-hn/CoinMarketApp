@@ -2,7 +2,6 @@ package pawel.hn.coinmarketapp.coinsList.compose
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -55,14 +54,14 @@ import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.R
 import pawel.hn.coinmarketapp.domain.Coin
 import pawel.hn.coinmarketapp.util.CURRENCY_USD
-import pawel.hn.coinmarketapp.util.Resource
+import pawel.hn.coinmarketapp.util.UIState
 import pawel.hn.coinmarketapp.util.ValueType
 import pawel.hn.coinmarketapp.util.formatPriceAndVolForView
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun CoinsBody(
-    state: Resource<List<Coin>>,
+    state: UIState<List<Coin>>,
     lazyColumnState: LazyListState,
     coroutineScope: CoroutineScope,
     favouritesToggle: Boolean,
@@ -88,7 +87,7 @@ fun CoinsBody(
             .pullRefresh(pullRefreshState),
         contentAlignment = Alignment.Center
     ) {
-        isRefreshing = state is Resource.Loading
+        isRefreshing = state is UIState.Loading
 
         CoinsState(
             coins = state,
@@ -133,23 +132,23 @@ fun ErrorCoins(
 
 @Composable
 fun CoinsState(
-    coins: Resource<List<Coin>>,
+    coins: UIState<List<Coin>>,
     state: LazyListState,
     favouriteClick: (Int, Boolean) -> Unit
 ) {
     when (coins) {
-        is Resource.Error -> {
+        is UIState.Error -> {
             ErrorCoins(
                 modifier = Modifier.fillMaxSize(),
                 text = coins.message ?: "ffs"
             )
         }
 
-        is Resource.Loading -> {
+        is UIState.Loading -> {
             ShimmerLoading()
         }
 
-        is Resource.Success -> {
+        is UIState.Loaded -> {
             val list = coins.data ?: emptyList()
             if (list.isEmpty()) {
                 Box(
