@@ -1,10 +1,10 @@
 package pawel.hn.coinmarketapp.coinsList
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import pawel.hn.coinmarketapp.domain.Coin
@@ -36,8 +35,8 @@ class CoinsViewModel @Inject constructor(
     private val search = combine(
         _query,
         _showFavourites
-    ) { query, search ->
-        Pair(query, search)
+    ) { query, favourites ->
+        Pair(query, favourites)
     }
         .catch { uiState.value = UIState.Error("combine") }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(1000), Pair("", false))
@@ -47,28 +46,31 @@ class CoinsViewModel @Inject constructor(
 
     init {
         getCoins()
-        update()
+        observe()
 
         viewModelScope.launch {
             delay(1000)
             coinRepository.coins
                 .collectLatest {
-                    uiState.value = UIState.Loaded(it)
+                    Log.d("PHN", "viewModel collectLatest init")
+                    uiState.value = if (it.isLoading) {
+                        UIState.Loading()
+                    } else {
+                        UIState.Loaded(it.coins)
+                    }
                 }
         }
     }
 
     fun getCoins() {
         viewModelScope.launch {
-            uiState.value = UIState.Loading()
             coinRepository.getCoinsPagingFromApi()
         }
     }
 
-    @OptIn(FlowPreview::class)
-    fun update() =
+    private fun observe() =
         viewModelScope.launch {
-            search.debounce(300).collectLatest {
+            search.collectLatest {
                 coinRepository.observeCoins(it.first, it.second)
             }
         }

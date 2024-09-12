@@ -1,11 +1,13 @@
 package pawel.hn.coinmarketapp.repository
 
-import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import pawel.hn.coinmarketapp.api.CoinApi
 import pawel.hn.coinmarketapp.database.CoinDao
 import pawel.hn.coinmarketapp.database.CoinEntity
@@ -21,18 +23,34 @@ class CoinRepositoryImpl @Inject constructor(
     private val coinApi: CoinApi,
     private val coinDao: CoinDao,
     private val coinWithFavouriteDao: CoinWithFavouriteDao,
-    private val favouriteCoinDao: FavouriteCoinDao
+    private val favouriteCoinDao: FavouriteCoinDao,
+    scope: CoroutineScope = CoroutineScope(Dispatchers.Default)
 ) : CoinRepository {
 
     private val _coins = MutableStateFlow<List<Coin>>(emptyList())
-    override val coins: StateFlow<List<Coin>> = _coins.asStateFlow()
+    private val _isLoading = MutableStateFlow(false)
+
+    override val coins: StateFlow<CoinsNetworkState> = combine(
+        _coins,
+        _isLoading
+    ) { data, loading ->
+        CoinsNetworkState(
+            data, loading
+        )
+    }.stateIn(
+        scope, SharingStarted.WhileSubscribed(), CoinsNetworkState(
+            emptyList(), true
+        )
+    )
 
     override suspend fun getCoinsPagingFromApi() {
+        _isLoading.value = true
         coinApi.getCoinsFromNetworkNew(1, 100, "USD").fold(
             onSuccess = { response ->
                 saveCoinsToDatabase(response.toEntity())
             },
             onFailure = { throwable ->
+                _isLoading.value = false
                 throwable.printStackTrace()
             }
         )
@@ -51,10 +69,19 @@ class CoinRepositoryImpl @Inject constructor(
     override suspend fun observeCoins(query: String, isFavourite: Boolean) {
         coinWithFavouriteDao.getCoinsWithFavourites(isFavourite, query)
             .collectLatest {
+
+                _isLoading.value = false
                 _coins.value = it.toDomain()
             }
     }
 
+
     override suspend fun getCoins(): List<Coin> =
         coinDao.getSavedCoins().map { it.toDomain() }
 }
+
+
+data class CoinsNetworkState(
+    val coins: List<Coin>,
+    val isLoading: Boolean
+)
